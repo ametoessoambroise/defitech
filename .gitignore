@@ -29,6 +29,8 @@ instance/
 # Environment
 .env
 .venv
+.env.*
+
 venv/
 ENV/
 
