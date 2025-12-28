@@ -22,7 +22,7 @@ requests==2.31.0
 transformers==4.36.2
 accelerate==0.22.0
 PyPDF2==3.0.1
-huggingface-hub==1.2.3
+huggingface-hub==0.19.4
 matplotlib 
 gunicorn
 eventlet
