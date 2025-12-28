@@ -5,7 +5,7 @@
 <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
   <!-- Back Button -->
   <div class="mb-6">
-    <a href="{{ url_for('etudiant_devoirs') }}"
+    <a href="{{ url_for('students.devoirs') }}"
       class="inline-flex items-center text-blue-600 border border-gray-300 hover:text-white hover:bg-blue-600 p-2 rounded-md t-medium transition-all duration-150">
       <i class="fas fa-arrow-left mr-2"></i>
       <span>Devoirs</span>
@@ -212,7 +212,7 @@
       </div>
       <h3 class="text-xl font-semibold text-gray-900 mb-2">Aucune note disponible</h3>
       <p class="text-gray-600 mb-6">Vos notes apparaîtront ici une fois publiées par vos enseignants</p>
-      <a href="{{ url_for('etudiant_devoirs') }}"
+      <a href="{{ url_for('students.devoirs') }}"
         class="inline-flex items-center justify-center px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
         <i class="fas fa-arrow-left mr-2"></i>Retour aux devoirs
       </a>

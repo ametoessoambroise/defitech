@@ -90,7 +90,7 @@
 
         {% if selected_filiere and selected_annee %}
         <!-- Schedule Form -->
-        <form method="post" action="{{ url_for('admin_emploi_temps', filiere=selected_filiere, annee=selected_annee) }}"
+        <form method="post" action="{{ url_for('admin.admin_emploi_temps', filiere=selected_filiere, annee=selected_annee) }}"
             class="p-6">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 

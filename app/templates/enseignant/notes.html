@@ -172,7 +172,7 @@
           Vous n'avez pas encore de matières assignées pour saisir des notes.
           Veuillez contacter l'administration.
         </p>
-        <a href="{{ url_for('enseignant_dashboard') }}"
+        <a href="{{ url_for('teachers.dashboard') }}"
           class="inline-flex items-center px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors font-medium">
           <i class="fas fa-arrow-left mr-2"></i>Retour au tableau de bord
         </a>
@@ -321,7 +321,7 @@
     formData.append('date_evaluation', commonData.date_evaluation);
     formData.append('credits', commonData.credits);
 
-    fetch("{{ url_for('enseignant_notes') }}", {
+    fetch("{{ url_for('teachers.notes') }}", {
       method: "POST",
       body: formData
     })
@@ -384,7 +384,7 @@
       formData.append('date_evaluation', commonData.date_evaluation);
       formData.append('credits', commonData.credits);
 
-      fetch("{{ url_for('enseignant_notes') }}", {
+      fetch("{{ url_for('teachers.notes') }}", {
         method: "POST",
         body: formData
       })

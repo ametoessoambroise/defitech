@@ -308,6 +308,186 @@ def devoirs():
     return render_template("enseignant/devoirs.html", filieres=filieres, annees=annees)
 
 
+@teachers_bp.route("/emploi-temps")
+@login_required
+def emploi_temps():
+    """Page d'accès à l'emploi du temps de l'enseignant.
+
+    La page est remplie côté client via l'API JSON correspondante.
+    """
+    if current_user.role != "enseignant":
+        flash("Accès non autorisé.", "error")
+        return redirect(url_for("main.index"))
+
+    enseignant = Enseignant.query.filter_by(user_id=current_user.id).first()
+    if not enseignant:
+        flash("Aucun profil enseignant trouvé.", "error")
+        return redirect(url_for("teachers.dashboard"))
+
+    return render_template("enseignant/emploi_temps.html")
+
+
+@teachers_bp.route("/api/emploi-temps", methods=["GET"])
+@login_required
+def api_emploi_temps():
+    """Récupère les emplois du temps de l'enseignant courant en JSON."""
+    if current_user.role != "enseignant":
+        flash("Accès non autorisé.", "error")
+        return jsonify({"error": "Accès non autorisé"}), 403
+
+    enseignant = Enseignant.query.filter_by(user_id=current_user.id).first()
+    if not enseignant:
+        flash("Profil enseignant introuvable.", "error")
+        return jsonify({"error": "Profil enseignant introuvable"}), 404
+
+    filieres = []
+    annees = []
+    try:
+        data = json.loads(enseignant.filieres_enseignees)
+        filieres = data.get("filieres", [])
+        annees = data.get("annees", [])
+    except Exception:
+        pass
+
+    jours = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"]
+
+    if not filieres or not annees:
+        return jsonify({"jours": jours, "horaires": [], "creneaux": []})
+
+    filiere_ids = [
+        Filiere.query.filter_by(nom=f).first().id
+        for f in filieres
+        if Filiere.query.filter_by(nom=f).first()
+    ]
+
+    emplois = (
+        EmploiTemps.query.join(Matiere, EmploiTemps.matiere_id == Matiere.id)
+        .filter(
+            EmploiTemps.filiere_id.in_(filiere_ids),
+            Matiere.enseignant_id == enseignant.id,
+        )
+        .all()
+    )
+
+    def format_label(emploi):
+        hd = emploi.heure_debut
+        hf = emploi.heure_fin
+        if isinstance(hd, str):
+            hd_h, hd_m = map(int, hd.split(":")[:2])
+        else:
+            hd_h, hd_m = hd.hour, hd.minute
+        if isinstance(hf, str):
+            hf_h, hf_m = map(int, hf.split(":")[:2])
+        else:
+            hf_h, hf_m = hf.hour, hf.minute
+        return f"{hd_h:02d}h{hd_m:02d} - {hf_h:02d}h{hf_m:02d}"
+
+    horaire_labels = []
+    for e in emplois:
+        if e.jour in jours and e.heure_debut and e.heure_fin:
+            label = format_label(e)
+            if label not in horaire_labels:
+                horaire_labels.append(label)
+
+    horaire_labels.sort()
+
+    creneaux_json = []
+    for e in emplois:
+        if e.jour not in jours or not e.heure_debut or not e.heure_fin:
+            continue
+        label = format_label(e)
+        matiere = Matiere.query.get(e.matiere_id) if e.matiere_id else None
+
+        creneaux_json.append(
+            {
+                "jour": e.jour,
+                "horaire": label,
+                "matiere": matiere.nom if matiere else None,
+                "salle": e.salle,
+            }
+        )
+
+    return jsonify({"jours": jours, "horaires": horaire_labels, "creneaux": creneaux_json})
+
+
+@teachers_bp.route("/presence", methods=["GET", "POST"])
+@login_required
+def presence():
+    """Page de gestion des présences pour les enseignants."""
+    if current_user.role != "enseignant":
+        flash("Accès non autorisé.", "error")
+        return redirect(url_for("main.index"))
+
+    enseignant = Enseignant.query.filter_by(user_id=current_user.id).first()
+    if not enseignant:
+        flash("Profil enseignant non trouvé.", "error")
+        return redirect(url_for("main.index"))
+
+    filieres = []
+    annees = []
+    if enseignant.filieres_enseignees:
+        try:
+            data = json.loads(enseignant.filieres_enseignees)
+            filieres = data.get("filieres", [])
+            annees = data.get("annees", [])
+        except Exception:
+            pass
+
+    matieres = Matiere.query.filter_by(enseignant_id=enseignant.id).all()
+
+    selected_filiere = request.values.get("filiere")
+    selected_annee = request.values.get("annee")
+    selected_matiere = request.values.get("matiere", type=int)
+    selected_date = request.values.get("date")
+
+    etudiants = []
+
+    if selected_filiere and selected_annee and selected_matiere and selected_date:
+        matiere_obj = Matiere.query.get(selected_matiere)
+        if matiere_obj and matiere_obj.filiere_id:
+            filiere_obj = Filiere.query.get(matiere_obj.filiere_id)
+            if filiere_obj and filiere_obj.nom in filieres:
+                etudiants = Etudiant.query.filter_by(
+                    filiere=filiere_obj.nom, annee=selected_annee
+                ).all()
+
+                if request.method == "POST":
+                    from datetime import datetime as _dt
+
+                    date_presence = _dt.strptime(selected_date, "%Y-%m-%d").date()
+                    for etu in etudiants:
+                        present = f"present_{etu.id}" in request.form
+                        presence_rec = Presence.query.filter_by(
+                            etudiant_id=etu.id,
+                            matiere_id=selected_matiere,
+                            date_presence=date_presence,
+                        ).first()
+                        if presence_rec:
+                            presence_rec.present = present
+                        else:
+                            presence_rec = Presence(
+                                etudiant_id=etu.id,
+                                matiere_id=selected_matiere,
+                                date_presence=date_presence,
+                                present=present,
+                            )
+                            db.session.add(presence_rec)
+                    db.session.commit()
+                    flash("Présences enregistrées avec succès.", "success")
+                    return redirect(request.url)
+
+    return render_template(
+        "enseignant/presence.html",
+        filieres=filieres,
+        annees=annees,
+        matieres=matieres,
+        selected_filiere=selected_filiere,
+        selected_annee=selected_annee,
+        selected_matiere=selected_matiere,
+        selected_date=selected_date,
+        etudiants=etudiants,
+    )
+
 @teachers_bp.route("/devoirs-a-corriger")
 @login_required
 def devoirs_a_corriger():

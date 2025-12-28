@@ -594,7 +594,7 @@ EMAIL_TEMPLATES = {
 
                     <!-- CTA Button -->
                     <div class="text-center my-8">
-                        <a href="{{ url_for('admin_review_teacher_request', request_id=request.id, _external=True) }}"
+                        <a href="{{ url_for('admin.admin_review_teacher_request', request_id=request.id, _external=True) }}"
                            class="inline-block bg-yellow-600 hover:bg-yellow-700 text-white font-semibold px-8 py-4 rounded-lg shadow-lg transition duration-300 transform hover:scale-105 no-underline">
                             <i class="fas fa-eye mr-2"></i>
                             Examiner la demande
@@ -672,7 +672,7 @@ EMAIL_TEMPLATES = {
                         </p>
                         <p class="text-gray-500 mb-2">Copiez et collez ce lien dans votre navigateur :</p>
                         <p class="text-blue-600 break-all">
-                            <a href="{{ url_for('admin_review_teacher_request', request_id=request.id, _external=True) }}" class="hover:underline">{{ url_for('admin_review_teacher_request', request_id=request.id, _external=True) }}</a>
+                            <a href="{{ url_for('admin.admin_review_teacher_request', request_id=request.id, _external=True) }}" class="hover:underline">{{ url_for('admin.admin_review_teacher_request', request_id=request.id, _external=True) }}</a>
                         </p>
                     </div>
                 </div>
@@ -779,7 +779,7 @@ EMAIL_TEMPLATES = {
 
                     <!-- CTA Button -->
                     <div class="text-center my-8">
-                        <a href="{{ url_for('admin_suggestions', _external=True) }}"
+                        <a href="{{ url_for('admin.admin_suggestions', _external=True) }}"
                            class="inline-block bg-yellow-600 hover:bg-yellow-700 text-white font-semibold px-8 py-4 rounded-lg shadow-lg transition duration-300 transform hover:scale-105 no-underline">
                             <i class="fas fa-cogs mr-2"></i>
                             Gérer les suggestions
@@ -827,7 +827,7 @@ EMAIL_TEMPLATES = {
                         </p>
                         <p class="text-gray-500 mb-2">Copiez et collez ce lien dans votre navigateur :</p>
                         <p class="text-blue-600 break-all">
-                            <a href="{{ url_for('admin_suggestions', _external=True) }}" class="hover:underline">{{ url_for('admin_suggestions', _external=True) }}</a>
+                            <a href="{{ url_for('admin.admin_suggestions', _external=True) }}" class="hover:underline">{{ url_for('admin.admin_suggestions', _external=True) }}</a>
                         </p>
                     </div>
                 </div>
@@ -890,7 +890,7 @@ EMAIL_TEMPLATES = {
                 <!-- Content -->
                 <div class="px-8 py-8">
                     <p class="text-gray-700 mb-6 text-lg font-semibold">
-                        Administrateur <strong>{{ admin_name }}</strong>,
+                        Administrateur : <strong>{{ admin_name }}</strong>,
                     </p>
 
                     <p class="text-gray-600 mb-6 leading-relaxed">

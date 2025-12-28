@@ -14,13 +14,18 @@ from werkzeug.security import generate_password_hash
 from datetime import datetime
 import csv
 import io
+import os
+import subprocess
 import pandas as pd
 import json
 import random
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
+from sqlalchemy import inspect, text, create_engine
+from sqlalchemy.orm import sessionmaker
 
 from app.extensions import db
+from app.security_decorators import admin_required
 from app.models.user import User
 from app.models.etudiant import Etudiant
 from app.models.enseignant import Enseignant
@@ -45,6 +50,12 @@ except ImportError:
 from app.email_utils import send_account_validation_email
 
 admin_bp = Blueprint("admin", __name__, url_prefix="/admin")
+
+
+# Configuration de la base de données pour les outils d'inspection
+DATABASE_URI = os.getenv("SQLALCHEMY_DATABASE_URI")
+engine = create_engine(DATABASE_URI) if DATABASE_URI else None
+Session = sessionmaker(bind=engine) if engine is not None else None
 
 
 @admin_bp.route("/dashboard")
@@ -148,6 +159,104 @@ def admin_etudiants():
         prenom_filter=prenom_filter,
         email_filter=email_filter,
         id_filter=id_filter,
+    )
+
+
+@admin_bp.route("/enseignants")
+@login_required
+def admin_enseignants():
+    """Page d'administration des enseignants.
+
+    Filtre les enseignants selon les paramètres GET (id, nom, prenom, email,
+    specialite, filiere, annee) et renvoie la page HTML correspondante.
+    """
+    if current_user.role != "admin":
+        flash("Accès non autorisé.", "error")
+        return redirect(url_for("main.index"))
+
+    filieres = Filiere.query.all()
+    annees = Annee.query.all()
+
+    # Filtres depuis la query string
+    id_filter = request.args.get("id", "").strip()
+    nom_filter = request.args.get("nom", "").strip()
+    prenom_filter = request.args.get("prenom", "").strip()
+    email_filter = request.args.get("email", "").strip()
+    specialite_filter = request.args.get("specialite", "").strip()
+    filiere_filter = request.args.get("filiere", "").strip()
+    annee_filter = request.args.get("annee", "").strip()
+
+    # Base : utilisateurs enseignants
+    users_query = User.query.filter_by(role="enseignant")
+    if id_filter:
+        users_query = users_query.filter(User.id == id_filter)
+    if nom_filter:
+        users_query = users_query.filter(User.nom.ilike(f"%{nom_filter}%"))
+    if prenom_filter:
+        users_query = users_query.filter(User.prenom.ilike(f"%{prenom_filter}%"))
+    if email_filter:
+        users_query = users_query.filter(User.email.ilike(f"%{email_filter}%"))
+
+    enseignants_users = users_query.all()
+
+    # Récupérer les profils enseignants associés
+    enseignants_infos = [
+        Enseignant.query.filter_by(user_id=u.id).first() for u in enseignants_users
+    ]
+
+    enseignants_data = []
+    for user, info in zip(enseignants_users, enseignants_infos):
+        # Appliquer les filtres spécialité / filière / année côté Python
+        if specialite_filter and (not info or specialite_filter.lower() not in (info.specialite or "").lower()):
+            continue
+
+        filieres_str = "-"
+        filieres_list = []
+        annees_list = []
+
+        if info and info.filieres_enseignees:
+            try:
+                # Deux formats possibles : JSON {"filieres": [...], "annees": [...]} ou chaîne "Fil1;Fil2"
+                parsed = None
+                # D'abord tenter JSON
+                try:
+                    parsed = json.loads(info.filieres_enseignees)
+                except Exception:
+                    parsed = None
+
+                if isinstance(parsed, dict) and "filieres" in parsed:
+                    filieres_list = parsed.get("filieres") or []
+                    annees_list = parsed.get("annees") or []
+                else:
+                    filieres_list = [
+                        f.strip()
+                        for f in info.filieres_enseignees.split(";")
+                        if f.strip()
+                    ]
+
+                if filiere_filter and filiere_filter not in filieres_list:
+                    continue
+                if annee_filter and annee_filter not in annees_list:
+                    continue
+
+                filieres_str = ", ".join(filieres_list) if filieres_list else "-"
+            except Exception:
+                filieres_str = info.filieres_enseignees
+
+        enseignants_data.append((user, info, filieres_str))
+
+    return render_template(
+        "admin/enseignants.html",
+        enseignants_data=enseignants_data,
+        filieres=filieres,
+        annees=annees,
+        id_filter=id_filter,
+        nom_filter=nom_filter,
+        prenom_filter=prenom_filter,
+        email_filter=email_filter,
+        specialite_filter=specialite_filter,
+        filiere_filter=filiere_filter,
+        annee_filter=annee_filter,
     )
 
 
@@ -1205,6 +1314,28 @@ def admin_filieres():
     filieres = Filiere.query.all()
     return render_template("admin/filieres.html", filieres=filieres)
 
+
+@admin_bp.route("/filiere/<int:filiere_id>/enseignants")
+@login_required
+def get_enseignants_filiere(filiere_id):
+    """Récupère la liste de tous les enseignants (pour une filière donnée côté UI)."""
+    if current_user.role != "admin":
+        return jsonify({"error": "Accès non autorisé"}), 403
+
+    # Même logique que dans app copy.py : renvoie tous les enseignants
+    enseignants = Enseignant.query.all()
+
+    enseignants_data = [
+        {
+            "id": ens.id,
+            "nom_complet": f"{ens.user.prenom} {ens.user.nom}",
+            "email": ens.user.email,
+            "specialite": getattr(ens, "specialite", ""),
+        }
+        for ens in enseignants
+    ]
+
+    return jsonify(enseignants_data)
 
 @admin_bp.route("/filiere/ajouter", methods=["GET", "POST"])
 @login_required

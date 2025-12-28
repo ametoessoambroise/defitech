@@ -52,7 +52,7 @@ current_user.prenom }} - DEFITECH{% endblock %} {% block content %}
         </div>
       </div>
     </div>
-    <a href="{{ url_for('enseignant_cours_aujourdhui') }}"
+    <a href="{{ url_for('teachers.cours_aujourdhui') }}"
       class="bg-white rounded-lg shadow p-6 block hover:bg-blue-50 transition">
       <div class="flex items-center">
         <div class="p-3 rounded-full bg-blue-100 text-blue-600">
@@ -69,7 +69,7 @@ current_user.prenom }} - DEFITECH{% endblock %} {% block content %}
       </div>
     </a>
 
-    <a href="{{ url_for('enseignant_devoirs_a_corriger') }}"
+    <a href="{{ url_for('teachers.devoirs_a_corriger') }}"
       class="bg-white rounded-lg shadow p-6 block hover:bg-yellow-50 transition">
       <div class="flex items-center">
         <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
@@ -92,18 +92,18 @@ current_user.prenom }} - DEFITECH{% endblock %} {% block content %}
     <div class="bg-white rounded-lg shadow p-6">
       <h3 class="text-lg font-semibold text-gray-900 mb-4">Actions rapides</h3>
       <div class="space-y-3">
-        <a href="{{ url_for('enseignant_notes') }}"
+        <a href="{{ url_for('teachers.notes') }}"
           class="flex items-center p-3 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors">
           <i class="fas fa-star text-purple-600 mr-3"></i>
           <span class="text-purple-900">Gérer les notes</span>
         </a>
-        <a href="{{ url_for('enseignant_devoirs') }}"
+        <a href="{{ url_for('teachers.devoirs') }}"
           class="flex items-center p-3 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors">
           <i class="fas fa-star text-purple-600 mr-3"></i>
           <span class="text-purple-900">Assigner un devoir</span>
         </a>
 
-        <a href="{{ url_for('manage_etudiants') }}"
+        <a href="{{ url_for('teachers.manage_etudiants') }}"
           class="flex items-center p-3 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors">
           <i class="fas fa-user-graduate text-purple-600 mr-3"></i>
           <span class="text-purple-900">Gestion des étudiants</span>
@@ -113,12 +113,12 @@ current_user.prenom }} - DEFITECH{% endblock %} {% block content %}
           <i class="fas fa-users text-rose-600 mr-3"></i>
           <span class="text-rose-900">Communauté</span>
         </a>
-        <!-- <a href="{{ url_for('enseignant_presence') }}"
+        <!-- <a href="{{ url_for('teachers.presence') }}"
           class="flex items-center p-3 bg-green-50 rounded-lg hover:bg-green-100 transition-colors">
           <i class="fas fa-calendar-check text-green-600 mr-3"></i>
           <span class="text-green-900">Présence/Absence</span>
         </a> -->
-        <a href="{{ url_for('enseignant_emploi_temps') }}"
+        <a href="{{ url_for('teachers.emploi_temps') }}"
           class="flex items-center p-3 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
           <i class="fas fa-clock text-blue-600 mr-3"></i>
           <span class="text-blue-900">Emploi du temps</span>
