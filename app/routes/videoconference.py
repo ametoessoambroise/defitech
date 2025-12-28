@@ -2,13 +2,35 @@
 Routes pour la gestion des salles de visioconférence
 """
 
-from flask import Blueprint, request, jsonify, render_template, url_for, abort
+from flask import (
+    Blueprint,
+    request,
+    jsonify,
+    render_template,
+    url_for,
+    abort,
+    flash,
+    redirect,
+    current_app,
+)
 from flask_login import login_required, current_user
-from app.models.videoconference import Room, RoomParticipant, RoomActivityLog
+from app.models.videoconference import (
+    Room,
+    RoomParticipant,
+    RoomActivityLog,
+    RoomInvitation,
+)
 from app.models.matiere import Matiere
 from app.models.etudiant import Etudiant
+from app.models.enseignant import Enseignant
+from app.models.filiere import Filiere
+from app.models.emploi_temps import EmploiTemps
 from app.extensions import db
+from sqlalchemy import func
 import logging
+import secrets
+from datetime import datetime
+from app.utils.room_utils import send_room_invitations
 
 bp = Blueprint("videoconference", __name__, url_prefix="/videoconference")
 
@@ -270,3 +292,167 @@ def list_participants(token):
             for p in participants
         ]
     )
+
+
+@bp.route("/room", methods=["GET"])
+@login_required
+def room():
+    """
+    Route principale pour entrer dans une salle de visioconférence.
+    Gère la création automatique pour les enseignants et l'accès pour les étudiants.
+    """
+    room_token = request.args.get("token")
+
+    # Si l'utilisateur est un enseignant
+    if current_user.role == "enseignant":
+        course_id = request.args.get("course_id")
+
+        if not course_id:
+            flash("ID de cours manquant", "error")
+            return redirect(url_for("enseignants.dashboard"))
+
+        # Vérifier si l'utilisateur est bien un enseignant
+        enseignant = Enseignant.query.filter_by(user_id=current_user.id).first()
+        if not enseignant:
+            flash("Profil enseignant non trouvé", "error")
+            return redirect(url_for("enseignants.dashboard"))
+
+        # Vérifier si le cours appartient bien à l'enseignant
+        course = Matiere.query.filter_by(
+            id=course_id, enseignant_id=enseignant.id
+        ).first()
+        if not course:
+            flash("Cours non trouvé ou accès non autorisé", "error")
+            return redirect(url_for("enseignants.dashboard"))
+
+        # Vérifier si une salle existe déjà pour ce cours aujourd'hui
+        today = datetime.now().date()
+        room_obj = Room.query.filter(
+            Room.course_id == course_id,
+            func.date(Room.created_at) == today,
+            Room.is_active,
+        ).first()
+
+        # Créer une nouvelle salle si elle n'existe pas
+        if not room_obj:
+            room_obj = Room(
+                name=f"Salle {course.nom} - {today.strftime('%d/%m/%Y')}",
+                created_by=current_user.id,
+                course_id=course_id,
+                host_id=current_user.id,
+                room_token=secrets.token_urlsafe(16),
+            )
+
+            db.session.add(room_obj)
+            db.session.commit()
+
+        # Envoyer les invitations aux étudiants inscrits
+        try:
+            result = send_room_invitations(room_obj.id, current_app)
+            if result.get("success"):
+                flash(f"Salle créée avec succès. {result['message']}", "success")
+            else:
+                flash(
+                    f"La salle a été créée mais des erreurs sont survenues lors de l'envoi des invitations: {result.get('message', 'Erreur inconnue')}",
+                    "warning",
+                )
+        except Exception as e:
+            current_app.logger.error(
+                f"Erreur lors de l'envoi des invitations: {str(e)}"
+            )
+            flash("Erreur lors de l'envoi des invitations.", "warning")
+
+        # Enregistrer la participation de l'enseignant comme hôte
+        participation = RoomParticipant.query.filter_by(
+            room_id=room_obj.id, user_id=current_user.id
+        ).first()
+
+        if not participation:
+            participation = RoomParticipant(
+                room_id=room_obj.id,
+                user_id=current_user.id,
+                joined_at=datetime.utcnow(),
+                role="enseignant",
+            )
+            db.session.add(participation)
+            db.session.commit()
+
+        return render_template(
+            "videoconference/room.html",
+            room=room_obj,
+            user=current_user,
+            course=course,
+            is_teacher=True,
+        )
+
+    # Si l'utilisateur est un étudiant avec un token
+    elif room_token and current_user.role == "etudiant":
+        room_obj = Room.query.filter_by(room_token=room_token).first()
+
+        if not room_obj:
+            flash("Salle de cours introuvable ou expirée", "error")
+            return redirect(url_for("students.etudiant_dashboard"))
+
+        # Récupérer les informations du cours
+        course = Matiere.query.get(room_obj.course_id)
+        if not course:
+            flash("Cours introuvable", "error")
+            return redirect(url_for("students.etudiant_dashboard"))
+
+        # Récupérer l'étudiant
+        etudiant = Etudiant.query.filter_by(user_id=current_user.id).first()
+        if not etudiant:
+            flash("Profil étudiant introuvable", "error")
+            return redirect(url_for("students.etudiant_dashboard"))
+
+        # Vérifier si la matière est dans l'emploi du temps de la filière de l'étudiant
+        filiere = Filiere.query.filter_by(nom=etudiant.filiere).first()
+        if not filiere:
+            flash("Filière introuvable", "error")
+            return redirect(url_for("students.etudiant_dashboard"))
+
+        # Vérifier si le cours est dans l'emploi du temps de cette filière
+        emploi = EmploiTemps.query.filter_by(
+            filiere_id=filiere.id, matiere_id=room_obj.course_id
+        ).first()
+
+        if not emploi:
+            flash("Vous n'êtes pas inscrit à ce cours", "error")
+            return redirect(url_for("students.etudiant_dashboard"))
+
+        # Enregistrer la participation de l'étudiant
+        participation = RoomParticipant.query.filter_by(
+            room_id=room_obj.id, user_id=current_user.id
+        ).first()
+
+        if not participation:
+            participation = RoomParticipant(
+                room_id=room_obj.id,
+                user_id=current_user.id,
+                joined_at=datetime.utcnow(),
+                role="etudiant",
+            )
+            db.session.add(participation)
+
+        # Marquer l'invitation comme acceptée
+        invitation = RoomInvitation.query.filter_by(
+            room_id=room_obj.id, user_id=current_user.id
+        ).first()
+
+        if invitation and invitation.status != "accepted":
+            invitation.status = "accepted"
+            invitation.accepted_at = datetime.utcnow()
+
+        db.session.commit()
+
+        return render_template(
+            "videoconference/room.html",
+            room=room_obj,
+            user=current_user,
+            course=course,
+            is_teacher=False,
+        )
+
+    # Accès non autorisé
+    flash("Accès non autorisé à la salle de visioconférence", "error")
+    return redirect(url_for("main.index"))

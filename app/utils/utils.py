@@ -3,10 +3,41 @@ Fichier utilitaire pour l'application DEFITECH
 """
 
 ALLOWED_EXTENSIONS = {
-    'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'doc', 'docx',
-    'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', 'mp4', 'avi',
-    'mov', 'wmv', 'flv', 'webm', 'mp3', 'wav', 'ogg'
+    "pdf",
+    "docx",
+    "xlsx",
+    "jpg",
+    "jpeg",
+    "png",
+    "ico",
+    "avif",
+    "mp4",
+    "avi",
+    "mov",
+    "zip",
+    "rar",
+    "7z",
+    "tar",
+    "gz",
+    "bz2",
+    "html",
+    "css",
+    "js",
+    "jsx",
+    "tsx",
+    "ts",
+    "py",
+    "c",
+    "cpp",
+    "java",
+    "jar",
+    "class",
+    "pyc",
+    "pyo",
+    "bat",
+    "vbs",
 }
+
 
 def allowed_file(filename):
     """
@@ -22,6 +53,6 @@ def allowed_file(filename):
         return False
 
     # Obtenir l'extension du fichier
-    extension = filename.rsplit('.', 1)[1].lower() if '.' in filename else ''
+    extension = filename.rsplit(".", 1)[1].lower() if "." in filename else ""
 
     return extension in ALLOWED_EXTENSIONS

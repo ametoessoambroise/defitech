@@ -27,7 +27,7 @@ instance/
 .webassets-cache
 
 # Environment
-.env
+# .env
 .venv
 venv/
 ENV/
@@ -50,3 +50,8 @@ emploi-temps/
 dataset/
 data/
 DefAI/
+fineTuning_defAI/
+ImageSearch/
+atabase/
+docs/
+migrations/

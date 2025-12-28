@@ -67,3 +67,16 @@ class StudyBuddyAIWrapper:
 
 # Créer une instance du wrapper
 study_buddy_ai = StudyBuddyAIWrapper()
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    """
+    Charge de charger un utilisateur par son ID.
+    """
+    try:
+        from app.models.user import User
+
+        return db.session.get(User, int(user_id))
+    except Exception:
+        return None

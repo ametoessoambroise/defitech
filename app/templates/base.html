@@ -1,7 +1,6 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}{% endblock %}</title>
@@ -10,12 +9,21 @@
     <script src="https://cdn.tailwindcss.com"></script>
 
     <!-- Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
 
     <!-- CSRF Token for JavaScript -->
     <meta name="csrf-token" content="{{ csrf_token() }}" />
@@ -31,700 +39,854 @@
     <meta name="autocorrect" content="on" />
 
     <!-- PWA Manifest -->
-    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}" />
+    <link
+      rel="manifest"
+      href="{{ url_for('static', filename='manifest.json') }}"
+    />
 
     <!-- Apple Touch Icons -->
-    <link rel="apple-touch-icon" sizes="152x152"
-        href="{{ url_for('static', filename='images/icons/icon-152x152.png') }}" />
-    <link rel="apple-touch-icon" sizes="180x180"
-        href="{{ url_for('static', filename='images/icons/icon-192x192.png') }}" />
-    <link rel="apple-touch-icon" sizes="192x192"
-        href="{{ url_for('static', filename='images/icons/icon-192x192.png') }}" />
-    <link rel="apple-touch-icon" sizes="512x512"
-        href="{{ url_for('static', filename='images/icons/icon-512x512.png') }}" />
+    <link
+      rel="apple-touch-icon"
+      sizes="152x152"
+      href="{{ url_for('static', filename='images/icons/icon-152x152.png') }}"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="{{ url_for('static', filename='images/icons/icon-192x192.png') }}"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="192x192"
+      href="{{ url_for('static', filename='images/icons/icon-192x192.png') }}"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="512x512"
+      href="{{ url_for('static', filename='images/icons/icon-512x512.png') }}"
+    />
 
     <!-- Favicon -->
-    <link rel="icon" href="{{ url_for('static', filename='assets/favicon.ico') }}" />
-    <link rel="icon" type="image/png" sizes="32x32"
-        href="{{ url_for('static', filename='images/icons/icon-32x32.png') }}" />
-    <link rel="icon" type="image/png" sizes="16x16"
-        href="{{ url_for('static', filename='images/icons/icon-16x16.png') }}" />
+    <link
+      rel="icon"
+      href="{{ url_for('static', filename='assets/favicon.ico') }}"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="{{ url_for('static', filename='images/icons/icon-32x32.png') }}"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="{{ url_for('static', filename='images/icons/icon-16x16.png') }}"
+    />
 
     <style>
-        /* Tooltip personnalisé */
-        .custom-tooltip {
-            position: fixed;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 0.875rem;
-            font-weight: 500;
-            pointer-events: none;
-            z-index: 10000;
-            opacity: 0;
-            transform: translateY(-10px);
-            transition: opacity 0.2s ease, transform 0.2s ease;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            white-space: nowrap;
-            max-width: 300px;
-        }
+      /* Tooltip personnalisé */
+      .custom-tooltip {
+        position: fixed;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        pointer-events: none;
+        z-index: 10000;
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: opacity 0.2s ease, transform 0.2s ease;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+          0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        white-space: nowrap;
+        max-width: 300px;
+      }
 
-        .custom-tooltip.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
+      .custom-tooltip.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
 
-        .custom-tooltip::before {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 0;
-            border-left: 6px solid transparent;
-            border-right: 6px solid transparent;
-            border-top: 6px solid #764ba2;
-        }
+      .custom-tooltip::before {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 0;
+        border-left: 6px solid transparent;
+        border-right: 6px solid transparent;
+        border-top: 6px solid #764ba2;
+      }
     </style>
 
     <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            50: '#eef2ff',
-                            100: '#e0e7ff',
-                            200: '#c7d2fe',
-                            300: '#a5b4fc',
-                            400: '#818cf8',
-                            500: '#6366f1',
-                            600: '#4f46e5',
-                            700: '#4338ca',
-                            800: '#3730a3',
-                            900: '#312e81',
-                        }
-                    },
-                    animation: {
-                        'fade-in': 'fadeIn 0.5s ease-in-out',
-                        'slide-up': 'slideUp 0.5s ease-out',
-                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                    },
-                    keyframes: {
-                        fadeIn: {
-                            '0%': { opacity: '0', transform: 'translateY(10px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' },
-                        },
-                        slideUp: {
-                            '0%': { opacity: '0', transform: 'translateY(20px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' },
-                        }
-                    }
-                }
-            }
-        }
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                50: "#eef2ff",
+                100: "#e0e7ff",
+                200: "#c7d2fe",
+                300: "#a5b4fc",
+                400: "#818cf8",
+                500: "#6366f1",
+                600: "#4f46e5",
+                700: "#4338ca",
+                800: "#3730a3",
+                900: "#312e81",
+              },
+            },
+            animation: {
+              "fade-in": "fadeIn 0.5s ease-in-out",
+              "slide-up": "slideUp 0.5s ease-out",
+              "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+            },
+            keyframes: {
+              fadeIn: {
+                "0%": { opacity: "0", transform: "translateY(10px)" },
+                "100%": { opacity: "1", transform: "translateY(0)" },
+              },
+              slideUp: {
+                "0%": { opacity: "0", transform: "translateY(20px)" },
+                "100%": { opacity: "1", transform: "translateY(0)" },
+              },
+            },
+          },
+        },
+      };
     </script>
 
     {% block extra_css %}{% endblock %}
-</head>
+  </head>
 
-<body class="bg-gray-50 min-h-screen flex flex-col w-full font-['Inter']">
+  <body class="bg-gray-50 min-h-screen flex flex-col w-full font-['Inter']">
     <!-- Barre de progression -->
     {% include 'components/progress_bar.html' %}
 
     <!-- Curseur personnalisé -->
-    <div id="cursor" class="fixed w-10 h-10 p-2 shadow-md rounded-full bg-black/20 z-[9999] pointer-events-none hidden"
-        aria-hidden="true"></div>
+    <div
+      id="cursor"
+      class="fixed w-10 h-10 p-2 shadow-md rounded-full bg-black/20 z-[9999] pointer-events-none hidden"
+      aria-hidden="true"
+    ></div>
 
     <!-- Tooltip personnalisé -->
     <div id="customTooltip" class="custom-tooltip"></div>
 
     <!-- HEADER avec effet glassmorphism -->
     <header
-        class="fixed top-0 left-0 right-0 w-full backdrop-blur-lg bg-white/80 border-b border-gray-200 shadow-sm z-[9998] transition-all duration-300">
-        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <!-- Logo et navigation principale -->
-                <div class="flex items-center space-x-4 sm:space-x-6 flex-1 min-w-0">
-                    <a href="{{ url_for('main.index') }}" class="flex items-center space-x-2 flex-shrink-0"
-                        data-tooltip="Retour à l'accueil">
-                        <img src="{{ url_for('static', filename='assets/favicon.ico') }}" alt="Logo DEFITECH"
-                            class="w-8 h-8 sm:w-10 sm:h-10 rounded-full shadow-md" />
-                        <span
-                            class="font-bold text-blue-600 text-base sm:text-lg tracking-wide hidden xs:inline">DEFITECH</span>
-                    </a>
+      class="fixed top-0 left-0 right-0 w-full backdrop-blur-lg bg-white/80 border-b border-gray-200 shadow-sm z-[9998] transition-all duration-300"
+    >
+      <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+          <!-- Logo et navigation principale -->
+          <div class="flex items-center space-x-4 sm:space-x-6 flex-1 min-w-0">
+            <a
+              href="{{ url_for('main.index') }}"
+              class="flex items-center space-x-2 flex-shrink-0"
+              data-tooltip="Retour à l'accueil"
+            >
+              <img
+                src="{{ url_for('static', filename='assets/favicon.ico') }}"
+                alt="Logo DEFITECH"
+                class="w-8 h-8 sm:w-10 sm:h-10 rounded-full shadow-md"
+              />
+              <span
+                class="font-bold text-blue-600 text-base sm:text-lg tracking-wide hidden xs:inline"
+                >DEFITECH</span
+              >
+            </a>
 
-                    {% if current_user.is_authenticated %}
-                    <div class="flex items-center space-x-3 sm:space-x-4 min-w-0">
-                        <a href="{% if current_user.role == 'admin' %}{{ url_for('admin.dashboard') }}{% elif current_user.role == 'enseignant' %}{{ url_for('enseignant_dashboard') }}{% elif current_user.role == 'etudiant' %}{{ url_for('etudiant_dashboard') }}{% else %}#{% endif %}"
-                            class="text-gray-700 hover:text-blue-600 transition font-medium text-xs sm:text-sm hidden md:flex whitespace-nowrap"
-                            data-tooltip="Accéder au tableau de bord">
-                            Tableau de bord
-                        </a>
-                        <span
-                            class="text-gray-600 text-xs sm:text-sm fadeIn sm:truncate hidden sm:block max-w-[150px] xl:max-w-[200px]">Bienvenue,
-                            {{ current_user.nom }} {{ current_user.prenom }}</span>
-                    </div>
-                    {% endif %}
-                </div>
+            {% if current_user.is_authenticated %}
+            <div class="flex items-center space-x-3 sm:space-x-4 min-w-0">
+              <a
+                href="{% if current_user.role == 'admin' %}{{ url_for('admin.dashboard') }}{% elif current_user.role == 'enseignant' %}{{ url_for('teachers.dashboard') }}{% elif current_user.role == 'etudiant' %}{{ url_for('students.dashboard') }}{% else %}#{% endif %}"
+                class="text-gray-700 hover:text-blue-600 transition font-medium text-xs sm:text-sm hidden md:flex whitespace-nowrap"
+                data-tooltip="Accéder au tableau de bord"
+              >
+                Tableau de bord
+              </a>
+              <span
+                class="text-gray-600 text-xs sm:text-sm fadeIn sm:truncate hidden sm:block max-w-[150px] xl:max-w-[200px]"
+                >Bienvenue, {{ current_user.nom }} {{ current_user.prenom
+                }}</span
+              >
+            </div>
+            {% endif %}
+          </div>
 
-                <!-- Actions et menu utilisateur -->
-                <div class="flex items-center space-x-2 sm:space-x-4">
-                    {% if current_user.is_authenticated %}
-                    <a href="{{ url_for('suggestions') }}"
-                        class="bg-yellow-500 hover:bg-yellow-600 text-white px-2 py-2 sm:px-4 rounded-lg shadow-sm transition-all duration-300 flex items-center gap-1 sm:gap-2 text-xs sm:text-sm font-medium"
-                        data-tooltip="Partagez vos idées et suggestions">
-                        <span class="hidden sm:inline">Boîte à suggestion</span>
-                        <i class="fas fa-lightbulb text-xs sm:text-sm"></i>
-                    </a>
+          <!-- Actions et menu utilisateur -->
+          <div class="flex items-center space-x-2 sm:space-x-4">
+            {% if current_user.is_authenticated %}
+            <a
+              href="{{ url_for('main.suggestions') }}"
+              class="bg-yellow-500 hover:bg-yellow-600 text-white px-2 py-2 sm:px-4 rounded-lg shadow-sm transition-all duration-300 flex items-center gap-1 sm:gap-2 text-xs sm:text-sm font-medium"
+              data-tooltip="Partagez vos idées et suggestions"
+            >
+              <span class="hidden sm:inline">Boîte à suggestion</span>
+              <i class="fas fa-lightbulb text-xs sm:text-sm"></i>
+            </a>
 
-                    <!-- Bouton PWA -->
-                    <button
-                        class="bg-blue-600 hover:bg-blue-700 text-white px-2 py-2 sm:px-4 rounded-lg shadow-sm transition-all duration-300 flex items-center gap-1 sm:gap-2 text-xs sm:text-sm font-medium"
-                        id="pwaBtn" data-tooltip="Installer l'application sur votre appareil">
-                        <span class="hidden sm:inline">Installer</span>
-                        <i class="fas fa-download text-xs sm:text-sm"></i>
-                    </button>
+            <!-- Bouton PWA -->
+            <button
+              class="bg-blue-600 hover:bg-blue-700 text-white px-2 py-2 sm:px-4 rounded-lg shadow-sm transition-all duration-300 flex items-center gap-1 sm:gap-2 text-xs sm:text-sm font-medium"
+              id="pwaBtn"
+              data-tooltip="Installer l'application sur votre appareil"
+            >
+              <span class="hidden sm:inline">Installer</span>
+              <i class="fas fa-download text-xs sm:text-sm"></i>
+            </button>
 
-                    {% include 'components/notification_center.html' %}
+            {% include 'components/notification_center.html' %}
 
-                    <!-- Menu utilisateur -->
-                    <div class="relative">
-                        <button type="button" id="user-menu-button"
-                            class="bg-white hover:bg-gray-50 rounded-full flex items-center justify-center w-9 h-9 shadow-sm border border-gray-200 text-blue-600 transition"
-                            data-tooltip="Menu utilisateur">
-                            <img src="{{ url_for('static', filename='uploads/profile_pics/' + (current_user.photo_profil or 'default.png')) }}"
-                                alt="Profil" class="rounded-full shadow-md w-full h-full object-cover" />
-                        </button>
-                        <div id="user-menu"
-                            class="hidden absolute right-0 mt-2 w-48 rounded-lg bg-white backdrop-blur-md shadow-lg ring-1 ring-gray-200 overflow-hidden">
-                            <a href="{{ url_for('main.index') }}"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 transition">
-                                <i class="fas fa-home mr-2 text-blue-600"></i>Accueil
-                            </a>
-                            <a href="{{ url_for('profile.mon_profil') }}"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 transition">
-                                <i class="fas fa-user-circle mr-2 text-blue-500"></i>
-                                Mon profil
-                            </a>
-                            <a href="{{ url_for('resources.index') }}"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 transition">
-                                <i class="fas fa-book mr-2 text-green-600"></i>
-                                Ressources
-                            </a>
-                            {% if current_user.role == 'etudiant' %}
-                            <a href="{{ url_for('study_planner.index') }}"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 transition">
-                                <i class="fas fa-calendar-alt mr-2 text-indigo-600"></i>Planificateur
-                            </a>
-                            {% endif %}
-                            <a href="{{ url_for('chat.user_chat') }}"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 transition">
-                                <i class="fas fa-comments mr-2 text-blue-600"></i>Chat
-                            </a>
+            <!-- Menu utilisateur -->
+            <div class="relative">
+              <button
+                type="button"
+                id="user-menu-button"
+                class="bg-white hover:bg-gray-50 rounded-full flex items-center justify-center w-9 h-9 shadow-sm border border-gray-200 text-blue-600 transition"
+                data-tooltip="Menu utilisateur"
+              >
+                <img
+                  src="{{ url_for('static', filename='uploads/profile_pics/' + (current_user.photo_profil or 'default.png')) }}"
+                  alt="Profil"
+                  class="rounded-full shadow-md w-full h-full object-cover"
+                />
+              </button>
+              <div
+                id="user-menu"
+                class="hidden absolute right-0 mt-2 w-48 rounded-lg bg-white backdrop-blur-md shadow-lg ring-1 ring-gray-200 overflow-hidden"
+              >
+                <a
+                  href="{{ url_for('main.index') }}"
+                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 transition"
+                >
+                  <i class="fas fa-home mr-2 text-blue-600"></i>Accueil
+                </a>
+                <a
+                  href="{{ url_for('profile.mon_profil') }}"
+                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 transition"
+                >
+                  <i class="fas fa-user-circle mr-2 text-blue-500"></i>
+                  Mon profil
+                </a>
+                <a
+                  href="{{ url_for('resources.index') }}"
+                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 transition"
+                >
+                  <i class="fas fa-book mr-2 text-green-600"></i>
+                  Ressources
+                </a>
+                {% if current_user.role == 'etudiant' %}
+                <a
+                  href="{{ url_for('study_planner.index') }}"
+                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 transition"
+                >
+                  <i class="fas fa-calendar-alt mr-2 text-indigo-600"></i
+                  >Planificateur
+                </a>
+                {% endif %}
+                <a
+                  href="{{ url_for('chat.user_chat') }}"
+                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 transition"
+                >
+                  <i class="fas fa-comments mr-2 text-blue-600"></i>Chat
+                </a>
 
-                            <!-- <a href="{{ url_for('main.defAI_chat') }}"
+                <!-- <a href="{{ url_for('main.defAI_chat') }}"
                                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 transition">
                                 <i class="fas fa-robot mr-2 text-blue-600"></i>DefAI
                             </a> -->
 
-                            <a href="{{ url_for('image_search') }}"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 transition">
-                                <i class="fas fa-image mr-2 text-green-600"></i>Image Seeker
-                            </a>
+                <a
+                  href="{{ url_for('main.image_search') }}"
+                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 transition"
+                >
+                  <i class="fas fa-image mr-2 text-green-600"></i>Image Seeker
+                </a>
 
-                            <a href="{{ url_for('career_craft.career_craft') }}"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 transition">
-                                <i class="fas fa-briefcase mr-2 text-green-600"></i>Career Craft
-                            </a>
+                <a
+                  href="{{ url_for('career_craft.career_craft') }}"
+                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 transition"
+                >
+                  <i class="fas fa-briefcase mr-2 text-green-600"></i>Career
+                  Craft
+                </a>
 
-                            <a href="{{ url_for('study_buddy.index') }}"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 transition">
-                                <i class="fas fa-book-reader mr-2 text-blue-600"></i>Study Buddy
-                            </a>
+                <a
+                  href="{{ url_for('study_buddy.index') }}"
+                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 transition"
+                >
+                  <i class="fas fa-book-reader mr-2 text-blue-600"></i>Study
+                  Buddy
+                </a>
 
-                            {% if matiere is defined and matiere %}
-                            <a href="{{ url_for('room', course_id=matiere.id) }}"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-green-50 transition">
-                                <i class="fas fa-video mr-2 text-green-600"></i>Meet
-                            </a>
-                            {% endif %}
-                            <a href="{{ url_for('bug_reports.list_bug_reports') }}"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 transition">
-                                <i class="fas fa-bug mr-2 text-yellow-500"></i>
-                                Rapports de bugs
-                            </a>
-                            <a href="{{ url_for('roadmap') }}"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 transition">
-                                <i class="fas fa-road mr-2 text-blue-600"></i>Roadmap
-                            </a>
-                            <a href="/static/assets/defitech.pdf" download="fichier d'inscription à defitech"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 transition">
-                                <i class="fas fa-download mr-2 text-blue-600"></i>Fichier d'inscription
-                            </a>
-                            <a href="{{ url_for('auth.logout') }}"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-red-50 transition">
-                                <i class="fas fa-sign-out-alt mr-2 text-red-600"></i>Déconnexion
-                            </a>
-                        </div>
-                    </div>
-                    {% else %}
-                    <!-- Non authentifié -->
-                    <div class="flex items-center space-x-2 sm:space-x-3">
-                        <a href="{{ url_for('auth.login') }}"
-                            class="text-gray-700 hover:text-blue-600 font-medium text-xs sm:text-sm transition whitespace-nowrap">
-                            Connexion
-                        </a>
-                        <a href="{{ url_for('auth.register') }}"
-                            class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 sm:px-4 rounded-lg text-xs sm:text-sm font-medium shadow-sm transition whitespace-nowrap">
-                            Inscription
-                        </a>
-                    </div>
-                    {% endif %}
-
-                    <!-- Indicateur de connexion -->
-                    <div id="connection-status" class="flex items-center space-x-2 ml-2"
-                        data-tooltip="Statut de la connexion">
-                        <div id="connection-indicator" class="w-2 h-2 rounded-full bg-green-500 shadow-sm"></div>
-                        <span id="connection-text" class="text-xs text-gray-600 hidden xl:inline whitespace-nowrap">En
-                            ligne</span>
-                    </div>
-                </div>
+                {% if matiere is defined and matiere %}
+                <a
+                  href="{{ url_for('room', course_id=matiere.id) }}"
+                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-green-50 transition"
+                >
+                  <i class="fas fa-video mr-2 text-green-600"></i>Meet
+                </a>
+                {% endif %}
+                <a
+                  href="{{ url_for('bug_reports.list_bug_reports') }}"
+                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 transition"
+                >
+                  <i class="fas fa-bug mr-2 text-yellow-500"></i>
+                  Rapports de bugs
+                </a>
+                <a
+                  href="{{ url_for('main.roadmap') }}"
+                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 transition"
+                >
+                  <i class="fas fa-road mr-2 text-blue-600"></i>Roadmap
+                </a>
+                <a
+                  href="/static/assets/defitech.pdf"
+                  download="fichier d'inscription à defitech"
+                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 transition"
+                >
+                  <i class="fas fa-download mr-2 text-blue-600"></i>Fichier
+                  d'inscription
+                </a>
+                <a
+                  href="{{ url_for('auth.logout') }}"
+                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-red-50 transition"
+                >
+                  <i class="fas fa-sign-out-alt mr-2 text-red-600"></i
+                  >Déconnexion
+                </a>
+              </div>
             </div>
-        </nav>
+            {% else %}
+            <!-- Non authentifié -->
+            <div class="flex items-center space-x-2 sm:space-x-3">
+              <a
+                href="{{ url_for('auth.login') }}"
+                class="text-gray-700 hover:text-blue-600 font-medium text-xs sm:text-sm transition whitespace-nowrap"
+              >
+                Connexion
+              </a>
+              <a
+                href="{{ url_for('auth.register') }}"
+                class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 sm:px-4 rounded-lg text-xs sm:text-sm font-medium shadow-sm transition whitespace-nowrap"
+              >
+                Inscription
+              </a>
+            </div>
+            {% endif %}
+
+            <!-- Indicateur de connexion -->
+            <div
+              id="connection-status"
+              class="flex items-center space-x-2 ml-2"
+              data-tooltip="Statut de la connexion"
+            >
+              <div
+                id="connection-indicator"
+                class="w-2 h-2 rounded-full bg-green-500 shadow-sm"
+              ></div>
+              <span
+                id="connection-text"
+                class="text-xs text-gray-600 hidden xl:inline whitespace-nowrap"
+                >En ligne</span
+              >
+            </div>
+          </div>
+        </div>
+      </nav>
     </header>
 
     <!-- Notifications globales -->
-    {% set global_notifications = get_global_notifications() %}
-    {% if global_notifications %}
-    <div id="global-notifications"
-        class="fixed top-16 {% if current_user.is_authenticated and current_user.role == 'admin' %}left-64{% else %}left-0{% endif %} right-0 z-[9997] bg-white border-b border-gray-200">
-        {% for notification in global_notifications %}
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 {{ notification.type_css_class }} {{ notification.priorite_css_class }}"
-            data-notification-id="{{ notification.id }}">
-            <div class="flex items-start space-x-3">
-                <div class="flex-shrink-0 mt-0.5">
-                    <i class="{{ notification.type_icon }} text-lg"></i>
-                </div>
-                <div class="flex-1 min-w-0">
-                    <div class="flex items-center space-x-2 flex-wrap">
-                        <h4 class="font-semibold text-sm">
-                            {{ notification.titre }}
-                        </h4>
-                        {% if notification.priorite >= 3 %}
-                        <span
-                            class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium {% if notification.priorite == 3 %}bg-orange-100 text-orange-800{% else %}bg-red-100 text-red-800{% endif %}">
-                            {% if notification.priorite == 3 %}Élevé{% else %}Critique{% endif %}
-                        </span>
-                        {% endif %}
-                    </div>
-                    <p class="text-sm mt-1">
-                        {{ notification.message | safe }}
-                    </p>
-                    {% if notification.date_expiration %}
-                    <div class="flex items-center space-x-2 mt-2">
-                        <span class="text-xs text-gray-500">
-                            <i class="fas fa-clock mr-1"></i>
-                            Expire dans {{ (notification.date_expiration -
-                            global_notifications_date_now).total_seconds() // 3600 | int }}h
-                        </span>
-                    </div>
-                    {% endif %}
-                </div>
-                <div class="flex-shrink-0">
-                    <button onclick="dismissNotification({{ notification.id }})"
-                        class="text-gray-400 hover:text-gray-600 p-1 transition-colors"
-                        aria-label="Fermer cette notification" data-tooltip="Fermer">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
+    {% set global_notifications = get_global_notifications() %} {% if
+    global_notifications %}
+    <div
+      id="global-notifications"
+      class="fixed top-16 {% if current_user.is_authenticated and current_user.role == 'admin' %}left-64{% else %}left-0{% endif %} right-0 z-[9997] bg-white border-b border-gray-200"
+    >
+      {% for notification in global_notifications %}
+      <div
+        class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 {{ notification.type_css_class }} {{ notification.priorite_css_class }}"
+        data-notification-id="{{ notification.id }}"
+      >
+        <div class="flex items-start space-x-3">
+          <div class="flex-shrink-0 mt-0.5">
+            <i class="{{ notification.type_icon }} text-lg"></i>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center space-x-2 flex-wrap">
+              <h4 class="font-semibold text-sm">{{ notification.titre }}</h4>
+              {% if notification.priorite >= 3 %}
+              <span
+                class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium {% if notification.priorite == 3 %}bg-orange-100 text-orange-800{% else %}bg-red-100 text-red-800{% endif %}"
+              >
+                {% if notification.priorite == 3 %}Élevé{% else %}Critique{%
+                endif %}
+              </span>
+              {% endif %}
             </div>
+            <p class="text-sm mt-1">{{ notification.message | safe }}</p>
+            {% if notification.date_expiration %}
+            <div class="flex items-center space-x-2 mt-2">
+              <span class="text-xs text-gray-500">
+                <i class="fas fa-clock mr-1"></i>
+                Expire dans {{ (notification.date_expiration -
+                global_notifications_date_now).total_seconds() // 3600 | int }}h
+              </span>
+            </div>
+            {% endif %}
+          </div>
+          <div class="flex-shrink-0">
+            <button
+              onclick="dismissNotification({{ notification.id }})"
+              class="text-gray-400 hover:text-gray-600 p-1 transition-colors"
+              aria-label="Fermer cette notification"
+              data-tooltip="Fermer"
+            >
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
         </div>
-        {% endfor %}
+      </div>
+      {% endfor %}
     </div>
     {% endif %}
 
     <!-- Contenu principal -->
     <main class="flex-grow w-full pt-20 bg-gray-50">
-        <!-- Messages flash -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            {% for category, message in messages %}
-            <div
-                class="rounded-lg p-3 sm:p-4 mb-3 sm:mb-4 shadow-sm transition-all duration-300 {% if category == 'error' %}bg-red-50 text-red-700 border border-red-200{% elif category == 'success' %}bg-green-50 text-green-700 border border-green-200{% else %}bg-blue-50 text-blue-700 border border-blue-200{% endif %}">
-                <div class="flex items-center space-x-2">
-                    {% if category == 'error' %}
-                    <i class="fas fa-exclamation-circle flex-shrink-0"></i>
-                    {% elif category == 'success' %}
-                    <i class="fas fa-check-circle flex-shrink-0"></i>
-                    {% else %}
-                    <i class="fas fa-info-circle flex-shrink-0"></i>
-                    {% endif %}
-                    <p class="text-xs sm:text-sm font-medium">
-                        {{ message }}
-                    </p>
-                </div>
-            </div>
-            {% endfor %}
+      <!-- Messages flash -->
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if
+      messages %}
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        {% for category, message in messages %}
+        <div
+          class="rounded-lg p-3 sm:p-4 mb-3 sm:mb-4 shadow-sm transition-all duration-300 {% if category == 'error' %}bg-red-50 text-red-700 border border-red-200{% elif category == 'success' %}bg-green-50 text-green-700 border border-green-200{% else %}bg-blue-50 text-blue-700 border border-blue-200{% endif %}"
+        >
+          <div class="flex items-center space-x-2">
+            {% if category == 'error' %}
+            <i class="fas fa-exclamation-circle flex-shrink-0"></i>
+            {% elif category == 'success' %}
+            <i class="fas fa-check-circle flex-shrink-0"></i>
+            {% else %}
+            <i class="fas fa-info-circle flex-shrink-0"></i>
+            {% endif %}
+            <p class="text-xs sm:text-sm font-medium">{{ message }}</p>
+          </div>
         </div>
-        {% endif %}
-        {% endwith %}
-        {% block content %}{% endblock %}
+        {% endfor %}
+      </div>
+      {% endif %} {% endwith %} {% block content %}{% endblock %}
     </main>
 
-    <button id="defaiBtn" onclick="window.location.href='/ai/chat'" data-tooltip="Votre assistant intelligent DefAI"
-        class="w-12 h-12 z-[9996] rounded-full outline-none fixed bottom-4 right-4 shadow-lg hover:scale-110 transition-all duration-150">
-        <img src="{{ url_for('static', filename='assets/defai.png') }}" alt="DefAI Logo"
-            class="w-full h-full rounded-full">
+    <button
+      id="defaiBtn"
+      onclick="window.location.href='/ai/chat'"
+      data-tooltip="Votre assistant intelligent DefAI"
+      class="w-12 h-12 z-[9996] rounded-full outline-none fixed bottom-4 right-4 shadow-lg hover:scale-110 transition-all duration-150"
+    >
+      <img
+        src="{{ url_for('static', filename='assets/defai.png') }}"
+        alt="DefAI Logo"
+        class="w-full h-full rounded-full"
+      />
     </button>
 
     <!-- Pied de page -->
-    <footer class="bg-white border-t border-gray-200 mt-auto w-full flex flex-col items-center gap-2">
-        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 text-center">
-            <p class="text-xs sm:text-sm text-gray-500">
-                &copy; {{ now.year }}
-                <span class="text-blue-600 font-semibold">DEFITECH</span>.
-                Tous droits réservés.
-            </p>
+    <footer
+      class="bg-white border-t border-gray-200 mt-auto w-full flex flex-col items-center gap-2"
+    >
+      <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 text-center">
+        <p class="text-xs sm:text-sm text-gray-500">
+          &copy; {{ now.year }}
+          <span class="text-blue-600 font-semibold">DEFITECH</span>. Tous droits
+          réservés.
+        </p>
+      </div>
+      <div class="flex items-center justify-center gap-2 pb-4">
+        <div class="max-w-7xl mx-auto text-center">
+          <a
+            href="{{ url_for('main.confidentialite') }}"
+            class="text-xs sm:text-sm text-gray-500 hover:text-blue-500"
+          >
+            <i class="fas fa-shield-alt mr-2 text-blue-600"></i> Politique de
+            Confidentialité
+          </a>
         </div>
-        <div class="flex items-center justify-center gap-2 pb-4">
-            <div class="max-w-7xl mx-auto text-center">
-                <a href="{{ url_for('confidentialite') }}" class="text-xs sm:text-sm text-gray-500 hover:text-blue-500">
-                    <i class="fas fa-shield-alt mr-2 text-blue-600"></i> Politique de Confidentialité
-                </a>
-            </div>
-            <div class="max-w-7xl mx-auto text-center">
-                <a href="{{ url_for('mentions_legales') }}"
-                    class="text-xs sm:text-sm text-gray-500 hover:text-blue-500">
-                    <i class="fas fa-gavel mr-2 text-blue-600"></i> Mentions Légales
-                </a>
-            </div>
+        <div class="max-w-7xl mx-auto text-center">
+          <a
+            href="{{ url_for('main.mentions_legales') }}"
+            class="text-xs sm:text-sm text-gray-500 hover:text-blue-500"
+          >
+            <i class="fas fa-gavel mr-2 text-blue-600"></i> Mentions Légales
+          </a>
         </div>
+      </div>
     </footer>
 
     <!-- Scripts -->
     <script>
-        // ==================== SYSTÈME DE TOOLTIPS PERSONNALISÉS ====================
-        function initTooltips() {
-            const tooltip = document.getElementById('customTooltip');
-            if (!tooltip) return;
+      // ==================== SYSTÈME DE TOOLTIPS PERSONNALISÉS ====================
+      function initTooltips() {
+        const tooltip = document.getElementById("customTooltip");
+        if (!tooltip) return;
 
-            let hideTimeout;
-            let currentTarget = null;
+        let hideTimeout;
+        let currentTarget = null;
 
-            function showTooltip(element, text) {
-                if (!text) return;
+        function showTooltip(element, text) {
+          if (!text) return;
 
-                clearTimeout(hideTimeout);
-                currentTarget = element;
+          clearTimeout(hideTimeout);
+          currentTarget = element;
 
-                tooltip.textContent = text;
-                tooltip.classList.add('show');
+          tooltip.textContent = text;
+          tooltip.classList.add("show");
 
-                positionTooltip(element);
-            }
-
-            function hideTooltip() {
-                hideTimeout = setTimeout(() => {
-                    tooltip.classList.remove('show');
-                    currentTarget = null;
-                }, 100);
-            }
-
-            function positionTooltip(element) {
-                const rect = element.getBoundingClientRect();
-                const tooltipRect = tooltip.getBoundingClientRect();
-
-                let left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
-                let top = rect.top - tooltipRect.height - 10;
-
-                // Ajuster si sort de l'écran
-                if (left < 10) left = 10;
-                if (left + tooltipRect.width > window.innerWidth - 10) {
-                    left = window.innerWidth - tooltipRect.width - 10;
-                }
-
-                if (top < 10) {
-                    top = rect.bottom + 10;
-                    tooltip.style.transform = 'translateY(0)';
-                    // Inverser la flèche
-                    tooltip.style.setProperty('--arrow-position', 'top');
-                } else {
-                    tooltip.style.removeProperty('--arrow-position');
-                }
-
-                tooltip.style.left = `${left}px`;
-                tooltip.style.top = `${top}px`;
-            }
-
-            // Attacher les événements à tous les éléments avec data-tooltip
-            document.addEventListener('mouseover', (e) => {
-                const element = e.target.closest('[data-tooltip]');
-                if (element) {
-                    const tooltipText = element.getAttribute('data-tooltip');
-                    showTooltip(element, tooltipText);
-                }
-            });
-
-            document.addEventListener('mouseout', (e) => {
-                const element = e.target.closest('[data-tooltip]');
-                if (element) {
-                    hideTooltip();
-                }
-            });
-
-            // Repositionner lors du scroll ou resize
-            let repositionTimeout;
-            window.addEventListener('scroll', () => {
-                if (currentTarget) {
-                    clearTimeout(repositionTimeout);
-                    repositionTimeout = setTimeout(() => {
-                        positionTooltip(currentTarget);
-                    }, 10);
-                }
-            }, { passive: true });
-
-            window.addEventListener('resize', () => {
-                if (currentTarget) {
-                    positionTooltip(currentTarget);
-                }
-            });
+          positionTooltip(element);
         }
 
-        // ==================== INITIALISATION ====================
-        document.addEventListener("DOMContentLoaded", () => {
-            // Initialiser les tooltips
-            initTooltips();
+        function hideTooltip() {
+          hideTimeout = setTimeout(() => {
+            tooltip.classList.remove("show");
+            currentTarget = null;
+          }, 100);
+        }
 
-            // Bouton DefAI draggable
-            initDefAIButton();
+        function positionTooltip(element) {
+          const rect = element.getBoundingClientRect();
+          const tooltipRect = tooltip.getBoundingClientRect();
 
-            // Menu utilisateur
-            initUserMenu();
+          let left = rect.left + rect.width / 2 - tooltipRect.width / 2;
+          let top = rect.top - tooltipRect.height - 10;
 
-            // PWA et gestion du mode hors ligne
-            initPWA();
-            initConnectionStatus();
+          // Ajuster si sort de l'écran
+          if (left < 10) left = 10;
+          if (left + tooltipRect.width > window.innerWidth - 10) {
+            left = window.innerWidth - tooltipRect.width - 10;
+          }
 
-            // Notifications globales
-            initGlobalNotifications();
+          if (top < 10) {
+            top = rect.bottom + 10;
+            tooltip.style.transform = "translateY(0)";
+            // Inverser la flèche
+            tooltip.style.setProperty("--arrow-position", "top");
+          } else {
+            tooltip.style.removeProperty("--arrow-position");
+          }
 
-            // Curseur personnalisé
-            initCustomCursor();
+          tooltip.style.left = `${left}px`;
+          tooltip.style.top = `${top}px`;
+        }
+
+        // Attacher les événements à tous les éléments avec data-tooltip
+        document.addEventListener("mouseover", (e) => {
+          const element = e.target.closest("[data-tooltip]");
+          if (element) {
+            const tooltipText = element.getAttribute("data-tooltip");
+            showTooltip(element, tooltipText);
+          }
         });
 
-        // ==================== BOUTON DEFAI DRAGGABLE ====================
-        function initDefAIButton() {
-            const btn = document.getElementById("defaiBtn");
-            if (!btn) return;
+        document.addEventListener("mouseout", (e) => {
+          const element = e.target.closest("[data-tooltip]");
+          if (element) {
+            hideTooltip();
+          }
+        });
 
-            let dragging = false;
-            let offsetX = 0;
-            let offsetY = 0;
-            let hasMoved = false;
-
-            function startDrag(x, y) {
-                dragging = true;
-                hasMoved = false;
-                offsetX = x - btn.offsetLeft;
-                offsetY = y - btn.offsetTop;
-                btn.style.transition = "none";
-                btn.style.cursor = "grabbing";
+        // Repositionner lors du scroll ou resize
+        let repositionTimeout;
+        window.addEventListener(
+          "scroll",
+          () => {
+            if (currentTarget) {
+              clearTimeout(repositionTimeout);
+              repositionTimeout = setTimeout(() => {
+                positionTooltip(currentTarget);
+              }, 10);
             }
+          },
+          { passive: true }
+        );
 
-            function moveDrag(x, y) {
-                if (!dragging) return;
-                hasMoved = true;
+        window.addEventListener("resize", () => {
+          if (currentTarget) {
+            positionTooltip(currentTarget);
+          }
+        });
+      }
 
-                const newLeft = x - offsetX;
-                const newTop = y - offsetY;
+      // ==================== INITIALISATION ====================
+      document.addEventListener("DOMContentLoaded", () => {
+        // Initialiser les tooltips
+        initTooltips();
 
-                // Contraintes de position
-                const maxX = window.innerWidth - btn.offsetWidth;
-                const maxY = window.innerHeight - btn.offsetHeight;
+        // Bouton DefAI draggable
+        initDefAIButton();
 
-                btn.style.left = Math.max(0, Math.min(newLeft, maxX)) + "px";
-                btn.style.top = Math.max(0, Math.min(newTop, maxY)) + "px";
-            }
+        // Menu utilisateur
+        initUserMenu();
 
-            function endDrag() {
-                if (!dragging) return;
-                dragging = false;
-                btn.style.cursor = "grab";
-                btn.style.transition = "all 0.25s ease";
+        // PWA et gestion du mode hors ligne
+        initPWA();
+        initConnectionStatus();
 
-                if (hasMoved) {
-                    snapToCorner();
-                }
-            }
+        // Notifications globales
+        initGlobalNotifications();
 
-            function snapToCorner() {
-                const vw = window.innerWidth;
-                const vh = window.innerHeight;
-                const bw = btn.offsetWidth;
-                const bh = btn.offsetHeight;
+        // Curseur personnalisé
+        initCustomCursor();
+      });
 
-                const x = btn.offsetLeft;
-                const y = btn.offsetTop;
+      // ==================== BOUTON DEFAI DRAGGABLE ====================
+      function initDefAIButton() {
+        const btn = document.getElementById("defaiBtn");
+        if (!btn) return;
 
-                const corners = {
-                    tl: { x: 16, y: 80, dist: Math.hypot(x - 16, y - 80) },
-                    tr: { x: vw - bw - 16, y: 80, dist: Math.hypot(x - (vw - bw - 16), y - 80) },
-                    bl: { x: 16, y: vh - bh - 16, dist: Math.hypot(x - 16, y - (vh - bh - 16)) },
-                    br: { x: vw - bw - 16, y: vh - bh - 16, dist: Math.hypot(x - (vw - bw - 16), y - (vh - bh - 16)) }
-                };
+        let dragging = false;
+        let offsetX = 0;
+        let offsetY = 0;
+        let hasMoved = false;
 
-                const nearest = Object.values(corners).reduce((a, b) => a.dist < b.dist ? a : b);
-
-                btn.style.left = nearest.x + "px";
-                btn.style.top = nearest.y + "px";
-            }
-
-            // Événements souris
-            btn.addEventListener("mousedown", e => {
-                e.preventDefault();
-                startDrag(e.clientX, e.clientY);
-            });
-            document.addEventListener("mousemove", e => moveDrag(e.clientX, e.clientY));
-            document.addEventListener("mouseup", endDrag);
-
-            // Événements tactiles
-            btn.addEventListener("touchstart", e => {
-                const t = e.touches[0];
-                startDrag(t.clientX, t.clientY);
-            });
-
-            document.addEventListener("touchmove", e => {
-                const t = e.touches[0];
-                moveDrag(t.clientX, t.clientY);
-            }, { passive: true });
-
-            document.addEventListener("touchend", endDrag);
-
-            // Empêcher le clic si l'élément a été déplacé
-            btn.addEventListener("click", e => {
-                if (hasMoved) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                }
-            });
+        function startDrag(x, y) {
+          dragging = true;
+          hasMoved = false;
+          offsetX = x - btn.offsetLeft;
+          offsetY = y - btn.offsetTop;
+          btn.style.transition = "none";
+          btn.style.cursor = "grabbing";
         }
 
-        // ==================== MENU UTILISATEUR ====================
-        function initUserMenu() {
-            const userMenuButton = document.getElementById("user-menu-button");
-            const userMenu = document.getElementById("user-menu");
+        function moveDrag(x, y) {
+          if (!dragging) return;
+          hasMoved = true;
 
-            if (!userMenuButton || !userMenu) return;
+          const newLeft = x - offsetX;
+          const newTop = y - offsetY;
 
-            userMenuButton.addEventListener("click", (e) => {
-                e.stopPropagation();
-                userMenu.classList.toggle("hidden");
-            });
+          // Contraintes de position
+          const maxX = window.innerWidth - btn.offsetWidth;
+          const maxY = window.innerHeight - btn.offsetHeight;
 
-            // Fermer quand on clique ailleurs
-            document.addEventListener("click", (event) => {
-                if (!userMenu.contains(event.target) && !userMenuButton.contains(event.target)) {
-                    userMenu.classList.add("hidden");
-                }
-            });
+          btn.style.left = Math.max(0, Math.min(newLeft, maxX)) + "px";
+          btn.style.top = Math.max(0, Math.min(newTop, maxY)) + "px";
         }
 
-        // ==================== PWA ====================
-        function initPWA() {
-            // Vérifier si l'application est déjà installée
-            if (isAppInstalled()) {
-                hideInstallButton();
-                return;
-            }
+        function endDrag() {
+          if (!dragging) return;
+          dragging = false;
+          btn.style.cursor = "grab";
+          btn.style.transition = "all 0.25s ease";
 
-            if ("serviceWorker" in navigator) {
-                window.addEventListener("load", () => {
-                    navigator.serviceWorker
-                        .register("/static/js/sw.js")
-                        .then((registration) => {
-                            console.log("Service Worker enregistré avec succès:", registration);
+          if (hasMoved) {
+            snapToCorner();
+          }
+        }
 
-                            registration.addEventListener("updatefound", () => {
-                                const newWorker = registration.installing;
-                                if (newWorker) {
-                                    newWorker.addEventListener("statechange", () => {
-                                        if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
-                                            showUpdateNotification();
-                                        }
-                                    });
-                                }
-                            });
-                        })
-                        .catch((error) => {
-                            console.log("Erreur lors de l'enregistrement du Service Worker:", error);
-                        });
+        function snapToCorner() {
+          const vw = window.innerWidth;
+          const vh = window.innerHeight;
+          const bw = btn.offsetWidth;
+          const bh = btn.offsetHeight;
+
+          const x = btn.offsetLeft;
+          const y = btn.offsetTop;
+
+          const corners = {
+            tl: { x: 16, y: 80, dist: Math.hypot(x - 16, y - 80) },
+            tr: {
+              x: vw - bw - 16,
+              y: 80,
+              dist: Math.hypot(x - (vw - bw - 16), y - 80),
+            },
+            bl: {
+              x: 16,
+              y: vh - bh - 16,
+              dist: Math.hypot(x - 16, y - (vh - bh - 16)),
+            },
+            br: {
+              x: vw - bw - 16,
+              y: vh - bh - 16,
+              dist: Math.hypot(x - (vw - bw - 16), y - (vh - bh - 16)),
+            },
+          };
+
+          const nearest = Object.values(corners).reduce((a, b) =>
+            a.dist < b.dist ? a : b
+          );
+
+          btn.style.left = nearest.x + "px";
+          btn.style.top = nearest.y + "px";
+        }
+
+        // Événements souris
+        btn.addEventListener("mousedown", (e) => {
+          e.preventDefault();
+          startDrag(e.clientX, e.clientY);
+        });
+        document.addEventListener("mousemove", (e) =>
+          moveDrag(e.clientX, e.clientY)
+        );
+        document.addEventListener("mouseup", endDrag);
+
+        // Événements tactiles
+        btn.addEventListener("touchstart", (e) => {
+          const t = e.touches[0];
+          startDrag(t.clientX, t.clientY);
+        });
+
+        document.addEventListener(
+          "touchmove",
+          (e) => {
+            const t = e.touches[0];
+            moveDrag(t.clientX, t.clientY);
+          },
+          { passive: true }
+        );
+
+        document.addEventListener("touchend", endDrag);
+
+        // Empêcher le clic si l'élément a été déplacé
+        btn.addEventListener("click", (e) => {
+          if (hasMoved) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+        });
+      }
+
+      // ==================== MENU UTILISATEUR ====================
+      function initUserMenu() {
+        const userMenuButton = document.getElementById("user-menu-button");
+        const userMenu = document.getElementById("user-menu");
+
+        if (!userMenuButton || !userMenu) return;
+
+        userMenuButton.addEventListener("click", (e) => {
+          e.stopPropagation();
+          userMenu.classList.toggle("hidden");
+        });
+
+        // Fermer quand on clique ailleurs
+        document.addEventListener("click", (event) => {
+          if (
+            !userMenu.contains(event.target) &&
+            !userMenuButton.contains(event.target)
+          ) {
+            userMenu.classList.add("hidden");
+          }
+        });
+      }
+
+      // ==================== PWA ====================
+      function initPWA() {
+        // Vérifier si l'application est déjà installée
+        if (isAppInstalled()) {
+          hideInstallButton();
+          return;
+        }
+
+        if ("serviceWorker" in navigator) {
+          window.addEventListener("load", () => {
+            navigator.serviceWorker
+              .register("/static/js/sw.js")
+              .then((registration) => {
+                console.log(
+                  "Service Worker enregistré avec succès:",
+                  registration
+                );
+
+                registration.addEventListener("updatefound", () => {
+                  const newWorker = registration.installing;
+                  if (newWorker) {
+                    newWorker.addEventListener("statechange", () => {
+                      if (
+                        newWorker.state === "installed" &&
+                        navigator.serviceWorker.controller
+                      ) {
+                        showUpdateNotification();
+                      }
+                    });
+                  }
                 });
+              })
+              .catch((error) => {
+                console.log(
+                  "Erreur lors de l'enregistrement du Service Worker:",
+                  error
+                );
+              });
+          });
+        }
+
+        let deferredPrompt;
+        window.addEventListener("beforeinstallprompt", (e) => {
+          e.preventDefault();
+          deferredPrompt = e;
+          showInstallButton(deferredPrompt);
+        });
+
+        window.addEventListener("appinstalled", () => {
+          console.log("PWA installée avec succès");
+          hideInstallButton();
+        });
+      }
+
+      // Fonction pour vérifier si l'application est déjà installée
+      function isAppInstalled() {
+        // Vérifier plusieurs critères pour déterminer si l'app est installée
+        const criteria = [
+          // Vérifier si l'app est lancée en mode standalone
+          window.matchMedia("(display-mode: standalone)").matches,
+          // Vérifier si l'app est lancée depuis un écran d'accueil
+          window.navigator.standalone === true,
+          // Vérifier si l'app est en mode plein écran
+          document.referrer.includes("android-app://"),
+          // Vérifier si l'app est en mode PWA
+          window.location.search.includes("source=pwa"),
+        ];
+
+        return criteria.some((criterion) => criterion);
+      }
+
+      function showInstallButton(deferredPrompt) {
+        const pwaBtn = document.getElementById("pwaBtn");
+        if (pwaBtn) {
+          pwaBtn.addEventListener("click", () => {
+            if (deferredPrompt) {
+              deferredPrompt.prompt();
+              deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === "accepted") {
+                  console.log("Installation acceptée");
+                  hideInstallButton();
+                }
+                deferredPrompt = null;
+              });
             }
-
-            let deferredPrompt;
-            window.addEventListener("beforeinstallprompt", (e) => {
-                e.preventDefault();
-                deferredPrompt = e;
-                showInstallButton(deferredPrompt);
-            });
-
-            window.addEventListener("appinstalled", () => {
-                console.log("PWA installée avec succès");
-                hideInstallButton();
-            });
+          });
         }
+      }
 
-        // Fonction pour vérifier si l'application est déjà installée
-        function isAppInstalled() {
-            // Vérifier plusieurs critères pour déterminer si l'app est installée
-            const criteria = [
-                // Vérifier si l'app est lancée en mode standalone
-                window.matchMedia('(display-mode: standalone)').matches,
-                // Vérifier si l'app est lancée depuis un écran d'accueil
-                window.navigator.standalone === true,
-                // Vérifier si l'app est en mode plein écran
-                document.referrer.includes('android-app://'),
-                // Vérifier si l'app est en mode PWA
-                window.location.search.includes('source=pwa')
-            ];
-
-            return criteria.some(criterion => criterion);
+      function hideInstallButton() {
+        const pwaBtn = document.getElementById("pwaBtn");
+        if (pwaBtn) {
+          pwaBtn.style.display = "none";
         }
+      }
 
-        function showInstallButton(deferredPrompt) {
-            const pwaBtn = document.getElementById("pwaBtn");
-            if (pwaBtn) {
-                pwaBtn.addEventListener("click", () => {
-                    if (deferredPrompt) {
-                        deferredPrompt.prompt();
-                        deferredPrompt.userChoice.then((choiceResult) => {
-                            if (choiceResult.outcome === "accepted") {
-                                console.log("Installation acceptée");
-                                hideInstallButton();
-                            }
-                            deferredPrompt = null;
-                        });
-                    }
-                });
-            }
-        }
-
-        function hideInstallButton() {
-            const pwaBtn = document.getElementById("pwaBtn");
-            if (pwaBtn) {
-                pwaBtn.style.display = "none";
-            }
-        }
-
-        function showUpdateNotification() {
-            const notification = document.createElement("div");
-            notification.className = "fixed top-20 right-4 bg-blue-600 text-white p-4 rounded-lg shadow-lg z-[9999] transform translate-x-full transition-transform duration-300 max-w-xs";
-            notification.innerHTML = `
+      function showUpdateNotification() {
+        const notification = document.createElement("div");
+        notification.className =
+          "fixed top-20 right-4 bg-blue-600 text-white p-4 rounded-lg shadow-lg z-[9999] transform translate-x-full transition-transform duration-300 max-w-xs";
+        notification.innerHTML = `
                 <div class="flex items-center space-x-2">
                     <i class="fas fa-sync-alt"></i>
                     <span class="text-sm">Nouvelle version disponible</span>
@@ -734,56 +896,65 @@
                 </button>
             `;
 
-            document.body.appendChild(notification);
-            setTimeout(() => notification.classList.remove("translate-x-full"), 100);
-            setTimeout(() => {
-                notification.classList.add("translate-x-full");
-                setTimeout(() => notification.remove(), 300);
-            }, 10000);
+        document.body.appendChild(notification);
+        setTimeout(
+          () => notification.classList.remove("translate-x-full"),
+          100
+        );
+        setTimeout(() => {
+          notification.classList.add("translate-x-full");
+          setTimeout(() => notification.remove(), 300);
+        }, 10000);
+      }
+
+      function updateApp() {
+        if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+          navigator.serviceWorker.controller.postMessage({
+            type: "SKIP_WAITING",
+          });
+          window.location.reload();
+        }
+      }
+
+      // ==================== STATUT DE CONNEXION ====================
+      function initConnectionStatus() {
+        const indicator = document.getElementById("connection-indicator");
+        const text = document.getElementById("connection-text");
+
+        function updateConnectionStatus() {
+          if (navigator.onLine) {
+            indicator.className = "w-2 h-2 rounded-full bg-green-500 shadow-sm";
+            text.textContent = "En ligne";
+            text.className =
+              "text-xs text-gray-600 hidden xl:inline whitespace-nowrap";
+          } else {
+            indicator.className =
+              "w-2 h-2 rounded-full bg-red-500 animate-pulse shadow-sm";
+            text.textContent = "Hors ligne";
+            text.className =
+              "text-xs text-red-600 hidden xl:inline whitespace-nowrap";
+            showOfflineMessage();
+          }
         }
 
-        function updateApp() {
-            if (navigator.serviceWorker && navigator.serviceWorker.controller) {
-                navigator.serviceWorker.controller.postMessage({ type: "SKIP_WAITING" });
-                window.location.reload();
-            }
-        }
+        window.addEventListener("online", updateConnectionStatus);
+        window.addEventListener("offline", updateConnectionStatus);
+        updateConnectionStatus();
 
-        // ==================== STATUT DE CONNEXION ====================
-        function initConnectionStatus() {
-            const indicator = document.getElementById("connection-indicator");
-            const text = document.getElementById("connection-text");
-
-            function updateConnectionStatus() {
-                if (navigator.onLine) {
-                    indicator.className = "w-2 h-2 rounded-full bg-green-500 shadow-sm";
-                    text.textContent = "En ligne";
-                    text.className = "text-xs text-gray-600 hidden xl:inline whitespace-nowrap";
-                } else {
-                    indicator.className = "w-2 h-2 rounded-full bg-red-500 animate-pulse shadow-sm";
-                    text.textContent = "Hors ligne";
-                    text.className = "text-xs text-red-600 hidden xl:inline whitespace-nowrap";
-                    showOfflineMessage();
-                }
-            }
-
-            window.addEventListener("online", updateConnectionStatus);
-            window.addEventListener("offline", updateConnectionStatus);
+        setInterval(() => {
+          if (navigator.onLine) {
             updateConnectionStatus();
+          }
+        }, 30000);
+      }
 
-            setInterval(() => {
-                if (navigator.onLine) {
-                    updateConnectionStatus();
-                }
-            }, 30000);
-        }
+      function showOfflineMessage() {
+        if (document.querySelector(".offline-message")) return;
 
-        function showOfflineMessage() {
-            if (document.querySelector(".offline-message")) return;
-
-            const offlineMessage = document.createElement("div");
-            offlineMessage.className = "offline-message fixed top-20 left-1/2 transform -translate-x-1/2 bg-orange-500 text-white px-4 py-2 rounded-lg shadow-lg z-[9999] max-w-xs sm:max-w-sm";
-            offlineMessage.innerHTML = `
+        const offlineMessage = document.createElement("div");
+        offlineMessage.className =
+          "offline-message fixed top-20 left-1/2 transform -translate-x-1/2 bg-orange-500 text-white px-4 py-2 rounded-lg shadow-lg z-[9999] max-w-xs sm:max-w-sm";
+        offlineMessage.innerHTML = `
                 <div class="flex items-center space-x-2">
                     <i class="fas fa-wifi-slash flex-shrink-0"></i>
                     <span class="text-xs sm:text-sm">Mode hors ligne activé</span>
@@ -793,122 +964,144 @@
                 </div>
             `;
 
-            document.body.appendChild(offlineMessage);
-            setTimeout(() => {
-                if (offlineMessage.parentNode) {
-                    offlineMessage.remove();
-                }
-            }, 5000);
+        document.body.appendChild(offlineMessage);
+        setTimeout(() => {
+          if (offlineMessage.parentNode) {
+            offlineMessage.remove();
+          }
+        }, 5000);
+      }
+
+      // ==================== NOTIFICATIONS GLOBALES ====================
+      function initGlobalNotifications() {
+        setInterval(checkExpiredNotifications, 60000);
+
+        if (!localStorage.getItem("dismissedNotifications")) {
+          localStorage.setItem("dismissedNotifications", JSON.stringify([]));
         }
 
-        // ==================== NOTIFICATIONS GLOBALES ====================
-        function initGlobalNotifications() {
-            setInterval(checkExpiredNotifications, 60000);
+        hideDismissedNotifications();
+      }
 
-            if (!localStorage.getItem("dismissedNotifications")) {
-                localStorage.setItem("dismissedNotifications", JSON.stringify([]));
-            }
+      function dismissNotification(notificationId) {
+        const dismissed = JSON.parse(
+          localStorage.getItem("dismissedNotifications") || "[]"
+        );
+        dismissed.push(notificationId);
+        localStorage.setItem(
+          "dismissedNotifications",
+          JSON.stringify(dismissed)
+        );
 
-            hideDismissedNotifications();
-        }
+        const notification = document.querySelector(
+          `[data-notification-id="${notificationId}"]`
+        );
+        if (notification) {
+          notification.style.transition = "all 0.3s ease-in-out";
+          notification.style.opacity = "0";
+          notification.style.maxHeight = "0";
+          notification.style.padding = "0";
+          notification.style.margin = "0";
 
-        function dismissNotification(notificationId) {
-            const dismissed = JSON.parse(localStorage.getItem("dismissedNotifications") || "[]");
-            dismissed.push(notificationId);
-            localStorage.setItem("dismissedNotifications", JSON.stringify(dismissed));
-
-            const notification = document.querySelector(`[data-notification-id="${notificationId}"]`);
-            if (notification) {
-                notification.style.transition = "all 0.3s ease-in-out";
-                notification.style.opacity = "0";
-                notification.style.maxHeight = "0";
-                notification.style.padding = "0";
-                notification.style.margin = "0";
-
-                setTimeout(() => {
-                    notification.remove();
-                    checkEmptyNotifications();
-                }, 300);
-            }
-        }
-
-        function checkExpiredNotifications() {
-            const now = new Date();
-            const notifications = document.querySelectorAll("[data-expiration]");
-
-            notifications.forEach((notification) => {
-                const expiration = new Date(notification.dataset.expiration);
-                if (now > expiration) {
-                    dismissNotification(parseInt(notification.dataset.id));
-                }
-            });
-        }
-
-        function checkEmptyNotifications() {
-            const container = document.getElementById("global-notifications");
-            if (container && container.children.length === 0) {
-                container.remove();
-            }
-        }
-
-        function hideDismissedNotifications() {
-            const dismissed = JSON.parse(localStorage.getItem("dismissedNotifications") || "[]");
-            dismissed.forEach((id) => {
-                const notification = document.querySelector(`[data-notification-id="${id}"]`);
-                if (notification) {
-                    notification.remove();
-                }
-            });
+          setTimeout(() => {
+            notification.remove();
             checkEmptyNotifications();
+          }, 300);
+        }
+      }
+
+      function checkExpiredNotifications() {
+        const now = new Date();
+        const notifications = document.querySelectorAll("[data-expiration]");
+
+        notifications.forEach((notification) => {
+          const expiration = new Date(notification.dataset.expiration);
+          if (now > expiration) {
+            dismissNotification(parseInt(notification.dataset.id));
+          }
+        });
+      }
+
+      function checkEmptyNotifications() {
+        const container = document.getElementById("global-notifications");
+        if (container && container.children.length === 0) {
+          container.remove();
+        }
+      }
+
+      function hideDismissedNotifications() {
+        const dismissed = JSON.parse(
+          localStorage.getItem("dismissedNotifications") || "[]"
+        );
+        dismissed.forEach((id) => {
+          const notification = document.querySelector(
+            `[data-notification-id="${id}"]`
+          );
+          if (notification) {
+            notification.remove();
+          }
+        });
+        checkEmptyNotifications();
+      }
+
+      // ==================== CURSEUR PERSONNALISÉ ====================
+      function initCustomCursor() {
+        const cursor = document.getElementById("cursor");
+        if (!cursor) return;
+
+        const prefersReduced = window.matchMedia(
+          "(prefers-reduced-motion: reduce)"
+        ).matches;
+        const speed = prefersReduced ? 1 : 0.15;
+
+        let mouseX = 0,
+          mouseY = 0;
+        let posX = 0,
+          posY = 0;
+
+        window.addEventListener(
+          "mousemove",
+          (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            cursor.classList.remove("hidden");
+          },
+          { passive: true }
+        );
+
+        window.addEventListener("mouseleave", () => {
+          cursor.classList.add("hidden");
+        });
+
+        window.addEventListener(
+          "touchstart",
+          () => {
+            cursor.classList.add("hidden");
+          },
+          { passive: true }
+        );
+
+        function render() {
+          posX += (mouseX - posX) * speed;
+          posY += (mouseY - posY) * speed;
+          cursor.style.transform = `translate(${posX}px, ${posY}px) translate(-50%, -50%)`;
+          requestAnimationFrame(render);
         }
 
-        // ==================== CURSEUR PERSONNALISÉ ====================
-        function initCustomCursor() {
-            const cursor = document.getElementById("cursor");
-            if (!cursor) return;
+        requestAnimationFrame(render);
+      }
 
-            const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-            const speed = prefersReduced ? 1 : 0.15;
-
-            let mouseX = 0, mouseY = 0;
-            let posX = 0, posY = 0;
-
-            window.addEventListener("mousemove", (e) => {
-                mouseX = e.clientX;
-                mouseY = e.clientY;
-                cursor.classList.remove("hidden");
-            }, { passive: true });
-
-            window.addEventListener("mouseleave", () => {
-                cursor.classList.add("hidden");
-            });
-
-            window.addEventListener("touchstart", () => {
-                cursor.classList.add("hidden");
-            }, { passive: true });
-
-            function render() {
-                posX += (mouseX - posX) * speed;
-                posY += (mouseY - posY) * speed;
-                cursor.style.transform = `translate(${posX}px, ${posY}px) translate(-50%, -50%)`;
-                requestAnimationFrame(render);
-            }
-
-            requestAnimationFrame(render);
+      // ==================== PERMISSIONS DE NOTIFICATION ====================
+      function requestNotificationPermission() {
+        if ("Notification" in window && Notification.permission === "default") {
+          Notification.requestPermission();
         }
+      }
 
-        // ==================== PERMISSIONS DE NOTIFICATION ====================
-        function requestNotificationPermission() {
-            if ("Notification" in window && Notification.permission === "default") {
-                Notification.requestPermission();
-            }
-        }
-
-        if ("Notification" in window) {
-            requestNotificationPermission();
-        }
+      if ("Notification" in window) {
+        requestNotificationPermission();
+      }
     </script>
     {% block extra_js %}{% endblock %}
-</body>
-
+  </body>
 </html>

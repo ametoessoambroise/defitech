@@ -1,0 +1,495 @@
+{% extends "base.html" %}
+
+{% block title %}
+DEFITECH | L'école des battants - BTS, Licence, Master
+{% endblock %}
+{% block extra_css %}
+
+    <!-- Configuration Tailwind personnalisée -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            screens: {
+              xs: "375px", // Breakpoint personnalisé pour très petits mobiles
+            },
+            colors: {
+              defitech: {
+                blue: "#0047AB", // Bleu "Roi" professionnel (proche du #0000FF demandé mais lisible)
+                red: "#D60000", // Rouge vif (proche du #FF0000 mais moins agressif)
+                dark: "#0f172a",
+                light: "#f8fafc",
+              },
+            },
+            fontFamily: {
+              sans: ["Inter", "system-ui", "sans-serif"],
+            },
+            animation: {
+              "fade-in": "fadeIn 0.5s ease-out",
+              "slide-up": "slideUp 0.6s ease-out",
+              "bounce-slow": "bounce 3s infinite",
+            },
+            keyframes: {
+              fadeIn: {
+                "0%": { opacity: "0" },
+                "100%": { opacity: "1" },
+              },
+              slideUp: {
+                "0%": { transform: "translateY(20px)", opacity: "0" },
+                "100%": { transform: "translateY(0)", opacity: "1" },
+              },
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      /* Optimisations spécifiques mobile */
+      @media (max-width: 320px) {
+        .text-fluid {
+          font-size: 1.5rem !important;
+        } /* Adaptation iPhone SE/petits Android */
+      }
+
+      .glass-nav {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      }
+
+      .hero-pattern {
+        background-color: #0047ab;
+
+        background-image: url("{{ url_for('static', filename='assets/hero_bg.png') }}");
+      }
+    </style>
+
+  {% endblock %}
+  {% block content %}
+    <!-- 🟢 HERO SECTION -->
+    <section
+      class="relative hero-pattern min-h-[85vh] flex items-center overflow-hidden"
+    >
+      <!-- Overlay Gradient -->
+      <div
+        class="absolute inset-0 bg-gradient-to-b from-defitech-blue/90 via-defitech-blue/80 to-white"
+      ></div>
+
+      <div
+        class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20 flex flex-col items-center text-center"
+        >
+          <!-- Badge Promo -->
+          <div
+            class="animate-fade-in inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-1.5 text-white mb-6 sm:mb-8"
+          >
+            <span class="flex h-2 w-2 relative">
+              <span
+                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"
+              ></span>
+              <span
+                class="relative inline-flex rounded-full h-2 w-2 bg-red-500"
+              ></span>
+            </span>
+            <span class="text-xs sm:text-sm font-medium tracking-wide"
+              >Rentrée 2025-2026</span
+            >
+          </div>
+
+          <!-- Main Title -->
+          <h1
+            class="animate-slide-up text-fluid text-4xl xs:text-5xl sm:text-6xl md:text-7xl font-black text-white tracking-tight leading-[1.1] mb-6"
+          >
+            L'école des <br />
+            <span
+              class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-red-400"
+              >BATTANTS</span
+            >
+          </h1>
+
+          <!-- Subtitle -->
+          <p
+            class="animate-slide-up text-white/90 text-base xs:text-lg sm:text-xl max-w-2xl font-light mb-8 sm:mb-10 leading-relaxed px-2"
+          >
+            Devenez un expert recherché. Un étudiant, une micro-entreprise.
+            <span class="hidden xs:inline"
+              >100% orienté employabilité et innovation.</span
+            >
+          </p>
+
+          <!-- CTA Mobile-First Stack -->
+          <div
+            class="animate-slide-up flex flex-col sm:flex-row gap-4 w-full xs:w-auto px-4 xs:px-0"
+          >
+            <a
+              href="{{ url_for('auth.register') }}"
+              class="w-full xs:w-auto px-8 py-4 bg-defitech-red text-white font-bold rounded-xl shadow-xl hover:bg-red-700 hover:scale-105 transition-all text-center flex items-center justify-center gap-2 text-lg"
+            >
+              <span>Je m'inscris</span>
+              <i class="fas fa-user-plus text-sm md:text-lg"></i>
+            </a>
+            <a
+              href="#formations"
+              class="w-full xs:w-auto px-8 py-4 bg-white text-defitech-blue font-bold rounded-xl shadow-lg hover:bg-gray-50 transition-all text-center flex items-center justify-center gap-2 text-lg"
+            >
+              <i class="fas fa-search text-sm md:text-lg"></i>
+              <span>Découvrir</span>
+            </a>
+          </div>
+
+          <!-- Trust Indicators -->
+          <div
+            class="mt-12 sm:mt-16 pt-8 border-t border-white/10 w-full max-w-4xl grid grid-cols-3 gap-2 sm:gap-8 text-white text-center"
+          >
+            <div>
+              <div class="text-2xl sm:text-4xl font-black text-yellow-300 mb-1">
+                23
+              </div>
+              <div
+                class="text-[10px] sm:text-sm opacity-80 uppercase tracking-wider"
+              >
+                Ans d'expertise
+              </div>
+            </div>
+            <div>
+              <div class="text-2xl sm:text-4xl font-black text-yellow-300 mb-1">
+                5k+
+              </div>
+              <div
+                class="text-[10px] sm:text-sm opacity-80 uppercase tracking-wider"
+              >
+                Diplômés
+              </div>
+            </div>
+            <div>
+              <div class="text-2xl sm:text-4xl font-black text-yellow-300 mb-1">
+                100%
+              </div>
+              <div
+                class="text-[10px] sm:text-sm opacity-80 uppercase tracking-wider"
+              >
+                Pratique
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Wave Separator -->
+        <div
+          class="absolute bottom-0 left-0 w-full overflow-hidden leading-none"
+        >
+          <svg
+            class="relative block w-[calc(100%+1.3px)] h-12 sm:h-24"
+            data-name="Layer 1"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 1200 120"
+            preserveAspectRatio="none"
+          >
+            <path
+              d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z"
+              class="fill-gray-50"
+            ></path>
+          </svg>
+        </div>
+      </section>
+
+      <!-- 🟢 FORMATIONS SECTION -->
+      <section id="formations" class="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
+        <div class="max-w-7xl mx-auto">
+          <div class="text-center mb-12">
+            <span
+              class="text-defitech-red font-bold text-sm uppercase tracking-widest"
+              >Nos Parcours</span
+            >
+            <h2 class="text-3xl sm:text-4xl font-black text-gray-900 mt-2 mb-4">
+              Construisez votre Avenir
+            </h2>
+            <p class="text-gray-600 max-w-2xl mx-auto">
+              Des formations reconnues par l'État et le CAMES, adaptées aux
+              besoins réels des entreprises.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+            <!-- Card BTS -->
+            <div
+              class="bg-white rounded-2xl shadow-lg overflow-hidden group hover:shadow-2xl transition-all duration-300 border-t-4 border-defitech-blue transform hover:-translate-y-1"
+            >
+              <div class="p-6 sm:p-8">
+                <div
+                  class="w-14 h-14 bg-blue-50 rounded-xl flex items-center justify-center mb-6 group-hover:bg-defitech-blue group-hover:text-white transition-colors"
+                >
+                  <i
+                    class="fas fa-certificate text-2xl text-defitech-blue group-hover:text-white"
+                  ></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-2">
+                  BTS d'État
+                </h3>
+                <p class="text-sm text-gray-500 mb-4">
+                  Bac+2 • Formation Technique
+                </p>
+                <ul class="space-y-3 mb-8">
+                  <li class="flex items-center text-sm text-gray-700">
+                    <i class="fas fa-check text-green-500 mr-3"></i> Gestion des
+                    Entreprises
+                  </li>
+                  <li class="flex items-center text-sm text-gray-700">
+                    <i class="fas fa-check text-green-500 mr-3"></i>
+                    Informatique de Gestion
+                  </li>
+                  <li class="flex items-center text-sm text-gray-700">
+                    <i class="fas fa-check text-green-500 mr-3"></i>
+                    Communication
+                  </li>
+                </ul>
+                <button onclick="location.href='{{ url_for('auth.register') }}'"
+                  class="w-full py-3 border-2 border-defitech-blue text-defitech-blue font-bold rounded-lg hover:bg-defitech-blue hover:text-white transition-colors"
+                >
+                  En savoir plus
+                </button>
+              </div>
+            </div>
+
+            <!-- Card LICENCE (Featured) -->
+            <div
+              class="bg-white rounded-2xl shadow-xl overflow-hidden group hover:shadow-2xl transition-all duration-300 border-t-4 border-defitech-red relative transform scale-105 z-10"
+            >
+              <div
+                class="absolute top-0 right-0 bg-defitech-red text-white text-xs font-bold px-3 py-1 rounded-bl-lg"
+              >
+                TOP CHOIX
+              </div>
+              <div class="p-6 sm:p-8">
+                <div
+                  class="w-14 h-14 bg-red-50 rounded-xl flex items-center justify-center mb-6 group-hover:bg-defitech-red group-hover:text-white transition-colors"
+                >
+                  <i
+                    class="fas fa-graduation-cap text-2xl text-defitech-red group-hover:text-white"
+                  ></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-2">
+                  Licence Pro
+                </h3>
+                <p class="text-sm text-gray-500 mb-4">Bac+3 • LMD / CAMES</p>
+                <ul class="space-y-3 mb-8">
+                  <li class="flex items-center text-sm text-gray-700">
+                    <i class="fas fa-check text-defitech-red mr-3"></i> Génie
+                    Logiciel & IA
+                  </li>
+                  <li class="flex items-center text-sm text-gray-700">
+                    <i class="fas fa-check text-defitech-red mr-3"></i> Réseaux
+                    & Télécoms
+                  </li>
+                  <li class="flex items-center text-sm text-gray-700">
+                    <i class="fas fa-check text-defitech-red mr-3"></i>
+                    Marketing Digital
+                  </li>
+                  <li class="flex items-center text-sm text-gray-700">
+                    <i class="fas fa-check text-defitech-red mr-3"></i>
+                    Transport Logistique
+                  </li>
+                </ul>
+                <button onclick="location.href='{{ url_for('auth.register') }}'"
+                  class="w-full py-3 bg-defitech-red text-white font-bold rounded-lg hover:bg-red-700 transition-colors shadow-lg"
+                >
+                  Candidater maintenant
+                </button>
+              </div>
+            </div>
+
+            <!-- Card MASTER -->
+            <div
+              class="bg-white rounded-2xl shadow-lg overflow-hidden group hover:shadow-2xl transition-all duration-300 border-t-4 border-gray-800 transform hover:-translate-y-1"
+            >
+              <div class="p-6 sm:p-8">
+                <div
+                  class="w-14 h-14 bg-gray-100 rounded-xl flex items-center justify-center mb-6 group-hover:bg-gray-800 group-hover:text-white transition-colors"
+                >
+                  <i
+                    class="fas fa-user-tie text-2xl text-gray-800 group-hover:text-white"
+                  ></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-2">
+                  Master Pro
+                </h3>
+                <p class="text-sm text-gray-500 mb-4">Bac+5 • Expertise</p>
+                <ul class="space-y-3 mb-8">
+                  <li class="flex items-center text-sm text-gray-700">
+                    <i class="fas fa-check text-gray-600 mr-3"></i> Audit &
+                    Contrôle
+                  </li>
+                  <li class="flex items-center text-sm text-gray-700">
+                    <i class="fas fa-check text-gray-600 mr-3"></i> Ingénierie
+                    Info
+                  </li>
+                  <li class="flex items-center text-sm text-gray-700">
+                    <i class="fas fa-check text-gray-600 mr-3"></i> MBA
+                    Management
+                  </li>
+                </ul>
+                <button onclick="location.href='{{ url_for('auth.register') }}'"
+                  class="w-full py-3 border-2 border-gray-800 text-gray-800 font-bold rounded-lg hover:bg-gray-800 hover:text-white transition-colors"
+                >
+                  En savoir plus
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 🟢 VALEUR AJOUTÉE (Mobile Stack) -->
+      <section id="about" class="py-16 bg-white overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex flex-col lg:flex-row items-center gap-12">
+            <div class="w-full lg:w-1/2 relative">
+              <!-- Image placeholder décorative en CSS pur -->
+              <div
+                class="aspect-square rounded-3xl bg-gray-100 relative overflow-hidden shadow-2xl"
+              >
+                <div
+                  class="absolute inset-0 bg-gradient-to-br from-defitech-blue/20 to-defitech-red/20 z-10"
+                ></div>
+                <img
+                  src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
+                  alt="Étudiants Defitech"
+                  class="w-full h-full object-cover"
+                />
+
+                <!-- Floating Card -->
+                <div
+                  class="absolute bottom-6 left-6 right-6 bg-white/95 backdrop-blur p-4 rounded-xl shadow-lg z-20 border-l-4 border-defitech-blue"
+                >
+                  <div class="flex items-center gap-3">
+                    <div class="bg-green-100 p-2 rounded-full text-green-600">
+                      <i class="fas fa-briefcase"></i>
+                    </div>
+                    <div>
+                      <p class="font-bold text-gray-900">Insertion Pro</p>
+                      <p class="text-xs text-gray-500">
+                        Stages garantis pour tous
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Decoration dots -->
+              <div class="absolute -z-10 top-[-20px] left-[-20px]">
+                <svg width="100" height="100" fill="none">
+                  <pattern
+                    id="dots"
+                    x="0"
+                    y="0"
+                    width="20"
+                    height="20"
+                    patternUnits="userSpaceOnUse"
+                  >
+                    <rect
+                      x="0"
+                      y="0"
+                      width="2"
+                      height="2"
+                      class="text-defitech-red"
+                      fill="currentColor"
+                    />
+                  </pattern>
+                  <rect width="100" height="100" fill="url(#dots)" />
+                </svg>
+              </div>
+            </div>
+
+            <div class="w-full lg:w-1/2 space-y-6">
+              <h2 class="text-3xl font-black text-gray-900 leading-tight">
+                Pourquoi choisir
+                <span class="text-defitech-blue">DEFITECH</span> ?
+              </h2>
+              <p
+                class="text-lg text-gray-600 italic border-l-4 border-defitech-red pl-4"
+              >
+                "Soit vous obtenez un emploi, soit vous créez votre propre
+                emploi."
+              </p>
+              <div class="space-y-4">
+                <div class="flex items-start gap-4">
+                  <div
+                    class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-defitech-blue font-bold"
+                  >
+                    1
+                  </div>
+                  <div>
+                    <h4 class="font-bold text-gray-900">
+                      Innovation Pédagogique
+                    </h4>
+                    <p class="text-sm text-gray-600">
+                      Apprentissage par projet, laboratoires équipés et FabLab.
+                    </p>
+                  </div>
+                </div>
+                <div class="flex items-start gap-4">
+                  <div
+                    class="flex-shrink-0 w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-defitech-red font-bold"
+                  >
+                    2
+                  </div>
+                  <div>
+                    <h4 class="font-bold text-gray-900">Réseau Partenaires</h4>
+                    <p class="text-sm text-gray-600">
+                      Partenariats avec l'Université de Lomé, entreprises
+                      locales et internationales.
+                    </p>
+                  </div>
+                </div>
+                <div class="flex items-start gap-4">
+                  <div
+                    class="flex-shrink-0 w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-800 font-bold"
+                  >
+                    3
+                  </div>
+                  <div>
+                    <h4 class="font-bold text-gray-900">Vie Étudiante</h4>
+                    <p class="text-sm text-gray-600">
+                      Clubs, sport, hackathons et semaine de l'étudiant.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 🟢 CTA FINAL -->
+      <section
+        class="py-16 px-4 bg-defitech-blue text-white text-center relative overflow-hidden"
+      >
+        <div
+          class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"
+        ></div>
+        <div class="relative max-w-3xl mx-auto space-y-6">
+          <h2 class="text-3xl sm:text-4xl font-black">
+            Prêt à relever le défi ?
+          </h2>
+          <p class="text-blue-100 text-lg">
+            Les inscriptions pour l'année académique 2025-2026 sont ouvertes.
+            Les places sont limitées.
+          </p>
+          <div class="flex flex-col sm:flex-row justify-center gap-4 pt-4">
+            <button
+              onclick="location.href='{{ url_for('auth.register') }}'"
+              class="bg-white text-defitech-blue px-8 py-3 rounded-full font-bold shadow-lg hover:bg-gray-100 transition-colors"
+            >
+              S'inscrire en ligne
+            </button>
+            <a
+              href="tel:+22822262525"
+              target="_blank"
+              class="bg-defitech-red text-white px-8 py-3 rounded-full font-bold shadow-lg hover:bg-red-700 transition-colors flex items-center justify-center gap-2"
+            >
+              <i class="fas fa-phone"></i> +228 22 26 25 25
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+    {% endblock %}

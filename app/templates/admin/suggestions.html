@@ -4,10 +4,14 @@ Administration{% endblock %} {% block content %}
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <!-- Breadcrumb -->
     <nav class="flex mb-8" aria-label="Breadcrumb">
-      <ol class="inline-flex items-center space-x-2 bg-white rounded-xl px-4 py-2 shadow-sm">
+      <ol
+        class="inline-flex items-center space-x-2 bg-white rounded-xl px-4 py-2 shadow-sm"
+      >
         <li class="inline-flex items-center">
-          <a href="{{ url_for('admin.dashboard') }}"
-            class="inline-flex items-center text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">
+          <a
+            href="{{ url_for('admin.dashboard') }}"
+            class="inline-flex items-center text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors"
+          >
             <i class="fas fa-tachometer-alt mr-2"></i>
             Dashboard
           </a>
@@ -15,7 +19,9 @@ Administration{% endblock %} {% block content %}
         <li>
           <div class="flex items-center">
             <i class="fas fa-chevron-right text-gray-400 text-xs mx-2"></i>
-            <span class="text-sm font-bold text-blue-600">Boîte à suggestions</span>
+            <span class="text-sm font-bold text-blue-600"
+              >Boîte à suggestions</span
+            >
           </div>
         </li>
       </ol>
@@ -25,9 +31,12 @@ Administration{% endblock %} {% block content %}
     <div class="mb-10">
       <div class="flex items-center justify-between flex-wrap gap-6">
         <div>
-          <h1 class="text-4xl font-extrabold text-gray-900 mb-3 flex items-center">
+          <h1
+            class="text-4xl font-extrabold text-gray-900 mb-3 flex items-center"
+          >
             <div
-              class="w-14 h-14 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center mr-4 shadow-xl">
+              class="w-14 h-14 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center mr-4 shadow-xl"
+            >
               <i class="fas fa-lightbulb text-white text-2xl"></i>
             </div>
             Gestion des suggestions
@@ -38,18 +47,24 @@ Administration{% endblock %} {% block content %}
           <div class="flex items-center space-x-4 mt-3 ml-18">
             <span class="text-sm text-gray-500 flex items-center">
               <i class="far fa-clock mr-2 text-blue-500"></i>
-              Dernière mise à jour : {{ current_time.strftime("%d/%m/%Y %H:%M") }}
+              Dernière mise à jour : {{ current_time.strftime("%d/%m/%Y %H:%M")
+              }}
             </span>
           </div>
         </div>
         <div class="flex items-center space-x-3">
-          <button onclick="window.location.reload()"
-            class="inline-flex items-center px-5 py-3 rounded-xl text-sm font-bold bg-white border-2 border-blue-600 text-blue-600 hover:bg-blue-50 transition-all duration-300 shadow-md hover:shadow-xl transform hover:scale-105">
+          <button
+            onclick="window.location.reload()"
+            class="inline-flex items-center px-5 py-3 rounded-xl text-sm font-bold bg-white border-2 border-blue-600 text-blue-600 hover:bg-blue-50 transition-all duration-300 shadow-md hover:shadow-xl transform hover:scale-105"
+          >
             <i class="fas fa-sync-alt mr-2"></i>
             Actualiser
           </button>
-          <a href="{{ url_for('suggestions') }}" target="_blank"
-            class="inline-flex items-center px-5 py-3 rounded-xl text-sm font-bold bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
+          <a
+            href="{{ url_for('main.suggestions') }}"
+            target="_blank"
+            class="inline-flex items-center px-5 py-3 rounded-xl text-sm font-bold bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+          >
             <i class="fas fa-external-link-alt mr-2"></i>
             Vue publique
           </a>
@@ -63,16 +78,20 @@ Administration{% endblock %} {% block content %}
     <div class="mb-8 space-y-3">
       {% for category, message in messages %}
       <div
-        class="rounded-2xl p-5 shadow-xl border-l-4 transition-all duration-300 transform hover:scale-[1.02] {% if category == 'success' %}bg-gradient-to-r from-green-50 to-emerald-50 border-green-500{% elif category == 'error' %}bg-gradient-to-r from-red-50 to-rose-50 border-red-500{% elif category == 'warning' %}bg-gradient-to-r from-yellow-50 to-amber-50 border-yellow-500{% else %}bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-500{% endif %}">
+        class="rounded-2xl p-5 shadow-xl border-l-4 transition-all duration-300 transform hover:scale-[1.02] {% if category == 'success' %}bg-gradient-to-r from-green-50 to-emerald-50 border-green-500{% elif category == 'error' %}bg-gradient-to-r from-red-50 to-rose-50 border-red-500{% elif category == 'warning' %}bg-gradient-to-r from-yellow-50 to-amber-50 border-yellow-500{% else %}bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-500{% endif %}"
+      >
         <div class="flex items-center">
           <div
-            class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center {% if category == 'success' %}bg-green-100{% elif category == 'error' %}bg-red-100{% elif category == 'warning' %}bg-yellow-100{% else %}bg-blue-100{% endif %}">
+            class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center {% if category == 'success' %}bg-green-100{% elif category == 'error' %}bg-red-100{% elif category == 'warning' %}bg-yellow-100{% else %}bg-blue-100{% endif %}"
+          >
             <i
-              class="fas {% if category == 'success' %}fa-check-circle text-green-600{% elif category == 'error' %}fa-exclamation-circle text-red-600{% elif category == 'warning' %}fa-exclamation-triangle text-yellow-600{% else %}fa-info-circle text-blue-600{% endif %} text-lg"></i>
+              class="fas {% if category == 'success' %}fa-check-circle text-green-600{% elif category == 'error' %}fa-exclamation-circle text-red-600{% elif category == 'warning' %}fa-exclamation-triangle text-yellow-600{% else %}fa-info-circle text-blue-600{% endif %} text-lg"
+            ></i>
           </div>
           <span
-            class="ml-4 font-medium {% if category == 'success' %}text-green-800{% elif category == 'error' %}text-red-800{% elif category == 'warning' %}text-yellow-800{% else %}text-blue-800{% endif %}">{{
-            message }}</span>
+            class="ml-4 font-medium {% if category == 'success' %}text-green-800{% elif category == 'error' %}text-red-800{% elif category == 'warning' %}text-yellow-800{% else %}text-blue-800{% endif %}"
+            >{{ message }}</span
+          >
         </div>
       </div>
       {% endfor %}
@@ -93,11 +112,14 @@ Administration{% endblock %} {% block content %}
 
       <!-- Total -->
       <div
-        class="bg-white border-2 border-blue-200 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden transform hover:-translate-y-1">
+        class="bg-white border-2 border-blue-200 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden transform hover:-translate-y-1"
+      >
         <div class="p-6">
           <div class="flex items-center justify-between mb-4">
             <div class="flex-1">
-              <p class="text-sm font-bold text-blue-600 uppercase tracking-wide mb-1">
+              <p
+                class="text-sm font-bold text-blue-600 uppercase tracking-wide mb-1"
+              >
                 Total
               </p>
               <p class="text-4xl font-extrabold text-gray-900">
@@ -105,24 +127,30 @@ Administration{% endblock %} {% block content %}
               </p>
             </div>
             <div
-              class="w-16 h-16 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
+              class="w-16 h-16 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg"
+            >
               <i class="fas fa-comments text-white text-2xl fa-beat"></i>
             </div>
           </div>
           <div class="pt-4 border-t-2 border-blue-100">
-            <span class="text-xs font-semibold text-blue-700 bg-blue-50 px-3 py-1 rounded-full">Toutes
-              suggestions</span>
+            <span
+              class="text-xs font-semibold text-blue-700 bg-blue-50 px-3 py-1 rounded-full"
+              >Toutes suggestions</span
+            >
           </div>
         </div>
       </div>
 
       <!-- Ouvertes -->
       <div
-        class="bg-white border-2 border-green-200 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden transform hover:-translate-y-1">
+        class="bg-white border-2 border-green-200 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden transform hover:-translate-y-1"
+      >
         <div class="p-6">
           <div class="flex items-center justify-between mb-4">
             <div class="flex-1">
-              <p class="text-sm font-bold text-green-600 uppercase tracking-wide mb-1">
+              <p
+                class="text-sm font-bold text-green-600 uppercase tracking-wide mb-1"
+              >
                 Ouvertes
               </p>
               <p class="text-4xl font-extrabold text-gray-900">
@@ -130,23 +158,30 @@ Administration{% endblock %} {% block content %}
               </p>
             </div>
             <div
-              class="w-16 h-16 bg-gradient-to-br from-green-400 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg">
-              <i class="fas fa-door-open text-white text-2xl "></i>
+              class="w-16 h-16 bg-gradient-to-br from-green-400 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg"
+            >
+              <i class="fas fa-door-open text-white text-2xl"></i>
             </div>
           </div>
           <div class="pt-4 border-t-2 border-green-100">
-            <span class="text-xs font-semibold text-green-700 bg-green-50 px-3 py-1 rounded-full">À examiner</span>
+            <span
+              class="text-xs font-semibold text-green-700 bg-green-50 px-3 py-1 rounded-full"
+              >À examiner</span
+            >
           </div>
         </div>
       </div>
 
       <!-- En cours -->
       <div
-        class="bg-white border-2 border-yellow-200 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden transform hover:-translate-y-1">
+        class="bg-white border-2 border-yellow-200 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden transform hover:-translate-y-1"
+      >
         <div class="p-6">
           <div class="flex items-center justify-between mb-4">
             <div class="flex-1">
-              <p class="text-sm font-bold text-yellow-600 uppercase tracking-wide mb-1">
+              <p
+                class="text-sm font-bold text-yellow-600 uppercase tracking-wide mb-1"
+              >
                 En cours
               </p>
               <p class="text-4xl font-extrabold text-gray-900">
@@ -154,23 +189,30 @@ Administration{% endblock %} {% block content %}
               </p>
             </div>
             <div
-              class="w-16 h-16 bg-gradient-to-br from-yellow-400 to-orange-600 rounded-2xl flex items-center justify-center shadow-lg">
+              class="w-16 h-16 bg-gradient-to-br from-yellow-400 to-orange-600 rounded-2xl flex items-center justify-center shadow-lg"
+            >
               <i class="fas fa-hourglass-half fa-spin text-white text-2xl"></i>
             </div>
           </div>
           <div class="pt-4 border-t-2 border-yellow-100">
-            <span class="text-xs font-semibold text-yellow-700 bg-yellow-50 px-3 py-1 rounded-full">En traitement</span>
+            <span
+              class="text-xs font-semibold text-yellow-700 bg-yellow-50 px-3 py-1 rounded-full"
+              >En traitement</span
+            >
           </div>
         </div>
       </div>
 
       <!-- Fermées -->
       <div
-        class="bg-white border-2 border-purple-200 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden transform hover:-translate-y-1">
+        class="bg-white border-2 border-purple-200 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden transform hover:-translate-y-1"
+      >
         <div class="p-6">
           <div class="flex items-center justify-between mb-4">
             <div class="flex-1">
-              <p class="text-sm font-bold text-purple-600 uppercase tracking-wide mb-1">
+              <p
+                class="text-sm font-bold text-purple-600 uppercase tracking-wide mb-1"
+              >
                 Traitées
               </p>
               <p class="text-4xl font-extrabold text-gray-900">
@@ -178,16 +220,26 @@ Administration{% endblock %} {% block content %}
               </p>
             </div>
             <div
-              class="w-16 h-16 bg-gradient-to-br from-purple-400 to-pink-600 rounded-2xl flex items-center justify-center shadow-lg">
+              class="w-16 h-16 bg-gradient-to-br from-purple-400 to-pink-600 rounded-2xl flex items-center justify-center shadow-lg"
+            >
               <i class="fas fa-check-double text-white text-2xl"></i>
             </div>
           </div>
-          <div class="pt-4 border-t-2 border-purple-100 flex items-center justify-between">
-            <span class="text-xs font-semibold text-purple-700 bg-purple-50 px-3 py-1 rounded-full">Terminées</span>
+          <div
+            class="pt-4 border-t-2 border-purple-100 flex items-center justify-between"
+          >
+            <span
+              class="text-xs font-semibold text-purple-700 bg-purple-50 px-3 py-1 rounded-full"
+              >Terminées</span
+            >
             <div class="text-xs text-gray-500">
-              <span class="text-green-600 font-bold">{{ suggestions_fermees }}</span>
+              <span class="text-green-600 font-bold"
+                >{{ suggestions_fermees }}</span
+              >
               /
-              <span class="text-red-600 font-bold">{{ suggestions_rejetees }}</span>
+              <span class="text-red-600 font-bold"
+                >{{ suggestions_rejetees }}</span
+              >
             </div>
           </div>
         </div>
@@ -196,7 +248,8 @@ Administration{% endblock %} {% block content %}
 
     <!-- Guide d'utilisation -->
     <div
-      class="bg-gradient-to-r from-indigo-50 to-purple-50 border-2 border-indigo-200 rounded-2xl p-6 mb-10 shadow-lg">
+      class="bg-gradient-to-r from-indigo-50 to-purple-50 border-2 border-indigo-200 rounded-2xl p-6 mb-10 shadow-lg"
+    >
       <h3 class="font-bold text-gray-900 text-lg mb-4 flex items-center">
         <i class="fas fa-info-circle text-indigo-600 mr-3 text-xl"></i>
         Guide de modération
@@ -204,7 +257,9 @@ Administration{% endblock %} {% block content %}
       <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="bg-white rounded-xl p-4 shadow-sm">
           <div class="flex items-center mb-2">
-            <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mr-3">
+            <div
+              class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mr-3"
+            >
               <i class="fas fa-circle text-green-500 text-xs"></i>
             </div>
             <span class="font-bold text-gray-900">Ouverte</span>
@@ -213,7 +268,9 @@ Administration{% endblock %} {% block content %}
         </div>
         <div class="bg-white rounded-xl p-4 shadow-sm">
           <div class="flex items-center mb-2">
-            <div class="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center mr-3">
+            <div
+              class="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center mr-3"
+            >
               <i class="fas fa-circle text-yellow-500 text-xs"></i>
             </div>
             <span class="font-bold text-gray-900">En cours</span>
@@ -224,7 +281,9 @@ Administration{% endblock %} {% block content %}
         </div>
         <div class="bg-white rounded-xl p-4 shadow-sm">
           <div class="flex items-center mb-2">
-            <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+            <div
+              class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3"
+            >
               <i class="fas fa-circle text-blue-500 text-xs"></i>
             </div>
             <span class="font-bold text-gray-900">Fermée</span>
@@ -233,7 +292,9 @@ Administration{% endblock %} {% block content %}
         </div>
         <div class="bg-white rounded-xl p-4 shadow-sm">
           <div class="flex items-center mb-2">
-            <div class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center mr-3">
+            <div
+              class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center mr-3"
+            >
               <i class="fas fa-circle text-red-500 text-xs"></i>
             </div>
             <span class="font-bold text-gray-900">Rejetée</span>
@@ -246,11 +307,15 @@ Administration{% endblock %} {% block content %}
     <!-- Liste des suggestions -->
     {% if suggestions_data %}
     <div class="space-y-6">
-      <div class="flex items-center justify-between bg-white rounded-2xl px-6 py-4 shadow-lg">
+      <div
+        class="flex items-center justify-between bg-white rounded-2xl px-6 py-4 shadow-lg"
+      >
         <h2 class="text-2xl font-bold text-gray-900 flex items-center">
           <i class="fas fa-list-ul mr-3 text-blue-600"></i>
           Liste des suggestions
-          <span class="ml-3 bg-blue-100 text-blue-800 text-sm font-bold px-4 py-1 rounded-full">
+          <span
+            class="ml-3 bg-blue-100 text-blue-800 text-sm font-bold px-4 py-1 rounded-full"
+          >
             {{ total_suggestions }}
           </span>
         </h2>
@@ -265,13 +330,17 @@ Administration{% endblock %} {% block content %}
       %}
 
       <div
-        class="bg-white rounded-2xl shadow-xl border-2 border-gray-100 overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+        class="bg-white rounded-2xl shadow-xl border-2 border-gray-100 overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
+      >
         <!-- En-tête -->
-        <div class="px-8 py-6 bg-gradient-to-r from-gray-50 via-blue-50 to-indigo-50 border-b-2 border-gray-200">
+        <div
+          class="px-8 py-6 bg-gradient-to-r from-gray-50 via-blue-50 to-indigo-50 border-b-2 border-gray-200"
+        >
           <div class="flex items-center justify-between flex-wrap gap-4">
             <div class="flex items-center space-x-4">
               <div
-                class="w-14 h-14 bg-gradient-to-br from-gray-400 to-gray-600 rounded-2xl flex items-center justify-center shadow-lg ring-4 ring-white">
+                class="w-14 h-14 bg-gradient-to-br from-gray-400 to-gray-600 rounded-2xl flex items-center justify-center shadow-lg ring-4 ring-white"
+              >
                 <i class="fas fa-user text-white text-xl"></i>
               </div>
               <div>
@@ -297,67 +366,108 @@ Administration{% endblock %} {% block content %}
             <div class="flex items-center space-x-3">
               <!-- Badge de statut -->
               <span
-                class="inline-flex items-center px-4 py-2 rounded-full text-sm font-bold shadow-md {% if suggestion.statut == 'ouverte' %}bg-green-500 text-white{% elif suggestion.statut == 'en_cours' %}bg-yellow-500 text-white{% elif suggestion.statut == 'fermee' %}bg-blue-500 text-white{% else %}bg-red-500 text-white{% endif %}">
+                class="inline-flex items-center px-4 py-2 rounded-full text-sm font-bold shadow-md {% if suggestion.statut == 'ouverte' %}bg-green-500 text-white{% elif suggestion.statut == 'en_cours' %}bg-yellow-500 text-white{% elif suggestion.statut == 'fermee' %}bg-blue-500 text-white{% else %}bg-red-500 text-white{% endif %}"
+              >
                 <i class="fas fa-circle mr-2 text-xs animate-pulse"></i>
                 {{ suggestion.statut|title }}
               </span>
 
               <!-- Menu d'actions -->
               <div class="relative">
-                <button type="button"
+                <button
+                  type="button"
                   class="status-menu-btn inline-flex items-center px-4 py-2 rounded-xl text-sm font-bold bg-white border-2 border-gray-300 hover:border-blue-500 hover:bg-blue-50 transition-all duration-300 shadow-md"
-                  data-suggestion-id="{{ suggestion.id }}">
+                  data-suggestion-id="{{ suggestion.id }}"
+                >
                   <i class="fas fa-cog mr-2"></i>
                   Actions
                   <i class="fas fa-chevron-down ml-2 text-xs"></i>
                 </button>
 
                 <div
-                  class="status-menu hidden absolute right-0 mt-2 w-64 rounded-xl bg-white shadow-2xl ring-2 ring-gray-200 overflow-hidden z-20">
+                  class="status-menu hidden absolute right-0 mt-2 w-64 rounded-xl bg-white shadow-2xl ring-2 ring-gray-200 overflow-hidden z-20"
+                >
                   <div class="py-2">
                     <div class="px-4 py-2 bg-gray-50 border-b border-gray-200">
-                      <span class="text-xs font-bold text-gray-600 uppercase tracking-wide">Changer le statut</span>
+                      <span
+                        class="text-xs font-bold text-gray-600 uppercase tracking-wide"
+                        >Changer le statut</span
+                      >
                     </div>
 
-                    <form method="POST"
-                      action="{{ url_for('admin_change_suggestion_status', suggestion_id=suggestion.id) }}">
-                      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                    <form
+                      method="POST"
+                      action="{{ url_for('admin.change_suggestion_status', suggestion_id=suggestion.id) }}"
+                    >
+                      <input
+                        type="hidden"
+                        name="csrf_token"
+                        value="{{ csrf_token() }}"
+                      />
                       <input type="hidden" name="statut" value="ouverte" />
-                      <button type="submit"
-                        class="block w-full text-left px-4 py-3 text-sm font-medium text-gray-700 hover:bg-green-50 hover:text-green-700 transition-colors">
+                      <button
+                        type="submit"
+                        class="block w-full text-left px-4 py-3 text-sm font-medium text-gray-700 hover:bg-green-50 hover:text-green-700 transition-colors"
+                      >
                         <i class="fas fa-door-open mr-3 text-green-500"></i>
                         Marquer comme ouverte
                       </button>
                     </form>
 
-                    <form method="POST"
-                      action="{{ url_for('admin_change_suggestion_status', suggestion_id=suggestion.id) }}">
-                      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                    <form
+                      method="POST"
+                      action="{{ url_for('admin.change_suggestion_status', suggestion_id=suggestion.id) }}"
+                    >
+                      <input
+                        type="hidden"
+                        name="csrf_token"
+                        value="{{ csrf_token() }}"
+                      />
                       <input type="hidden" name="statut" value="en_cours" />
-                      <button type="submit"
-                        class="block w-full text-left px-4 py-3 text-sm font-medium text-gray-700 hover:bg-yellow-50 hover:text-yellow-700 transition-colors">
-                        <i class="fas fa-hourglass-half mr-3 text-yellow-500"></i>
+                      <button
+                        type="submit"
+                        class="block w-full text-left px-4 py-3 text-sm font-medium text-gray-700 hover:bg-yellow-50 hover:text-yellow-700 transition-colors"
+                      >
+                        <i
+                          class="fas fa-hourglass-half mr-3 text-yellow-500"
+                        ></i>
                         Marquer en cours
                       </button>
                     </form>
 
-                    <form method="POST"
-                      action="{{ url_for('admin_change_suggestion_status', suggestion_id=suggestion.id) }}">
-                      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                    <form
+                      method="POST"
+                      action="{{ url_for('admin.change_suggestion_status', suggestion_id=suggestion.id) }}"
+                    >
+                      <input
+                        type="hidden"
+                        name="csrf_token"
+                        value="{{ csrf_token() }}"
+                      />
                       <input type="hidden" name="statut" value="fermee" />
-                      <button type="submit"
-                        class="block w-full text-left px-4 py-3 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition-colors">
+                      <button
+                        type="submit"
+                        class="block w-full text-left px-4 py-3 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition-colors"
+                      >
                         <i class="fas fa-check-circle mr-3 text-blue-500"></i>
                         Marquer comme fermée
                       </button>
                     </form>
 
-                    <form method="POST"
-                      action="{{ url_for('admin_change_suggestion_status', suggestion_id=suggestion.id) }}">
-                      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                    <form
+                      method="POST"
+                      action="{{ url_for('admin_change_suggestion_status', suggestion_id=suggestion.id) }}"
+                    >
+                      <input
+                        type="hidden"
+                        name="csrf_token"
+                        value="{{ csrf_token() }}"
+                      />
                       <input type="hidden" name="statut" value="rejetee" />
-                      <button type="submit"
-                        class="block w-full text-left px-4 py-3 text-sm font-medium text-gray-700 hover:bg-red-50 hover:text-red-700 transition-colors border-t border-gray-200">
+                      <button
+                        type="submit"
+                        class="block w-full text-left px-4 py-3 text-sm font-medium text-gray-700 hover:bg-red-50 hover:text-red-700 transition-colors border-t border-gray-200"
+                      >
                         <i class="fas fa-times-circle mr-3 text-red-500"></i>
                         Marquer comme rejetée
                       </button>
@@ -372,25 +482,37 @@ Administration{% endblock %} {% block content %}
         <!-- Contenu de la suggestion -->
         <div class="px-8 py-6">
           <div class="mb-6">
-            <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">
+            <h4
+              class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2"
+            >
               Contenu de la suggestion
             </h4>
-            <p class="text-gray-800 leading-relaxed text-base bg-gray-50 rounded-xl p-4 border-l-4 border-blue-500">
+            <p
+              class="text-gray-800 leading-relaxed text-base bg-gray-50 rounded-xl p-4 border-l-4 border-blue-500"
+            >
               {{ suggestion.contenu }}
             </p>
           </div>
 
           <!-- Informations de contact -->
           {% if suggestion.email_contact %}
-          <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-xl p-4 mb-6">
+          <div
+            class="bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-xl p-4 mb-6"
+          >
             <div class="flex items-center">
-              <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center mr-3 shadow-md">
+              <div
+                class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center mr-3 shadow-md"
+              >
                 <i class="fas fa-envelope text-white"></i>
               </div>
               <div>
-                <span class="text-sm font-bold text-blue-900 block">Contact disponible</span>
-                <a href="mailto:{{ suggestion.email_contact }}"
-                  class="text-sm text-blue-700 hover:text-blue-900 font-medium">
+                <span class="text-sm font-bold text-blue-900 block"
+                  >Contact disponible</span
+                >
+                <a
+                  href="mailto:{{ suggestion.email_contact }}"
+                  class="text-sm text-blue-700 hover:text-blue-900 font-medium"
+                >
                   {{ suggestion.email_contact }}
                 </a>
               </div>
@@ -400,7 +522,9 @@ Administration{% endblock %} {% block content %}
 
           <!-- Statistiques de votes -->
           <div class="grid grid-cols-3 gap-4">
-            <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-4 border-2 border-green-200">
+            <div
+              class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-4 border-2 border-green-200"
+            >
               <div class="flex items-center justify-between">
                 <div>
                   <p class="text-xs font-bold text-green-600 uppercase mb-1">
@@ -414,7 +538,9 @@ Administration{% endblock %} {% block content %}
               </div>
             </div>
 
-            <div class="bg-gradient-to-br from-red-50 to-rose-50 rounded-xl p-4 border-2 border-red-200">
+            <div
+              class="bg-gradient-to-br from-red-50 to-rose-50 rounded-xl p-4 border-2 border-red-200"
+            >
               <div class="flex items-center justify-between">
                 <div>
                   <p class="text-xs font-bold text-red-600 uppercase mb-1">
@@ -428,7 +554,9 @@ Administration{% endblock %} {% block content %}
               </div>
             </div>
 
-            <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-4 border-2 border-purple-200">
+            <div
+              class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-4 border-2 border-purple-200"
+            >
               <div class="flex items-center justify-between">
                 <div>
                   <p class="text-xs font-bold text-purple-600 uppercase mb-1">
@@ -446,27 +574,39 @@ Administration{% endblock %} {% block content %}
 
         <!-- Section des réponses existantes -->
         {% if reponses %}
-        <div class="px-8 py-6 bg-gradient-to-r from-red-50 to-rose-50 border-t-2 border-red-200">
+        <div
+          class="px-8 py-6 bg-gradient-to-r from-red-50 to-rose-50 border-t-2 border-red-200"
+        >
           <h4 class="text-lg font-bold text-red-900 mb-4 flex items-center">
             <i class="fas fa-reply-all mr-3"></i>
             Réponses administratives
-            <span class="ml-3 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+            <span
+              class="ml-3 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full"
+            >
               {{ reponses|length }}
             </span>
           </h4>
           <div class="space-y-4">
             {% for reponse in reponses %}
-            <div class="bg-gradient-to-r from-red-600 to-rose-600 text-white rounded-xl p-6 shadow-xl">
+            <div
+              class="bg-gradient-to-r from-red-600 to-rose-600 text-white rounded-xl p-6 shadow-xl"
+            >
               <div class="flex items-start space-x-4">
                 <div class="flex-shrink-0">
-                  <div class="w-12 h-12 bg-red-700 rounded-xl flex items-center justify-center shadow-lg">
+                  <div
+                    class="w-12 h-12 bg-red-700 rounded-xl flex items-center justify-center shadow-lg"
+                  >
                     <i class="fas fa-user-shield text-xl"></i>
                   </div>
                 </div>
                 <div class="flex-1">
                   <div class="flex items-center space-x-3 mb-3">
-                    <span class="font-bold text-red-100">Administration DEFITECH</span>
-                    <span class="text-red-200 text-xs bg-red-700/30 px-3 py-1 rounded-full">
+                    <span class="font-bold text-red-100"
+                      >Administration DEFITECH</span
+                    >
+                    <span
+                      class="text-red-200 text-xs bg-red-700/30 px-3 py-1 rounded-full"
+                    >
                       <i class="far fa-clock mr-1"></i>
                       {{ reponse.date_creation.strftime('%d/%m/%Y à %H:%M') }}
                     </span>
@@ -484,21 +624,33 @@ Administration{% endblock %} {% block content %}
 
         <!-- Formulaire de réponse -->
         {% if suggestion.statut in ['ouverte', 'en_cours'] %}
-        <div class="px-8 py-6 border-t-2 border-gray-200 bg-gradient-to-r from-gray-50 to-blue-50">
-          <form method="POST" action="{{ url_for('admin_respond_suggestion', suggestion_id=suggestion.id) }}"
-            class="space-y-4">
+        <div
+          class="px-8 py-6 border-t-2 border-gray-200 bg-gradient-to-r from-gray-50 to-blue-50"
+        >
+          <form
+            method="POST"
+            action="{{ url_for('admin.respond_suggestion', suggestion_id=suggestion.id) }}"
+            class="space-y-4"
+          >
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
 
             <div>
-              <label for="contenu_{{ suggestion.id }}"
-                class="block text-sm font-bold text-gray-900 mb-3 flex items-center">
+              <label
+                for="contenu_{{ suggestion.id }}"
+                class="block text-sm font-bold text-gray-900 mb-3 flex items-center"
+              >
                 <i class="fas fa-reply mr-2 text-blue-600"></i>
                 Répondre publiquement à cette suggestion
               </label>
-              <textarea id="contenu_{{ suggestion.id }}" name="contenu" rows="4"
+              <textarea
+                id="contenu_{{ suggestion.id }}"
+                name="contenu"
+                rows="4"
                 class="w-full px-5 py-4 border-2 border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-4 focus:ring-blue-500/30 focus:border-blue-500 transition-all duration-200 resize-none text-gray-900"
                 placeholder="Rédigez une réponse claire et professionnelle. Cette réponse sera visible par tous les utilisateurs..."
-                maxlength="500" required></textarea>
+                maxlength="500"
+                required
+              ></textarea>
               <p class="text-xs text-gray-500 mt-2 flex items-center">
                 <i class="fas fa-info-circle mr-2 text-blue-500"></i>
                 Maximum 500 caractères • Cette réponse sera publique et visible
@@ -507,13 +659,18 @@ Administration{% endblock %} {% block content %}
             </div>
 
             <div class="flex justify-end space-x-3">
-              <button type="button" onclick="this.form.reset()"
-                class="inline-flex items-center px-6 py-3 bg-gray-200 text-gray-700 font-bold rounded-xl hover:bg-gray-300 transition-all duration-300">
+              <button
+                type="button"
+                onclick="this.form.reset()"
+                class="inline-flex items-center px-6 py-3 bg-gray-200 text-gray-700 font-bold rounded-xl hover:bg-gray-300 transition-all duration-300"
+              >
                 <i class="fas fa-times mr-2"></i>
                 Annuler
               </button>
-              <button type="submit"
-                class="inline-flex items-center px-8 py-3 bg-gradient-to-r from-red-600 to-rose-600 text-white font-bold rounded-xl shadow-lg hover:from-red-700 hover:to-rose-700 focus:outline-none focus:ring-4 focus:ring-red-500/50 transition-all duration-300 transform hover:scale-105">
+              <button
+                type="submit"
+                class="inline-flex items-center px-8 py-3 bg-gradient-to-r from-red-600 to-rose-600 text-white font-bold rounded-xl shadow-lg hover:from-red-700 hover:to-rose-700 focus:outline-none focus:ring-4 focus:ring-red-500/50 transition-all duration-300 transform hover:scale-105"
+              >
                 <i class="fas fa-paper-plane mr-2"></i>
                 Publier la réponse
               </button>
@@ -537,7 +694,8 @@ Administration{% endblock %} {% block content %}
     <!-- État vide -->
     <div class="text-center py-20 bg-white rounded-3xl shadow-xl">
       <div
-        class="inline-flex items-center justify-center w-32 h-32 bg-gradient-to-br from-gray-100 to-gray-200 rounded-3xl mb-8 shadow-xl">
+        class="inline-flex items-center justify-center w-32 h-32 bg-gradient-to-br from-gray-100 to-gray-200 rounded-3xl mb-8 shadow-xl"
+      >
         <i class="fas fa-inbox text-gray-400 text-5xl"></i>
       </div>
       <h3 class="text-3xl font-bold text-gray-900 mb-4">
@@ -547,8 +705,11 @@ Administration{% endblock %} {% block content %}
         Les suggestions de la communauté apparaîtront ici dès qu'elles seront
         soumises. Encouragez vos utilisateurs à partager leurs idées !
       </p>
-      <a href="{{ url_for('suggestions') }}" target="_blank"
-        class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-xl shadow-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 transform hover:scale-105">
+      <a
+        href="{{ url_for('main.suggestions') }}"
+        target="_blank"
+        class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-xl shadow-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 transform hover:scale-105"
+      >
         <i class="fas fa-external-link-alt mr-3"></i>
         Voir la page publique
       </a>

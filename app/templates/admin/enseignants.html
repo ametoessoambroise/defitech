@@ -46,7 +46,7 @@ current_user.prenom }} | DEFITECH{% endblock %} {% block content %}
             </div>
             <div class="flex items-end h-full">
                 <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded ml-2">Filtrer</button>
-                <a href="{{ url_for('admin_enseignants') }}" class="ml-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-xs">Réinitialiser</a>
+                <a href="{{ url_for('admin.admin_enseignants') }}" class="ml-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-xs">Réinitialiser</a>
             </div>
         </form>
 

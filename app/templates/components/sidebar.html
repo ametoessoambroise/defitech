@@ -2,18 +2,24 @@
 {% if current_user.is_authenticated and current_user.role == 'admin' %}
 <div
   class="fixed inset-y-0 left-0 z-[9998] w-72 sm:w-80 sidebar-glass shadow-2xl shadow-blue-900/10 transform -translate-x-full transition-all duration-300 ease-out"
-  id="admin-sidebar">
+  id="admin-sidebar"
+>
   <div class="flex flex-col h-full pt-14 sm:pt-16">
     <!-- Logo Admin -->
     <div
-      class="flex items-center px-6 py-6 bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 text-white relative overflow-hidden">
+      class="flex items-center px-6 py-6 bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 text-white relative overflow-hidden"
+    >
       <div
-        class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLW9wYWNpdHk9IjAuMSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-30">
-      </div>
+        class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLW9wYWNpdHk9IjAuMSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-30"
+      ></div>
       <div
-        class="relative w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-xl border-2 border-white/20 shadow-2xl mr-4 overflow-hidden group">
-        <img src="{{ url_for('static', filename='uploads/profile_pics/' + (current_user.photo_profil or 'default.jpg')) }}" alt="Logo"
-          class="w-full h-full object-cover transition-transform group-hover:scale-110" />
+        class="relative w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-xl border-2 border-white/20 shadow-2xl mr-4 overflow-hidden group"
+      >
+        <img
+          src="{{ url_for('static', filename='uploads/profile_pics/' + (current_user.photo_profil or 'default.jpg')) }}"
+          alt="Logo"
+          class="w-full h-full object-cover transition-transform group-hover:scale-110"
+        />
       </div>
       <div class="relative flex-1 min-w-0">
         <p class="font-bold text-base truncate mb-1">
@@ -28,145 +34,186 @@
 
     <!-- Menu de navigation -->
     <nav class="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto custom-scrollbar">
-      <a href="{{ url_for('admin.dashboard') }}"
-        class="flex items-center px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-blue-100 hover:text-blue-600 rounded-xl transition-all duration-200 group {{ 'bg-gradient-to-r from-blue-50 to-blue-100 text-blue-600 shadow-sm' if request.endpoint == 'admin_dashboard' else '' }}">
+      <a
+        href="{{ url_for('admin.dashboard') }}"
+        class="flex items-center px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-blue-100 hover:text-blue-600 rounded-xl transition-all duration-200 group {{ 'bg-gradient-to-r from-blue-50 to-blue-100 text-blue-600 shadow-sm' if request.endpoint == 'admin_dashboard' else '' }}"
+      >
         <div
-          class="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+          class="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform"
+        >
           <i class="fas fa-tachometer-alt"></i>
         </div>
         <span class="font-semibold">Dashboard</span>
       </a>
 
-      <a href="{{ url_for('admin_users') }}"
-        class="flex items-center px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-green-50 hover:to-green-100 hover:text-green-600 rounded-xl transition-all duration-200 group {{ 'bg-gradient-to-r from-green-50 to-green-100 text-green-600 shadow-sm' if request.endpoint == 'admin_users' else '' }}">
+      <a
+        href="{{ url_for('admin.admin_users') }}"
+        class="flex items-center px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-green-50 hover:to-green-100 hover:text-green-600 rounded-xl transition-all duration-200 group {{ 'bg-gradient-to-r from-green-50 to-green-100 text-green-600 shadow-sm' if request.endpoint == 'admin.admin_users' else '' }}"
+      >
         <div
-          class="w-10 h-10 rounded-xl bg-green-100 text-green-600 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+          class="w-10 h-10 rounded-xl bg-green-100 text-green-600 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform"
+        >
           <i class="fas fa-users"></i>
         </div>
         <span class="font-semibold">Utilisateurs</span>
       </a>
 
-      <a href="{{ url_for('admin_etudiants') }}"
-        class="flex items-center px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-purple-50 hover:to-purple-100 hover:text-purple-600 rounded-xl transition-all duration-200 group {{ 'bg-gradient-to-r from-purple-50 to-purple-100 text-purple-600 shadow-sm' if request.endpoint == 'admin_etudiants' else '' }}">
+      <a
+        href="{{ url_for('admin.admin_etudiants') }}"
+        class="flex items-center px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-purple-50 hover:to-purple-100 hover:text-purple-600 rounded-xl transition-all duration-200 group {{ 'bg-gradient-to-r from-purple-50 to-purple-100 text-purple-600 shadow-sm' if request.endpoint == 'admin.admin_etudiants' else '' }}"
+      >
         <div
-          class="w-10 h-10 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+          class="w-10 h-10 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform"
+        >
           <i class="fas fa-user-graduate"></i>
         </div>
         <span class="font-semibold">Étudiants</span>
       </a>
 
-      <a href="{{ url_for('admin_enseignants') }}"
-        class="flex items-center px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-orange-50 hover:to-orange-100 hover:text-orange-600 rounded-xl transition-all duration-200 group {{ 'bg-gradient-to-r from-orange-50 to-orange-100 text-orange-600 shadow-sm' if request.endpoint == 'admin_enseignants' else '' }}">
+      <a
+        href="{{ url_for('admin.admin_enseignants') }}"
+        class="flex items-center px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-orange-50 hover:to-orange-100 hover:text-orange-600 rounded-xl transition-all duration-200 group {{ 'bg-gradient-to-r from-orange-50 to-orange-100 text-orange-600 shadow-sm' if request.endpoint == 'admin.admin_enseignants' else '' }}"
+      >
         <div
-          class="w-10 h-10 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+          class="w-10 h-10 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform"
+        >
           <i class="fas fa-chalkboard-teacher"></i>
         </div>
         <span class="font-semibold">Enseignants</span>
       </a>
 
-      <a href="{{ url_for('admin_teacher_update_requests') }}"
-        class="flex items-center px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-yellow-50 hover:to-yellow-100 hover:text-yellow-600 rounded-xl transition-all duration-200 group {{ 'bg-gradient-to-r from-yellow-50 to-yellow-100 text-yellow-600 shadow-sm' if request.endpoint == 'admin_teacher_update_requests' else '' }}">
+      <a
+        href="{{ url_for('admin.admin_teacher_update_requests') }}"
+        class="flex items-center px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-yellow-50 hover:to-yellow-100 hover:text-yellow-600 rounded-xl transition-all duration-200 group {{ 'bg-gradient-to-r from-yellow-50 to-yellow-100 text-yellow-600 shadow-sm' if request.endpoint == 'admin.admin_teacher_update_requests' else '' }}"
+      >
         <div
-          class="w-10 h-10 rounded-xl bg-yellow-100 text-yellow-600 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+          class="w-10 h-10 rounded-xl bg-yellow-100 text-yellow-600 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform"
+        >
           <i class="fas fa-user-edit"></i>
         </div>
         <span class="font-semibold">Demandes modification</span>
       </a>
 
-      <a href="{{ url_for('admin_filieres') }}"
-        class="flex items-center px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-indigo-50 hover:to-indigo-100 hover:text-indigo-600 rounded-xl transition-all duration-200 group {{ 'bg-gradient-to-r from-indigo-50 to-indigo-100 text-indigo-600 shadow-sm' if request.endpoint == 'admin_filieres' else '' }}">
+      <a
+        href="{{ url_for('admin.admin_filieres') }}"
+        class="flex items-center px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-indigo-50 hover:to-indigo-100 hover:text-indigo-600 rounded-xl transition-all duration-200 group {{ 'bg-gradient-to-r from-indigo-50 to-indigo-100 text-indigo-600 shadow-sm' if request.endpoint == 'admin.admin_filieres' else '' }}"
+      >
         <div
-          class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+          class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform"
+        >
           <i class="fas fa-book"></i>
         </div>
         <span class="font-semibold">Filières</span>
       </a>
 
-      <a href="{{ url_for('admin_emploi_temps') }}"
-        class="flex items-center px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-pink-50 hover:to-pink-100 hover:text-pink-600 rounded-xl transition-all duration-200 group {{ 'bg-gradient-to-r from-pink-50 to-pink-100 text-pink-600 shadow-sm' if request.endpoint == 'admin_emploi_temps' else '' }}">
+      <a
+        href="{{ url_for('admin.admin_emploi_temps') }}"
+        class="flex items-center px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-pink-50 hover:to-pink-100 hover:text-pink-600 rounded-xl transition-all duration-200 group {{ 'bg-gradient-to-r from-pink-50 to-pink-100 text-pink-600 shadow-sm' if request.endpoint == 'admin.admin_emploi_temps' else '' }}"
+      >
         <div
-          class="w-10 h-10 rounded-xl bg-pink-100 text-pink-600 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+          class="w-10 h-10 rounded-xl bg-pink-100 text-pink-600 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform"
+        >
           <i class="fas fa-calendar-alt"></i>
         </div>
         <span class="font-semibold">Emplois du temps</span>
       </a>
 
-      <a href="{{ url_for('ajouter_etudiant') }}"
-        class="flex items-center px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-teal-50 hover:to-teal-100 hover:text-teal-600 rounded-xl transition-all duration-200 group {{ 'bg-gradient-to-r from-teal-50 to-teal-100 text-teal-600 shadow-sm' if request.endpoint == 'ajouter_etudiant' else '' }}">
+      <a
+        href="{{ url_for('admin.ajouter_etudiant') }}"
+        class="flex items-center px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-teal-50 hover:to-teal-100 hover:text-teal-600 rounded-xl transition-all duration-200 group {{ 'bg-gradient-to-r from-teal-50 to-teal-100 text-teal-600 shadow-sm' if request.endpoint == 'admin.ajouter_etudiant' else '' }}"
+      >
         <div
-          class="w-10 h-10 rounded-xl bg-teal-100 text-teal-600 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+          class="w-10 h-10 rounded-xl bg-teal-100 text-teal-600 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform"
+        >
           <i class="fas fa-user-plus"></i>
         </div>
         <span class="font-semibold">Ajouter un étudiant</span>
       </a>
 
-      <a href="{{ url_for('community.index') }}"
-        class="flex items-center px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-cyan-50 hover:to-cyan-100 hover:text-cyan-600 rounded-xl transition-all duration-200 group {{ 'bg-gradient-to-r from-cyan-50 to-cyan-100 text-cyan-600 shadow-sm' if request.endpoint == 'community.index' else '' }}">
+      <a
+        href="{{ url_for('community.index') }}"
+        class="flex items-center px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-cyan-50 hover:to-cyan-100 hover:text-cyan-600 rounded-xl transition-all duration-200 group {{ 'bg-gradient-to-r from-cyan-50 to-cyan-100 text-cyan-600 shadow-sm' if request.endpoint == 'community.index' else '' }}"
+      >
         <div
-          class="w-10 h-10 rounded-xl bg-cyan-100 text-cyan-600 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+          class="w-10 h-10 rounded-xl bg-cyan-100 text-cyan-600 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform"
+        >
           <i class="fas fa-users"></i>
         </div>
         <span class="font-semibold">Communautés</span>
       </a>
 
-      <a href="{{ url_for('admin_suggestions') }}"
-        class="flex items-center px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-amber-50 hover:to-amber-100 hover:text-amber-600 rounded-xl transition-all duration-200 group {{ 'bg-gradient-to-r from-amber-50 to-amber-100 text-amber-600 shadow-sm' if request.endpoint == 'admin_suggestions' else '' }}">
+      <a
+        href="{{ url_for('admin.admin_suggestions') }}"
+        class="flex items-center px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-amber-50 hover:to-amber-100 hover:text-amber-600 rounded-xl transition-all duration-200 group {{ 'bg-gradient-to-r from-amber-50 to-amber-100 text-amber-600 shadow-sm' if request.endpoint == 'admin.admin_suggestions' else '' }}"
+      >
         <div
-          class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+          class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform"
+        >
           <i class="fas fa-lightbulb"></i>
         </div>
         <span class="font-semibold">Suggestions</span>
       </a>
-      <a href="{{ url_for('admin_notes') }}"
-        class="flex items-center px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-amber-50 hover:to-amber-100 hover:text-amber-600 rounded-xl transition-all duration-200 group {{ 'bg-gradient-to-r from-amber-50 to-amber-100 text-amber-600 shadow-sm' if request.endpoint == 'admin_suggestions' else '' }}">
+      <a
+        href="{{ url_for('admin.admin_notes') }}"
+        class="flex items-center px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-amber-50 hover:to-amber-100 hover:text-amber-600 rounded-xl transition-all duration-200 group {{ 'bg-gradient-to-r from-amber-50 to-amber-100 text-amber-600 shadow-sm' if request.endpoint == 'admin.admin_notes' else '' }}"
+      >
         <div
-          class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+          class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform"
+        >
           <i class="fas fa-tasks"></i>
         </div>
         <span class="font-semibold">Notes</span>
       </a>
-      <a href="{{ url_for('bug_reports.list_bug_reports') }}"
-        class="flex items-center px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-amber-50 hover:to-amber-100 hover:text-amber-600 rounded-xl transition-all duration-200 group {{ 'bg-gradient-to-r from-amber-50 to-amber-100 text-amber-600 shadow-sm' if request.endpoint == 'admin_suggestions' else '' }}">
+      <a
+        href="{{ url_for('bug_reports.list_bug_reports') }}"
+        class="flex items-center px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-amber-50 hover:to-amber-100 hover:text-amber-600 rounded-xl transition-all duration-200 group {{ 'bg-gradient-to-r from-amber-50 to-amber-100 text-amber-600 shadow-sm' if request.endpoint == 'admin_suggestions' else '' }}"
+      >
         <div
-          class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+          class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform"
+        >
           <i class="fas fa-bug mr-2 text-yellow-500"></i>
         </div>
-        <span class="font-semibold">
-          Rapports de bugs
-        </span>
+        <span class="font-semibold"> Rapports de bugs </span>
       </a>
 
-      <a href="{{ url_for('gestion_matieres') }}"
-        class="flex items-center px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-amber-50 hover:to-amber-100 hover:text-amber-600 rounded-xl transition-all duration-200 group {{ 'bg-gradient-to-r from-amber-50 to-amber-100 text-amber-600 shadow-sm' if request.endpoint == 'admin_suggestions' else '' }}">
+      <a
+        href="{{ url_for('admin.gestion_matieres') }}"
+        class="flex items-center px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-amber-50 hover:to-amber-100 hover:text-amber-600 rounded-xl transition-all duration-200 group {{ 'bg-gradient-to-r from-amber-50 to-amber-100 text-amber-600 shadow-sm' if request.endpoint == 'admin.gestion_matieres' else '' }}"
+      >
         <div
-          class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+          class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform"
+        >
           <i class="fas fa-book-open mr-2 text-yellow-500"></i>
         </div>
-        <span class="font-semibold">
-          Matières
-        </span>
+        <span class="font-semibold"> Matières </span>
       </a>
 
-      <a href="/analytics"
-        class="flex items-center px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-amber-50 hover:to-amber-100 hover:text-amber-600 rounded-xl transition-all duration-200 group {{ 'bg-gradient-to-r from-amber-50 to-amber-100 text-amber-600 shadow-sm' if request.endpoint == 'admin_suggestions' else '' }}">
+      <a
+        href="{{ url_for('analytics.dashboard') }}"
+        class="flex items-center px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-amber-50 hover:to-amber-100 hover:text-amber-600 rounded-xl transition-all duration-200 group {{ 'bg-gradient-to-r from-amber-50 to-amber-100 text-amber-600 shadow-sm' if request.endpoint == 'analytics.dashboard' else '' }}"
+      >
         <div
-          class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+          class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform"
+        >
           <i class="fas fa-lightbulb mr-2 text-yellow-500"></i>
         </div>
-        <span class="font-semibold">
-          Analytics
-        </span>
+        <span class="font-semibold"> Analytics </span>
       </a>
 
       <div class="pt-6">
         <div class="px-4 mb-3">
-          <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Contenu</span>
+          <span class="text-xs font-bold text-gray-400 uppercase tracking-wider"
+            >Contenu</span
+          >
         </div>
 
-        <a href="{{ url_for('admin_global_notifications') }}"
-          class="flex items-center px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-red-50 hover:to-red-100 hover:text-red-600 rounded-xl transition-all duration-200 group {{ 'bg-gradient-to-r from-red-50 to-red-100 text-red-600 shadow-sm' if 'notification' in request.endpoint else '' }}">
+        <a
+          href="{{ url_for('admin.admin_global_notifications') }}"
+          class="flex items-center px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-red-50 hover:to-red-100 hover:text-red-600 rounded-xl transition-all duration-200 group {{ 'bg-gradient-to-r from-red-50 to-red-100 text-red-600 shadow-sm' if 'admin_global_notifications' in request.endpoint else '' }}"
+        >
           <div
-            class="w-10 h-10 rounded-xl bg-red-100 text-red-600 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+            class="w-10 h-10 rounded-xl bg-red-100 text-red-600 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform"
+          >
             <i class="fas fa-bell"></i>
           </div>
           <span class="font-semibold">Notifications</span>
@@ -175,22 +222,30 @@
 
       <div class="pt-6">
         <div class="px-4 mb-3">
-          <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Système</span>
+          <span class="text-xs font-bold text-gray-400 uppercase tracking-wider"
+            >Système</span
+          >
         </div>
 
-        <a href="{{ url_for('bdd') }}"
-          class="flex items-center px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-slate-50 hover:to-slate-100 hover:text-slate-600 rounded-xl transition-all duration-200 group">
+        <a
+          href="{{ url_for('admin.bdd') }}"
+          class="flex items-center px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-slate-50 hover:to-slate-100 hover:text-slate-600 rounded-xl transition-all duration-200 group"
+        >
           <div
-            class="w-10 h-10 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+            class="w-10 h-10 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform"
+          >
             <i class="fas fa-database"></i>
           </div>
           <span class="font-semibold">Base de données</span>
         </a>
 
-        <a href="#"
-          class="flex items-center px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-emerald-50 hover:to-emerald-100 hover:text-emerald-600 rounded-xl transition-all duration-200 group">
+        <a
+          href="#"
+          class="flex items-center px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-emerald-50 hover:to-emerald-100 hover:text-emerald-600 rounded-xl transition-all duration-200 group"
+        >
           <div
-            class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+            class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform"
+          >
             <i class="fas fa-shield-alt"></i>
           </div>
           <span class="font-semibold">Sécurité</span>

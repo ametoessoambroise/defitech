@@ -1,6 +1,5 @@
-{% extends "admin/base.html" %}
-{% block title %}Gestion des Utilisateurs | DEFITECH{% endblock %}
-{% block content %}
+{% extends "admin/base.html" %} {% block title %}Gestion des Utilisateurs |
+DEFITECH{% endblock %} {% block content %}
 
 <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
   <!-- Header -->
@@ -9,7 +8,9 @@
       <i class="fas fa-users text-blue-600 mr-3"></i>
       Gestion des Utilisateurs
     </h1>
-    <p class="mt-2 text-sm text-gray-600">Approuvez, rejetez ou supprimez les comptes utilisateurs</p>
+    <p class="mt-2 text-sm text-gray-600">
+      Approuvez, rejetez ou supprimez les comptes utilisateurs
+    </p>
   </div>
 
   <!-- Main Card -->
@@ -17,19 +18,31 @@
     <!-- Statistics Header -->
     <div class="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-6">
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
+        <div
+          class="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20"
+        >
           <div class="text-3xl font-bold text-white">{{ total_users }}</div>
           <div class="text-sm text-blue-100 mt-1">Total utilisateurs</div>
         </div>
-        <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
-          <div class="text-3xl font-bold text-yellow-300">{{ users_en_attente }}</div>
+        <div
+          class="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20"
+        >
+          <div class="text-3xl font-bold text-yellow-300">
+            {{ users_en_attente }}
+          </div>
           <div class="text-sm text-blue-100 mt-1">En attente</div>
         </div>
-        <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
-          <div class="text-3xl font-bold text-green-300">{{ users_approuves }}</div>
+        <div
+          class="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20"
+        >
+          <div class="text-3xl font-bold text-green-300">
+            {{ users_approuves }}
+          </div>
           <div class="text-sm text-blue-100 mt-1">Approuvés</div>
         </div>
-        <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
+        <div
+          class="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20"
+        >
           <div class="text-3xl font-bold text-red-300">{{ users_rejetes }}</div>
           <div class="text-sm text-blue-100 mt-1">Rejetés</div>
         </div>
@@ -39,24 +52,29 @@
     <!-- Filters -->
     <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
       <div class="flex flex-wrap gap-2">
-        <a href="{{ url_for('admin_users') }}"
-          class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-colors
-                    {% if not statut_courant %}bg-blue-600 text-white shadow-md{% else %}bg-white text-gray-700 hover:bg-gray-100 border border-gray-200{% endif %}">
+        <a
+          href="{{ url_for('admin.admin_users') }}"
+          class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-colors {% if not statut_courant %}bg-blue-600 text-white shadow-md{% else %}bg-white text-gray-700 hover:bg-gray-100 border border-gray-200{% endif %}"
+        >
           <i class="fas fa-list mr-2"></i>Tous
         </a>
-        <a href="{{ url_for('admin_users', statut='en_attente') }}"
-          class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-colors
-                    {% if statut_courant == 'en_attente' %}bg-yellow-500 text-white shadow-md{% else %}bg-white text-gray-700 hover:bg-gray-100 border border-gray-200{% endif %}">
+        <a
+          href="{{ url_for('admin.admin_users', statut='en_attente') }}"
+          class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-colors {% if statut_courant == 'en_attente' %}bg-yellow-500 text-white shadow-md{% else %}bg-white text-gray-700 hover:bg-gray-100 border border-gray-200{% endif %}"
+        >
           <i class="fas fa-clock mr-2"></i>En attente ({{ users_en_attente }})
         </a>
-        <a href="{{ url_for('admin_users', statut='approuve') }}"
-          class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-colors
-                    {% if statut_courant == 'approuve' %}bg-green-500 text-white shadow-md{% else %}bg-white text-gray-700 hover:bg-gray-100 border border-gray-200{% endif %}">
-          <i class="fas fa-check-circle mr-2"></i>Approuvés ({{ users_approuves }})
+        <a
+          href="{{ url_for('admin.admin_users', statut='approuve') }}"
+          class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-colors {% if statut_courant == 'approuve' %}bg-green-500 text-white shadow-md{% else %}bg-white text-gray-700 hover:bg-gray-100 border border-gray-200{% endif %}"
+        >
+          <i class="fas fa-check-circle mr-2"></i>Approuvés ({{ users_approuves
+          }})
         </a>
-        <a href="{{ url_for('admin_users', statut='rejete') }}"
-          class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-colors
-                    {% if statut_courant == 'rejete' %}bg-red-500 text-white shadow-md{% else %}bg-white text-gray-700 hover:bg-gray-100 border border-gray-200{% endif %}">
+        <a
+          href="{{ url_for('admin.admin_users', statut='rejete') }}"
+          class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-colors {% if statut_courant == 'rejete' %}bg-red-500 text-white shadow-md{% else %}bg-white text-gray-700 hover:bg-gray-100 border border-gray-200{% endif %}"
+        >
           <i class="fas fa-times-circle mr-2"></i>Rejetés ({{ users_rejetes }})
         </a>
       </div>
@@ -68,88 +86,155 @@
         <i class="fas fa-file-import mr-2"></i>
         Importation en masse
       </h3>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3">
+      <div
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3"
+      >
         <!-- Import Étudiants -->
         <div class="flex flex-col gap-2">
-          <form action="{{ url_for('import_etudiants') }}" method="post" enctype="multipart/form-data">
+          <form
+            action="{{ url_for('admin.import_etudiants') }}"
+            method="post"
+            enctype="multipart/form-data"
+          >
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
             <label
-              class="flex items-center justify-center w-full px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg cursor-pointer text-sm font-medium transition-colors shadow-sm">
+              class="flex items-center justify-center w-full px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg cursor-pointer text-sm font-medium transition-colors shadow-sm"
+            >
               <i class="fas fa-user-graduate mr-2"></i>
               <span>Étudiants</span>
-              <input type="file" name="file" accept=".csv, .xlsx, .xls" class="hidden" onchange="this.form.submit()" />
+              <input
+                type="file"
+                name="file"
+                accept=".csv, .xlsx, .xls"
+                class="hidden"
+                onchange="this.form.submit()"
+              />
             </label>
           </form>
-          <a href="{{ url_for('download_etudiants_template') }}"
-            class="text-center text-blue-600 hover:text-blue-800 text-xs underline">
+          <a
+            href="{{ url_for('admin.download_etudiants_template') }}"
+            class="text-center text-blue-600 hover:text-blue-800 text-xs underline"
+          >
             <i class="fas fa-download mr-1"></i>Modèle
           </a>
         </div>
 
         <!-- Import Enseignants -->
         <div class="flex flex-col gap-2">
-          <form action="{{ url_for('import_enseignants') }}" method="post" enctype="multipart/form-data">
+          <form
+            action="{{ url_for('admin.import_enseignants') }}"
+            method="post"
+            enctype="multipart/form-data"
+          >
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
             <label
-              class="flex items-center justify-center w-full px-4 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg cursor-pointer text-sm font-medium transition-colors shadow-sm">
+              class="flex items-center justify-center w-full px-4 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg cursor-pointer text-sm font-medium transition-colors shadow-sm"
+            >
               <i class="fas fa-chalkboard-teacher mr-2"></i>
               <span>Enseignants</span>
-              <input type="file" name="file" accept=".csv, .xlsx, .xls" class="hidden" onchange="this.form.submit()" />
+              <input
+                type="file"
+                name="file"
+                accept=".csv, .xlsx, .xls"
+                class="hidden"
+                onchange="this.form.submit()"
+              />
             </label>
           </form>
-          <a href="{{ url_for('download_enseignants_template') }}"
-            class="text-center text-purple-600 hover:text-purple-800 text-xs underline">
+          <a
+            href="{{ url_for('admin.download_enseignants_template') }}"
+            class="text-center text-purple-600 hover:text-purple-800 text-xs underline"
+          >
             <i class="fas fa-download mr-1"></i>Modèle
           </a>
         </div>
 
         <!-- Import Filières -->
         <div class="flex flex-col gap-2">
-          <form action="{{ url_for('import_filieres') }}" method="post" enctype="multipart/form-data">
+          <form
+            action="{{ url_for('admin.import_filieres') }}"
+            method="post"
+            enctype="multipart/form-data"
+          >
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
             <label
-              class="flex items-center justify-center w-full px-4 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-lg cursor-pointer text-sm font-medium transition-colors shadow-sm">
+              class="flex items-center justify-center w-full px-4 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-lg cursor-pointer text-sm font-medium transition-colors shadow-sm"
+            >
               <i class="fas fa-stream mr-2"></i>
               <span>Filières</span>
-              <input type="file" name="file" accept=".csv, .xlsx, .xls" class="hidden" onchange="this.form.submit()" />
+              <input
+                type="file"
+                name="file"
+                accept=".csv, .xlsx, .xls"
+                class="hidden"
+                onchange="this.form.submit()"
+              />
             </label>
           </form>
-          <a href="{{ url_for('download_filieres_template') }}"
-            class="text-center text-green-600 hover:text-green-800 text-xs underline">
+          <a
+            href="{{ url_for('admin.download_filieres_template') }}"
+            class="text-center text-green-600 hover:text-green-800 text-xs underline"
+          >
             <i class="fas fa-download mr-1"></i>Modèle
           </a>
         </div>
 
         <!-- Import Matières -->
         <div class="flex flex-col gap-2">
-          <form action="{{ url_for('import_matieres') }}" method="post" enctype="multipart/form-data">
+          <form
+            action="{{ url_for('admin.import_matieres') }}"
+            method="post"
+            enctype="multipart/form-data"
+          >
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
             <label
-              class="flex items-center justify-center w-full px-4 py-2.5 bg-orange-600 hover:bg-orange-700 text-white rounded-lg cursor-pointer text-sm font-medium transition-colors shadow-sm">
+              class="flex items-center justify-center w-full px-4 py-2.5 bg-orange-600 hover:bg-orange-700 text-white rounded-lg cursor-pointer text-sm font-medium transition-colors shadow-sm"
+            >
               <i class="fas fa-book mr-2"></i>
               <span>Matières</span>
-              <input type="file" name="file" accept=".csv, .xlsx, .xls" class="hidden" onchange="this.form.submit()" />
+              <input
+                type="file"
+                name="file"
+                accept=".csv, .xlsx, .xls"
+                class="hidden"
+                onchange="this.form.submit()"
+              />
             </label>
           </form>
-          <a href="{{ url_for('download_matieres_template') }}"
-            class="text-center text-orange-600 hover:text-orange-800 text-xs underline">
+          <a
+            href="{{ url_for('admin.download_matieres_template') }}"
+            class="text-center text-orange-600 hover:text-orange-800 text-xs underline"
+          >
             <i class="fas fa-download mr-1"></i>Modèle
           </a>
         </div>
 
         <!-- Import Années -->
         <div class="flex flex-col gap-2">
-          <form action="{{ url_for('import_annees') }}" method="post" enctype="multipart/form-data">
+          <form
+            action="{{ url_for('admin.import_annees') }}"
+            method="post"
+            enctype="multipart/form-data"
+          >
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
             <label
-              class="flex items-center justify-center w-full px-4 py-2.5 bg-pink-600 hover:bg-pink-700 text-white rounded-lg cursor-pointer text-sm font-medium transition-colors shadow-sm">
+              class="flex items-center justify-center w-full px-4 py-2.5 bg-pink-600 hover:bg-pink-700 text-white rounded-lg cursor-pointer text-sm font-medium transition-colors shadow-sm"
+            >
               <i class="fas fa-calendar-alt mr-2"></i>
               <span>Années</span>
-              <input type="file" name="file" accept=".csv, .xlsx, .xls" class="hidden" onchange="this.form.submit()" />
+              <input
+                type="file"
+                name="file"
+                accept=".csv, .xlsx, .xls"
+                class="hidden"
+                onchange="this.form.submit()"
+              />
             </label>
           </form>
-          <a href="{{ url_for('download_annees_template') }}"
-            class="text-center text-pink-600 hover:text-pink-800 text-xs underline">
+          <a
+            href="{{ url_for('admin.download_annees_template') }}"
+            class="text-center text-pink-600 hover:text-pink-800 text-xs underline"
+          >
             <i class="fas fa-download mr-1"></i>Modèle
           </a>
         </div>
@@ -161,19 +246,29 @@
       <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-100">
           <tr>
-            <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+            <th
+              class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider"
+            >
               Utilisateur
             </th>
-            <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+            <th
+              class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider"
+            >
               Rôle & Infos
             </th>
-            <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+            <th
+              class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider"
+            >
               Statut
             </th>
-            <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+            <th
+              class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider"
+            >
               Inscription
             </th>
-            <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+            <th
+              class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider"
+            >
               Actions
             </th>
           </tr>
@@ -185,7 +280,8 @@
               <div class="flex items-center">
                 <div class="flex-shrink-0 h-12 w-12">
                   <div
-                    class="h-12 w-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center shadow-md">
+                    class="h-12 w-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center shadow-md"
+                  >
                     <i class="fas fa-user text-white text-lg"></i>
                   </div>
                 </div>
@@ -204,31 +300,41 @@
               </div>
             </td>
             <td class="px-6 py-4">
-              <span class="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full
-                                {% if user.role == 'admin' %}bg-red-100 text-red-800
-                                {% elif user.role == 'enseignant' %}bg-purple-100 text-purple-800
-                                {% else %}bg-green-100 text-green-800{% endif %}">
+              <span
+                class="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full {% if user.role == 'admin' %}bg-red-100 text-red-800 {% elif user.role == 'enseignant' %}bg-purple-100 text-purple-800 {% else %}bg-green-100 text-green-800{% endif %}"
+              >
                 {% if user.role == 'admin' %}
-                <i class="fas fa-crown mr-1.5"></i>Administrateur
-                {% elif user.role == 'enseignant' %}
-                <i class="fas fa-chalkboard-teacher mr-1.5"></i>Enseignant
-                {% else %}
-                <i class="fas fa-user-graduate mr-1.5"></i>Étudiant
-                {% endif %}
+                <i class="fas fa-crown mr-1.5"></i>Administrateur {% elif
+                user.role == 'enseignant' %}
+                <i class="fas fa-chalkboard-teacher mr-1.5"></i>Enseignant {%
+                else %} <i class="fas fa-user-graduate mr-1.5"></i>Étudiant {%
+                endif %}
               </span>
-              {% if user.role == 'etudiant' %}
-              {% set etu = etudiants_dict.get(user.id) %}
+              {% if user.role == 'etudiant' %} {% set etu =
+              etudiants_dict.get(user.id) %}
               <div class="text-xs text-gray-600 mt-2 space-y-1">
-                <div><span class="font-medium">Filière:</span> {{ etu.filiere if etu else '—' }}</div>
-                <div><span class="font-medium">Année:</span> {{ etu.annee if etu else '—' }}</div>
+                <div>
+                  <span class="font-medium">Filière:</span> {{ etu.filiere if
+                  etu else '—' }}
+                </div>
+                <div>
+                  <span class="font-medium">Année:</span> {{ etu.annee if etu
+                  else '—' }}
+                </div>
               </div>
-              {% elif user.role == 'enseignant' %}
-              {% set ens = enseignants_dict.get(user.id) %}
+              {% elif user.role == 'enseignant' %} {% set ens =
+              enseignants_dict.get(user.id) %}
               <div class="text-xs text-gray-600 mt-2 space-y-1">
-                {% if ens and ens.filieres_enseignees %}
-                {% set data = ens.filieres_enseignees | safe | loads %}
-                <div><span class="font-medium">Filières:</span> {{ data.filieres | join(', ') }}</div>
-                <div><span class="font-medium">Années:</span> {{ data.annees | join(', ') }}</div>
+                {% if ens and ens.filieres_enseignees %} {% set data =
+                ens.filieres_enseignees | safe | loads %}
+                <div>
+                  <span class="font-medium">Filières:</span> {{ data.filieres |
+                  join(', ') }}
+                </div>
+                <div>
+                  <span class="font-medium">Années:</span> {{ data.annees |
+                  join(', ') }}
+                </div>
                 {% else %}
                 <div class="text-gray-400">Aucune affectation</div>
                 {% endif %}
@@ -236,17 +342,14 @@
               {% endif %}
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-              <span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full
-                                {% if user.statut == 'approuve' %}bg-green-100 text-green-800
-                                {% elif user.statut == 'rejete' %}bg-red-100 text-red-800
-                                {% else %}bg-yellow-100 text-yellow-800{% endif %}">
+              <span
+                class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full {% if user.statut == 'approuve' %}bg-green-100 text-green-800 {% elif user.statut == 'rejete' %}bg-red-100 text-red-800 {% else %}bg-yellow-100 text-yellow-800{% endif %}"
+              >
                 {% if user.statut == 'approuve' %}
-                <i class="fas fa-check-circle mr-1.5"></i>Approuvé
-                {% elif user.statut == 'rejete' %}
-                <i class="fas fa-times-circle mr-1.5"></i>Rejeté
-                {% else %}
-                <i class="fas fa-clock mr-1.5"></i>En attente
-                {% endif %}
+                <i class="fas fa-check-circle mr-1.5"></i>Approuvé {% elif
+                user.statut == 'rejete' %}
+                <i class="fas fa-times-circle mr-1.5"></i>Rejeté {% else %}
+                <i class="fas fa-clock mr-1.5"></i>En attente {% endif %}
               </span>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
@@ -256,17 +359,23 @@
             <td class="px-6 py-4 whitespace-nowrap">
               <div class="flex gap-2">
                 {% if user.statut == 'en_attente' %}
-                <a href="{{ url_for('approve_user', user_id=user.id) }}"
-                  class="inline-flex items-center px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-medium rounded-lg transition-colors">
+                <a
+                  href="{{ url_for('admin.approve_user', user_id=user.id) }}"
+                  class="inline-flex items-center px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-medium rounded-lg transition-colors"
+                >
                   <i class="fas fa-check mr-1"></i>Approuver
                 </a>
-                <a href="{{ url_for('reject_user', user_id=user.id) }}"
-                  class="inline-flex items-center px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-medium rounded-lg transition-colors">
+                <a
+                  href="{{ url_for('admin.reject_user', user_id=user.id) }}"
+                  class="inline-flex items-center px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-medium rounded-lg transition-colors"
+                >
                   <i class="fas fa-times mr-1"></i>Rejeter
                 </a>
                 {% endif %}
-                <button onclick="supprimerUtilisateur({{ user.id }})"
-                  class="inline-flex items-center px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-700 text-xs font-medium rounded-lg transition-colors border border-red-200">
+                <button
+                  onclick="supprimerUtilisateur('{{ user.id }}')"
+                  class="inline-flex items-center px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-700 text-xs font-medium rounded-lg transition-colors border border-red-200"
+                >
                   <i class="fas fa-trash mr-1"></i>Supprimer
                 </button>
               </div>
@@ -285,7 +394,8 @@
         <div class="flex items-start mb-4">
           <div class="flex-shrink-0 h-14 w-14">
             <div
-              class="h-14 w-14 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center shadow-md">
+              class="h-14 w-14 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center shadow-md"
+            >
               <i class="fas fa-user text-white text-xl"></i>
             </div>
           </div>
@@ -305,49 +415,56 @@
 
         <!-- Role & Status -->
         <div class="flex flex-wrap gap-2 mb-3">
-          <span class="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full
-                        {% if user.role == 'admin' %}bg-red-100 text-red-800
-                        {% elif user.role == 'enseignant' %}bg-purple-100 text-purple-800
-                        {% else %}bg-green-100 text-green-800{% endif %}">
+          <span
+            class="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full {% if user.role == 'admin' %}bg-red-100 text-red-800 {% elif user.role == 'enseignant' %}bg-purple-100 text-purple-800 {% else %}bg-green-100 text-green-800{% endif %}"
+          >
             {% if user.role == 'admin' %}
-            <i class="fas fa-crown mr-1"></i>Admin
-            {% elif user.role == 'enseignant' %}
-            <i class="fas fa-chalkboard-teacher mr-1"></i>Enseignant
-            {% else %}
-            <i class="fas fa-user-graduate mr-1"></i>Étudiant
-            {% endif %}
+            <i class="fas fa-crown mr-1"></i>Admin {% elif user.role ==
+            'enseignant' %}
+            <i class="fas fa-chalkboard-teacher mr-1"></i>Enseignant {% else %}
+            <i class="fas fa-user-graduate mr-1"></i>Étudiant {% endif %}
           </span>
-          <span class="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full
-                        {% if user.statut == 'approuve' %}bg-green-100 text-green-800
-                        {% elif user.statut == 'rejete' %}bg-red-100 text-red-800
-                        {% else %}bg-yellow-100 text-yellow-800{% endif %}">
+          <span
+            class="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full {% if user.statut == 'approuve' %}bg-green-100 text-green-800 {% elif user.statut == 'rejete' %}bg-red-100 text-red-800 {% else %}bg-yellow-100 text-yellow-800{% endif %}"
+          >
             {% if user.statut == 'approuve' %}
-            <i class="fas fa-check-circle mr-1"></i>Approuvé
-            {% elif user.statut == 'rejete' %}
-            <i class="fas fa-times-circle mr-1"></i>Rejeté
-            {% else %}
-            <i class="fas fa-clock mr-1"></i>En attente
-            {% endif %}
+            <i class="fas fa-check-circle mr-1"></i>Approuvé {% elif user.statut
+            == 'rejete' %} <i class="fas fa-times-circle mr-1"></i>Rejeté {%
+            else %} <i class="fas fa-clock mr-1"></i>En attente {% endif %}
           </span>
         </div>
 
         <!-- Additional Info -->
-        {% if user.role == 'etudiant' %}
-        {% set etu = etudiants_dict.get(user.id) %}
-        <div class="text-xs text-gray-600 mb-3 space-y-1 bg-gray-50 p-3 rounded-lg">
-          <div><span class="font-medium">Filière:</span> {{ etu.filiere if etu else '—' }}</div>
-          <div><span class="font-medium">Année:</span> {{ etu.annee if etu else '—' }}</div>
+        {% if user.role == 'etudiant' %} {% set etu =
+        etudiants_dict.get(user.id) %}
+        <div
+          class="text-xs text-gray-600 mb-3 space-y-1 bg-gray-50 p-3 rounded-lg"
+        >
+          <div>
+            <span class="font-medium">Filière:</span> {{ etu.filiere if etu else
+            '—' }}
+          </div>
+          <div>
+            <span class="font-medium">Année:</span> {{ etu.annee if etu else '—'
+            }}
+          </div>
         </div>
-        {% elif user.role == 'enseignant' %}
-        {% set ens = enseignants_dict.get(user.id) %}
-        {% if ens and ens.filieres_enseignees %}
-        {% set data = ens.filieres_enseignees | safe | loads %}
-        <div class="text-xs text-gray-600 mb-3 space-y-1 bg-gray-50 p-3 rounded-lg">
-          <div><span class="font-medium">Filières:</span> {{ data.filieres | join(', ') }}</div>
-          <div><span class="font-medium">Années:</span> {{ data.annees | join(', ') }}</div>
+        {% elif user.role == 'enseignant' %} {% set ens =
+        enseignants_dict.get(user.id) %} {% if ens and ens.filieres_enseignees
+        %} {% set data = ens.filieres_enseignees | safe | loads %}
+        <div
+          class="text-xs text-gray-600 mb-3 space-y-1 bg-gray-50 p-3 rounded-lg"
+        >
+          <div>
+            <span class="font-medium">Filières:</span> {{ data.filieres |
+            join(', ') }}
+          </div>
+          <div>
+            <span class="font-medium">Années:</span> {{ data.annees | join(', ')
+            }}
+          </div>
         </div>
-        {% endif %}
-        {% endif %}
+        {% endif %} {% endif %}
 
         <!-- Date -->
         <div class="text-xs text-gray-500 mb-3 flex items-center">
@@ -359,18 +476,24 @@
         <div class="flex flex-col gap-2">
           {% if user.statut == 'en_attente' %}
           <div class="grid grid-cols-2 gap-2">
-            <a href="{{ url_for('approve_user', user_id=user.id) }}"
-              class="inline-flex items-center justify-center px-4 py-2.5 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors">
+            <a
+              href="{{ url_for('admin.approve_user', user_id=user.id) }}"
+              class="inline-flex items-center justify-center px-4 py-2.5 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors"
+            >
               <i class="fas fa-check mr-2"></i>Approuver
             </a>
-            <a href="{{ url_for('reject_user', user_id=user.id) }}"
-              class="inline-flex items-center justify-center px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg transition-colors">
+            <a
+              href="{{ url_for('admin.reject_user', user_id=user.id) }}"
+              class="inline-flex items-center justify-center px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg transition-colors"
+            >
               <i class="fas fa-times mr-2"></i>Rejeter
             </a>
           </div>
           {% endif %}
-          <button onclick="supprimerUtilisateur({{ user.id }})"
-            class="inline-flex items-center justify-center px-4 py-2.5 bg-red-50 hover:bg-red-100 text-red-700 text-sm font-medium rounded-lg transition-colors border border-red-200">
+          <button
+            onclick="supprimerUtilisateur('{{ user.id }}')"
+            class="inline-flex items-center justify-center px-4 py-2.5 bg-red-50 hover:bg-red-100 text-red-700 text-sm font-medium rounded-lg transition-colors border border-red-200"
+          >
             <i class="fas fa-trash mr-2"></i>Supprimer l'utilisateur
           </button>
         </div>
@@ -381,72 +504,94 @@
     <!-- Empty State -->
     {% if not users %}
     <div class="p-12 text-center">
-      <div class="inline-flex items-center justify-center w-20 h-20 bg-gray-100 rounded-full mb-6">
+      <div
+        class="inline-flex items-center justify-center w-20 h-20 bg-gray-100 rounded-full mb-6"
+      >
         <i class="fas fa-users text-4xl text-gray-400"></i>
       </div>
-      <h3 class="text-xl font-semibold text-gray-900 mb-2">Aucun utilisateur trouvé</h3>
-      <p class="text-gray-600">Il n'y a actuellement aucun utilisateur dans cette catégorie.</p>
+      <h3 class="text-xl font-semibold text-gray-900 mb-2">
+        Aucun utilisateur trouvé
+      </h3>
+      <p class="text-gray-600">
+        Il n'y a actuellement aucun utilisateur dans cette catégorie.
+      </p>
     </div>
     {% endif %}
   </div>
 </div>
 
-{% endblock %}
-
-{% block extra_js %}
+{% endblock %} {% block extra_js %}
 <script>
   async function supprimerUtilisateur(userId) {
-    if (!confirm('⚠️ Êtes-vous sûr de vouloir supprimer cet utilisateur ?\n\nCette action est irréversible et supprimera toutes les données associées.')) {
+    if (
+      !confirm(
+        "⚠️ Êtes-vous sûr de vouloir supprimer cet utilisateur ?\n\nCette action est irréversible et supprimera toutes les données associées."
+      )
+    ) {
       return;
     }
 
     try {
       const response = await fetch(`/admin/delete/${userId}`, {
-        method: 'DELETE',
+        method: "DELETE",
         headers: {
-          'X-CSRFToken': '{{ csrf_token() }}',
-          'Content-Type': 'application/json'
-        }
+          "X-CSRFToken": "{{ csrf_token() }}",
+          "Content-Type": "application/json",
+        },
       });
 
       const result = await response.json();
 
       if (response.ok) {
-        showNotification(result.message || 'Utilisateur supprimé avec succès', 'success');
+        showNotification(
+          result.message || "Utilisateur supprimé avec succès",
+          "success"
+        );
         setTimeout(() => window.location.reload(), 1500);
       } else {
-        showNotification(result.message || 'Erreur lors de la suppression', 'error');
+        showNotification(
+          result.message || "Erreur lors de la suppression",
+          "error"
+        );
       }
     } catch (error) {
-      console.error('Erreur:', error);
-      showNotification('Une erreur est survenue lors de la suppression', 'error');
+      console.error("Erreur:", error);
+      showNotification(
+        "Une erreur est survenue lors de la suppression",
+        "error"
+      );
     }
   }
 
-  function showNotification(message, type = 'success') {
-    const notification = document.createElement('div');
-    notification.className = `fixed top-4 right-4 z-50 px-6 py-4 rounded-lg shadow-lg transform transition-all duration-300 ${type === 'success' ? 'bg-green-500' : 'bg-red-500'
-      } text-white font-medium max-w-md`;
+  function showNotification(message, type = "success") {
+    const notification = document.createElement("div");
+    notification.className = `fixed top-4 right-4 z-50 px-6 py-4 rounded-lg shadow-lg transform transition-all duration-300 ${
+      type === "success" ? "bg-green-500" : "bg-red-500"
+    } text-white font-medium max-w-md`;
     notification.innerHTML = `
             <div class="flex items-center">
-                <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'} text-xl mr-3"></i>
+                <i class="fas ${
+                  type === "success"
+                    ? "fa-check-circle"
+                    : "fa-exclamation-circle"
+                } text-xl mr-3"></i>
                 <span>${message}</span>
             </div>
         `;
     document.body.appendChild(notification);
 
     setTimeout(() => {
-      notification.style.opacity = '0';
+      notification.style.opacity = "0";
       setTimeout(() => notification.remove(), 300);
     }, 4000);
   }
 
   // Auto-submit feedback for file uploads
-  document.querySelectorAll('input[type="file"]').forEach(input => {
-    input.addEventListener('change', function () {
+  document.querySelectorAll('input[type="file"]').forEach((input) => {
+    input.addEventListener("change", function () {
       if (this.files.length > 0) {
         const fileName = this.files[0].name;
-        showNotification(`Importation de "${fileName}" en cours...`, 'success');
+        showNotification(`Importation de "${fileName}" en cours...`, "success");
       }
     });
   });

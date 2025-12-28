@@ -12,17 +12,27 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nom = db.Column(db.String(100), nullable=False)
     prenom = db.Column(db.String(100), nullable=False)
-    email = db.Column(db.String(255), unique=True, nullable=False, index=True)  # Augmenté à 255 caractères
+    email = db.Column(
+        db.String(255), unique=True, nullable=False, index=True
+    )  # Augmenté à 255 caractères
     password_hash = db.Column(
         db.String(255), nullable=True  # Augmenté à 255 caractères
     )  # Nullable pour la connexion sociale
-    role = db.Column(db.String(50), nullable=False, default="etudiant")  # Augmenté à 50 caractères
+    role = db.Column(
+        db.String(50), nullable=False, default="etudiant"
+    )  # Augmenté à 50 caractères
     date_naissance = db.Column(db.Date, nullable=True)
     sexe = db.Column(db.String(20), nullable=True)  # Augmenté à 20 caractères
     telephone = db.Column(db.String(30), nullable=True)  # Augmenté à 30 caractères
-    adresse = db.Column(db.Text, nullable=True)  # Changé en Text pour les adresses longues
-    linkedin = db.Column(db.Text, nullable=True)  # Changé en Text pour les adresses longues
-    github = db.Column(db.Text, nullable=True)  # Changé en Text pour les adresses longues
+    adresse = db.Column(
+        db.Text, nullable=True
+    )  # Changé en Text pour les adresses longues
+    linkedin = db.Column(
+        db.Text, nullable=True
+    )  # Changé en Text pour les adresses longues
+    github = db.Column(
+        db.Text, nullable=True
+    )  # Changé en Text pour les adresses longues
     bio = db.Column(db.Text, nullable=True)  # Changé en Text pour les adresses longues
     ville = db.Column(db.String(150), nullable=True)  # Augmenté à 150 caractères
     code_postal = db.Column(db.String(20), nullable=True)  # Augmenté à 20 caractères
@@ -32,7 +42,8 @@ class User(UserMixin, db.Model):
     is_active = db.Column(db.Boolean, default=True, nullable=False)
     email_confirmed = db.Column(db.Boolean, default=False, nullable=False)
     photo_profil = db.Column(
-        db.String(500), nullable=True  # Augmenté à 500 caractères pour les chemins de fichiers longs
+        db.String(500),
+        nullable=True,  # Augmenté à 500 caractères pour les chemins de fichiers longs
     )  # Nom du fichier de la photo de profil
     age = db.Column(db.Integer, nullable=True)  # Âge de l'utilisateur
     # 'en_attente', 'approuve', 'rejete'
@@ -46,12 +57,18 @@ class User(UserMixin, db.Model):
 
     # Relations avec les publications et commentaires
     # posts sera défini après que Post soit défini
-    posts = db.relationship("Post", back_populates="auteur", cascade="all, delete-orphan")
+    posts = db.relationship(
+        "Post", back_populates="auteur", cascade="all, delete-orphan"
+    )
     # commentaires sera défini après que Commentaire soit défini
-    commentaires = db.relationship("Commentaire", back_populates="auteur", cascade="all, delete-orphan")
+    commentaires = db.relationship(
+        "Commentaire", back_populates="auteur", cascade="all, delete-orphan"
+    )
 
     # Relations avec les notifications
-    notifications = db.relationship("Notification", back_populates="utilisateur", lazy="dynamic")
+    notifications = db.relationship(
+        "Notification", back_populates="utilisateur", lazy="dynamic"
+    )
 
     # Relations avec l'administration des filières (through enseignant relationship)
     # filieres_admin relationship is not needed since we can access through enseignant
@@ -63,7 +80,7 @@ class User(UserMixin, db.Model):
         backref="user",
         cascade="all, delete-orphan",
         primaryjoin="User.id==PasswordResetToken.user_id",
-        lazy='dynamic',
+        lazy="dynamic",
     )
 
     # Relations avec la bibliothèque (models not implemented yet)
@@ -73,12 +90,22 @@ class User(UserMixin, db.Model):
     # documents_favoris = None
 
     # Relations avec les demandes de modification de profil
-    profile_update_requests = db.relationship("TeacherProfileUpdateRequest", back_populates="user", cascade="all, delete-orphan")
-    
+    profile_update_requests = db.relationship(
+        "TeacherProfileUpdateRequest",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
+
     # Quota d'images (2 images par heure)
-    image_quota_reset = db.Column(db.DateTime, default=datetime.utcnow)  # Dernière réinitialisation du quota
-    images_used_current_hour = db.Column(db.Integer, default=0)  # Images utilisées cette heure
-    total_images_generated = db.Column(db.Integer, default=0)  # Total d'images générées par l'utilisateur
+    image_quota_reset = db.Column(
+        db.DateTime, default=datetime.utcnow
+    )  # Dernière réinitialisation du quota
+    images_used_current_hour = db.Column(
+        db.Integer, default=0
+    )  # Images utilisées cette heure
+    total_images_generated = db.Column(
+        db.Integer, default=0
+    )  # Total d'images générées par l'utilisateur
 
     # Propriétés calculées
     @property
@@ -109,22 +136,22 @@ class User(UserMixin, db.Model):
 
     def is_enseignant(self):
         return self.role == "enseignant"
-    
+
     def can_generate_image(self):
         """Vérifie si l'utilisateur peut générer une image selon son quota"""
         from datetime import datetime, timedelta
-        
+
         now = datetime.utcnow()
-        
+
         # Vérifier si le quota doit être réinitialisé (toutes les heures)
         if now - self.image_quota_reset >= timedelta(hours=1):
             self.images_used_current_hour = 0
             self.image_quota_reset = now
             db.session.commit()
-        
+
         # Vérifier si l'utilisateur a atteint son quota de 2 images/heure
         return self.images_used_current_hour < 2
-    
+
     def use_image_quota(self):
         """Utilise une image du quota de l'utilisateur"""
         if self.can_generate_image():
@@ -133,20 +160,20 @@ class User(UserMixin, db.Model):
             db.session.commit()
             return True
         return False
-    
+
     def get_image_quota_status(self):
         """Retourne le statut du quota d'images"""
         from datetime import datetime
-        
+
         now = datetime.utcnow()
         time_until_reset = 60 - now.minute  # minutes until next hour
-        
+
         return {
             "can_generate": self.can_generate_image(),
             "used_current_hour": self.images_used_current_hour,
             "max_per_hour": 2,
             "total_generated": self.total_images_generated,
-            "minutes_until_reset": time_until_reset
+            "minutes_until_reset": time_until_reset,
         }
 
     def get_id(self):

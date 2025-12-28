@@ -1060,7 +1060,7 @@ EMAIL_TEMPLATES = {
             </div>
         </body>
         </html>
-        """
+        """,
     },
 }
 
@@ -1130,10 +1130,10 @@ def send_email(to, subject, template_name, **kwargs):
         return False
 
 
-
 def send_confirmation_email(user):
     """Envoie un email de confirmation d'inscription"""
     from flask import url_for
+
     login_url = url_for("auth.login", _external=True)
 
     return send_email(
@@ -1276,3 +1276,20 @@ def send_room_invitation(etudiant, enseignant, course, room_token, app):
         course=course,
         join_url=join_url,
     )
+
+
+def send_bulk_notification_email(users, notification):
+    """
+    Envoie une notification globale à plusieurs utilisateurs
+    """
+    success_count = 0
+    failed_count = 0
+
+    for user in users:
+        # Avoid circular import issues by using the function here
+        if send_global_notification_email(user, notification):
+            success_count += 1
+        else:
+            failed_count += 1
+
+    return success_count, failed_count

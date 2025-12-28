@@ -23,10 +23,12 @@ pg_dump_path = r"C:\Program Files\PostgreSQL\18\bin\pg_dump.exe"
 
 cmd = [
     pg_dump_path,
-    "-U", user,
-    "-h", host,
-    "-d", dbname,
-    "-f", output_file
+    "-U", user, # utilisateur
+    "-h", host, # hote
+    "-d", dbname, # base de données
+    "-f", output_file, # fichier de sortie
+    "-p", "5432", # port
+    "-E", "UTF8", # encodage
 ]
 
 try:

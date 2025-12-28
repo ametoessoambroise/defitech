@@ -1,7 +1,10 @@
 from flask import Flask
+from markupsafe import Markup, escape
+import json
 
 import os
 import logging
+from datetime import datetime
 from dotenv import load_dotenv
 from app.extensions import (
     db,
@@ -12,12 +15,11 @@ from app.extensions import (
     socketio,
     study_buddy_ai,
 )
-from app.models.global_notification import GlobalNotification
 from app.services.defai_permissions import DEFAI_ALLOWED_ENDPOINTS
 from app.sockets.videoconference import register_socketio_handlers
 
 # Load environment variables from .env file
-env_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env')
+env_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
 load_dotenv(dotenv_path=env_path)
 
 # Configure logger
@@ -83,6 +85,11 @@ def create_app(config_class=None):
     socketio.init_app(app, cookie=False, cors_allowed_origins="*")
     study_buddy_ai.init_app(app)
 
+    # Initialize models
+    from app.models import init_models
+
+    init_models()
+
     login_manager.login_view = "auth.login"
 
     # Register Blueprints
@@ -93,6 +100,7 @@ def create_app(config_class=None):
     from app.routes.main import main_bp
     from app.routes.videoconference import bp as videoconference_bp
     from app.routes.study_buddy import study_buddy_bp
+    from app.routes.notifications import notifications_bp
 
     from app.routes.role_endpoints import role_data_bp
     from app.routes.analytics import analytics_bp
@@ -122,6 +130,7 @@ def create_app(config_class=None):
     app.register_blueprint(resources_bp)
     app.register_blueprint(study_planner_bp)
     app.register_blueprint(ai_assistant_bp)
+    app.register_blueprint(notifications_bp)
 
     # Register SocketIO handlers
     register_socketio_handlers(socketio)
@@ -129,15 +138,59 @@ def create_app(config_class=None):
     # Register SocketIO CSRF Middleware
     SocketIOCSRFMiddleware(app)
 
-    # Context Processor for Global Notifications
     @app.context_processor
-    def inject_global_notifications():
-        return dict(get_global_notifications=GlobalNotification.get_notifications_actives)
+    def inject_global_variables():
+        try:
+            from app.models.global_notification import GlobalNotification
+
+            now = datetime.now()
+            notifications = GlobalNotification.get_notifications_actives()
+        except Exception:
+            notifications = []
+            now = datetime.now()
+
+        return dict(
+            global_notifications=notifications,
+            global_notifications_date_now=now,
+            get_global_notifications=(
+                GlobalNotification.get_notifications_actives
+                if "GlobalNotification" in globals() or "GlobalNotification" in locals()
+                else lambda: []
+            ),
+            now=now,
+        )
+
+    @app.template_filter("nl2br")
+    def nl2br_filter(value):
+        """Convert newlines to <br/> and escape HTML."""
+        if value is None:
+            return ""
+        text_val = str(value).replace("\r\n", "\n").replace("\r", "\n")
+        escaped = escape(text_val)
+        return Markup(escaped.replace("\n", "<br/>"))
+
+    @app.template_filter("from_json")
+    @app.template_filter("loads")
+    def from_json_filter(value):
+        """Convert JSON string to Python object."""
+        if not value:
+            return []
+        try:
+            if isinstance(value, str):
+                return json.loads(value)
+            return value
+        except (json.JSONDecodeError, TypeError):
+            return []
 
     # Initialize AI Generator
     import app.services.ai_image_generator as ai_gen
-    model_path = os.path.join(os.path.dirname(app.root_path), "ImageSearch", "data", "image_model.h5")
-    encoder_path = os.path.join(os.path.dirname(app.root_path), "ImageSearch", "data", "label_encoder.pkl")
+
+    model_path = os.path.join(
+        os.path.dirname(app.root_path), "ImageSearch", "data", "image_model.h5"
+    )
+    encoder_path = os.path.join(
+        os.path.dirname(app.root_path), "ImageSearch", "data", "label_encoder.pkl"
+    )
     app.ai_generator = ai_gen.AIImageGenerator(model_path, encoder_path)
 
     return app
