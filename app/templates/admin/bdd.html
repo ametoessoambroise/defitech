@@ -822,14 +822,14 @@ SELECT * FROM </textarea
 
     // Points de terminaison API
     endpoints: {
-      getTables: "/api/bdd/tables",
+      getTables: "/admin/api/bdd/tables",
       getTableStructure: (tableName) =>
-        `/api/bdd/structure/${encodeURIComponent(tableName)}`,
+        `/admin/api/bdd/structure/${encodeURIComponent(tableName)}`,
       getTableData: (tableName, page = 1, limit = 50) =>
-        `/api/bdd/data/${encodeURIComponent(
+        `/admin/api/bdd/data/${encodeURIComponent(
           tableName
         )}?page=${page}&limit=${limit}`,
-      executeSql: "/api/bdd/execute",
+      executeSql: "/admin/api/bdd/execute",
     },
 
     // Constantes

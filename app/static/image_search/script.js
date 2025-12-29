@@ -311,7 +311,7 @@ function displayAnalysisResults(analysis) {
 async function fetchPopularImages() {
     try {
         showLoader('searchLoader');
-        const response = await fetch(`${CONFIG.BACKEND_URL}/api/search?query=popular&per_page=${CONFIG.DEFAULT_IMAGES_PER_PAGE}`);
+        const response = await fetch(`${CONFIG.BACKEND_URL}/api/search/images?query=popular&per_page=${CONFIG.DEFAULT_IMAGES_PER_PAGE}`);
 
         if (!response.ok) throw new Error('Erreur lors du chargement des images');
 

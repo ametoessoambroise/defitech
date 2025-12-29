@@ -279,7 +279,9 @@ community_content %}
     </form>
   </div>
 </div>
-{% endblock %} {% block extra_js %}
+{% endblock %}
+
+{% block extra_js %}
 <script src="{{ url_for('static', filename='js/cloudinary_uploader.js') }}"></script>
 <script>
   document.addEventListener("DOMContentLoaded", function () {
@@ -376,3 +378,4 @@ community_content %}
     }
   });
 </script>
+{% endblock %}

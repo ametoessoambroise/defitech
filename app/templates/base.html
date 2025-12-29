@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}{% endblock %}</title>
 
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
     <!-- Font Awesome -->
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
@@ -15,10 +12,16 @@
     />
 
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
 
+    <!-- Tailwind CSS (local) -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/compiled.css') }}"
+    />
+    
     <!-- Custom CSS -->
     <link
       rel="stylesheet"
@@ -123,45 +126,6 @@
         border-top: 6px solid #764ba2;
       }
     </style>
-
-    <script>
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              primary: {
-                50: "#eef2ff",
-                100: "#e0e7ff",
-                200: "#c7d2fe",
-                300: "#a5b4fc",
-                400: "#818cf8",
-                500: "#6366f1",
-                600: "#4f46e5",
-                700: "#4338ca",
-                800: "#3730a3",
-                900: "#312e81",
-              },
-            },
-            animation: {
-              "fade-in": "fadeIn 0.5s ease-in-out",
-              "slide-up": "slideUp 0.5s ease-out",
-              "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-            },
-            keyframes: {
-              fadeIn: {
-                "0%": { opacity: "0", transform: "translateY(10px)" },
-                "100%": { opacity: "1", transform: "translateY(0)" },
-              },
-              slideUp: {
-                "0%": { opacity: "0", transform: "translateY(20px)" },
-                "100%": { opacity: "1", transform: "translateY(0)" },
-              },
-            },
-          },
-        },
-      };
-    </script>
 
     {% block extra_css %}{% endblock %}
   </head>

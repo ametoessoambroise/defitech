@@ -1,0 +1,17 @@
+{
+    "name": "defitech",
+    "version": "1.0.0",
+    "description": "Application DEFITECH",
+    "scripts": {
+        "build:css": "tailwindcss -i ./app/static/css/input.css -o ./app/static/css/compiled.css --minify",
+        "dev": "npm run build:css"
+    },
+    "dependencies": {
+        "@tailwindcss/forms": "^0.5.3",
+        "autoprefixer": "^10.4.14",
+        "postcss": "^8.4.27"
+    },
+    "devDependencies": {
+        "tailwindcss": "^3.3.3"
+    }
+}

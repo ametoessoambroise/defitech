@@ -3,8 +3,14 @@
  * Handles uploading files to Cloudinary using unsigned presets.
  */
 
-const CLOUDINARY_CLOUD_NAME = 'dmokvhpjt'; // Your Cloud name
-const CLOUDINARY_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/upload`;
+// Vérifier si les variables existent déjà avant de les déclarer
+if (typeof window.CLOUDINARY_CLOUD_NAME === 'undefined') {
+    window.CLOUDINARY_CLOUD_NAME = 'dmokvhpjt'; // Your Cloud name
+}
+
+if (typeof window.CLOUDINARY_UPLOAD_URL === 'undefined') {
+    window.CLOUDINARY_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${window.CLOUDINARY_CLOUD_NAME}/upload`;
+}
 
 /**
  * Uploads a file to Cloudinary.

@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}{% endblock %}</title>
 
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Styles globaux -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/compiled.css') }}">
 
     <!-- Font Awesome -->
     <link
