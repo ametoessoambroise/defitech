@@ -27,7 +27,16 @@
 
     <!-- Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/compiled.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.5/purify.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/compiled.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github-dark.min.css"
+    />
 
     <style>
       /* Custom Scrollbar */
@@ -325,78 +334,67 @@
 
       <!-- Main Chat Area -->
       <main
-        class="flex-1 flex flex-col w-full bg-white dark:bg-dark-bg relative"
+        class="flex-1 flex flex-col w-full bg-white dark:bg-dark-bg relative h-screen"
       >
         <!-- Messages Container -->
-        <div
-          id="messages"
-          class="flex-1 overflow-y-auto px-4 py-6 scroll-smooth"
-        >
-          <!-- Welcome State -->
+        <div id="messages" class="flex-1 overflow-y-auto w-full scroll-smooth">
           <div
-            id="welcomeState"
-            class="h-full flex flex-col items-center justify-center text-center p-8 opacity-0 animate-fade-in"
-            style="animation-delay: 0.1s; animation-fill-mode: forwards"
+            class="max-w-4xl mx-auto px-4 py-12 flex flex-col gap-8 min-h-full"
           >
+            <!-- Welcome State -->
             <div
-              class="w-24 h-24 rounded-2xl bg-gradient-to-tr from-primary-500 to-purple-600 flex items-center justify-center shadow-2xl shadow-primary-500/20 mb-8 animate-pulse-slow"
+              id="welcomeState"
+              class="flex-1 flex flex-col items-center justify-center text-center p-8 transition-opacity duration-300"
             >
-              <i class="fas fa-robot text-4xl text-white"></i>
-            </div>
-            <h2
-              class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-400 mb-4"
-            >
-              Bonjour, {{ current_user.prenom }}
-            </h2>
-            <p class="text-gray-500 dark:text-gray-400 max-w-md mb-8">
-              Je suis defAI, ton assistant personnel. Je peux t'aider à réviser,
-              organiser ton emploi du temps ou répondre à tes questions.
-            </p>
+              <div
+                class="w-24 h-24 rounded-2xl bg-gradient-to-tr from-primary-500 to-purple-600 flex items-center justify-center shadow-2xl shadow-primary-500/20 mb-8 animate-pulse-slow"
+              >
+                <i class="fas fa-robot text-4xl text-white"></i>
+              </div>
+              <h2
+                class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-400 mb-4"
+              >
+                Bonjour, {{ current_user.prenom }}
+              </h2>
+              <p class="text-gray-500 dark:text-gray-400 max-w-md mb-8">
+                Je suis defAI, ton assistant personnel. Pose-moi tes questions
+                directement ci-dessous.
+              </p>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl w-full">
-              <button
-                onclick="setInput('Peux-tu m\'aider à organiser mes révisions ?')"
-                class="p-4 rounded-xl border border-gray-200 dark:border-dark-border hover:border-primary-500 dark:hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-dark-surface transition-all text-left group"
+              <div
+                class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl w-full"
               >
-                <i
-                  class="fas fa-calendar-check text-primary-500 mb-2 group-hover:scale-110 transition-transform origin-left"
-                ></i>
-                <h3 class="font-medium text-sm">Planifier mes révisions</h3>
-              </button>
-              <button
-                onclick="setInput('Explique-moi le concept de...')"
-                class="p-4 rounded-xl border border-gray-200 dark:border-dark-border hover:border-primary-500 dark:hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-dark-surface transition-all text-left group"
-              >
-                <i
-                  class="fas fa-lightbulb text-yellow-500 mb-2 group-hover:scale-110 transition-transform origin-left"
-                ></i>
-                <h3 class="font-medium text-sm">Expliquer un concept</h3>
-              </button>
-              <button
-                onclick="setInput('Quelles sont mes notes récentes ?')"
-                class="p-4 rounded-xl border border-gray-200 dark:border-dark-border hover:border-primary-500 dark:hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-dark-surface transition-all text-left group"
-              >
-                <i
-                  class="fas fa-chart-line text-green-500 mb-2 group-hover:scale-110 transition-transform origin-left"
-                ></i>
-                <h3 class="font-medium text-sm">Voir mes notes</h3>
-              </button>
-              <button
-                onclick="setInput('Génère un quiz sur...')"
-                class="p-4 rounded-xl border border-gray-200 dark:border-dark-border hover:border-primary-500 dark:hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-dark-surface transition-all text-left group"
-              >
-                <i
-                  class="fas fa-question-circle text-purple-500 mb-2 group-hover:scale-110 transition-transform origin-left"
-                ></i>
-                <h3 class="font-medium text-sm">Générer un quiz</h3>
-              </button>
+                <button
+                  onclick="setInput('Peux-tu m\'aider à organiser mes révisions ?')"
+                  class="p-4 rounded-xl border border-gray-200 dark:border-dark-border hover:border-primary-500 dark:hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-dark-surface transition-all text-left group"
+                >
+                  <i
+                    class="fas fa-calendar-check text-primary-500 mb-2 group-hover:scale-110 transition-transform origin-left"
+                  ></i>
+                  <h3 class="font-medium text-sm">Planifier mes révisions</h3>
+                </button>
+                <button
+                  onclick="setInput('Explique-moi le concept de...')"
+                  class="p-4 rounded-xl border border-gray-200 dark:border-dark-border hover:border-primary-500 dark:hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-dark-surface transition-all text-left group"
+                >
+                  <i
+                    class="fas fa-lightbulb text-yellow-500 mb-2 group-hover:scale-110 transition-transform origin-left"
+                  ></i>
+                  <h3 class="font-medium text-sm">Expliquer un concept</h3>
+                </button>
+              </div>
+            </div>
+
+            <!-- Chat Stream -->
+            <div id="chatStream" class="flex flex-col gap-8 pb-32">
+              <!-- Messages will be injected here -->
             </div>
           </div>
         </div>
 
-        <!-- Input Area -->
+        <!-- Input Area (Fixed at bottom) -->
         <div
-          class="p-4 bg-white/80 dark:bg-dark-bg/80 backdrop-blur-lg border-t border-gray-200 dark:border-dark-border"
+          class="absolute bottom-0 left-0 right-0 p-4 bg-white/90 dark:bg-dark-bg/90 backdrop-blur-lg border-t border-gray-200 dark:border-dark-border z-10"
         >
           <div class="max-w-4xl mx-auto relative">
             <form id="chatForm" class="relative group">
@@ -421,8 +419,6 @@
                   id="voiceInputBtn"
                   class="p-2 text-gray-400 hover:text-red-500 transition-colors rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700"
                   title="Saisie vocale"
-                  aria-label="Saisie vocale"
-                  aria-hidden="false"
                 >
                   <i class="fas fa-microphone"></i>
                 </button>
@@ -431,7 +427,6 @@
                   id="attachBtn"
                   class="p-2 text-gray-400 hover:text-primary-500 transition-colors rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700"
                   title="Joindre un fichier"
-                  aria-label="Joindre un fichier"
                 >
                   <i class="fas fa-paperclip"></i>
                 </button>

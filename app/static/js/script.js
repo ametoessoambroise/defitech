@@ -13,6 +13,7 @@ const CONFIG = {
     },
     selectors: {
         messages: '#messages',
+        chatStream: '#chatStream',
         form: '#chatForm',
         input: '#userInput',
         sidebar: '#sidebar',
@@ -190,7 +191,10 @@ const UI = {
 
     clearActiveConversation() {
         State.currentConversationId = null;
-        this.elements.messages.innerHTML = '';
+        const chatStream = this.elements.chatStream;
+        if (chatStream) {
+            chatStream.innerHTML = '';
+        }
         if (this.elements.welcome) this.elements.welcome.style.display = 'flex';
         // Reset sidebar selection
         document.querySelectorAll('.conversation-item').forEach(el => {
@@ -215,17 +219,20 @@ const UI = {
                 State.pagination.hasMore = data.pagination.has_more;
             }
 
-            this.elements.messages.innerHTML = ''; // Clear existing
-            this.elements.messages.classList.remove('hidden');
+            // Clear existing and show
+            const chatStream = this.elements.chatStream;
+            if (chatStream) {
+                chatStream.innerHTML = '';
 
-            if (this.elements.welcome) {
-                this.elements.welcome.style.display = messages.length ? 'none' : 'flex';
+                if (this.elements.welcome) {
+                    this.elements.welcome.style.display = messages.length ? 'none' : 'flex';
+                }
+
+                messages.forEach(msg => {
+                    const isUser = msg.sender_id === (data.user_id || 0) || msg.message_type === 'user';
+                    chatStream.appendChild(this.createMessageElement(msg.content, isUser));
+                });
             }
-
-            messages.forEach(msg => {
-                const isUser = msg.sender_id === (data.user_id || 0) || msg.message_type === 'user';
-                this.elements.messages.appendChild(this.createMessageElement(msg.content, isUser));
-            });
 
             this.scrollToBottom();
             hljs.highlightAll();
@@ -280,7 +287,10 @@ const UI = {
                 const isUser = msg.sender_id === (data.user_id || 0) || msg.message_type === 'user';
                 fragment.appendChild(this.createMessageElement(msg.content, isUser));
             });
-            this.elements.messages.insertBefore(fragment, this.elements.messages.firstChild);
+            const chatStream = this.elements.chatStream;
+            if (chatStream) {
+                chatStream.insertBefore(fragment, chatStream.firstChild);
+            }
 
             hljs.highlightAll();
 
@@ -313,15 +323,39 @@ const UI = {
     },
 
     setupMarkdown() {
+        // Configuration de marked pour le rendu Markdown
         marked.setOptions({
             highlight: function (code, lang) {
-                const language = hljs.getLanguage(lang) ? lang : 'plaintext';
-                return hljs.highlight(code, { language }).value;
+                try {
+                    if (lang && hljs.getLanguage(lang)) {
+                        return hljs.highlight(code, { language: lang, ignoreIllegals: true }).value;
+                    }
+                    return hljs.highlightAuto(code).value;
+                } catch (e) {
+                    console.warn('Erreur de coloration syntaxique:', e);
+                    return code; // Retourne le code non coloré en cas d'erreur
+                }
             },
             langPrefix: 'hljs language-',
             breaks: true,
-            gfm: true
+            gfm: true,
+            smartLists: true,
+            smartypants: true,
+            xhtml: true
         });
+
+        // Configuration de DOMPurify pour la sécurité
+        if (window.DOMPurify) {
+            DOMPurify.setConfig({
+                ALLOWED_TAGS: [
+                    'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'p', 'a', 'ul', 'ol',
+                    'li', 'b', 'i', 'strong', 'em', 'strike', 'code', 'hr', 'br', 'div',
+                    'table', 'thead', 'tbody', 'tr', 'th', 'td', 'pre', 'span', 'img'
+                ],
+                ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class', 'target', 'rel'],
+                ALLOW_DATA_ATTR: false
+            });
+        }
     },
 
     setupSpeechRecognition() {
@@ -405,48 +439,97 @@ const UI = {
     },
 
     createMessageElement(content, isUser) {
+        // Container globable du message
         const div = document.createElement('div');
-        div.className = `flex w-full mb-6 animate-slide-up ${isUser ? 'justify-end' : 'justify-start'}`;
+        div.className = `flex flex-col w-full animate-fade-in ${isUser ? 'items-end' : 'items-start'}`;
 
-        const bubble = document.createElement('div');
-        const baseClasses = "max-w-[85%] lg:max-w-[70%] rounded-2xl p-4 shadow-sm relative group";
-        const userClasses = "bg-primary-600 text-white rounded-br-sm";
-        const aiClasses = "glass dark:bg-dark-surface text-gray-800 dark:text-gray-100 border border-gray-200 dark:border-dark-border rounded-bl-sm";
-
-        bubble.className = `${baseClasses} ${isUser ? userClasses : aiClasses}`;
+        // Header (Nom de l'émetteur)
+        const header = document.createElement('div');
+        header.className = "flex items-center gap-2 mb-2 px-1";
 
         if (isUser) {
-            bubble.innerHTML = `<p class="whitespace-pre-wrap text-sm leading-relaxed">${this.escapeHtml(content)}</p>`;
+            header.innerHTML = `
+                <span class="text-xs font-semibold text-gray-500 dark:text-gray-400">VOUS</span>
+                <div class="w-6 h-6 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                    <i class="fas fa-user text-[10px] text-gray-500 dark:text-gray-400"></i>
+                </div>
+            `;
+            div.className = 'flex flex-col w-full animate-fade-in items-end'; // Align user to right
         } else {
-            const parsed = DOMPurify.sanitize(marked.parse(content));
-            bubble.innerHTML = `<div class="markdown-body">${parsed}</div>`;
-
-            // Add copy button
-            const copyBtn = document.createElement('button');
-            copyBtn.className =
-                "absolute top-2 right-2 opacity-0 group-hover:opacity-100 p-1.5 rounded bg-gray-100/50 hover:bg-white dark:bg-black/20 dark:hover:bg-black/40 transition-all text-xs";
-            copyBtn.innerHTML = '<i class="fas fa-copy"></i>';
-
-            copyBtn.onclick = () => {
-                this.copyToClipboard(content);
-
-                const icon = copyBtn.querySelector('i');
-
-                // Change icon to check
-                icon.classList.remove('fa-copy');
-                icon.classList.add('fa-check');
-
-                // Restore after 2 sec
-                setTimeout(() => {
-                    icon.classList.remove('fa-check');
-                    icon.classList.add('fa-copy');
-                }, 2000);
-            };
-
-            bubble.appendChild(copyBtn);
+            header.innerHTML = `
+                <div class="w-6 h-6 rounded-full bg-gradient-to-tr from-primary-500 to-purple-600 flex items-center justify-center shadow-lg shadow-primary-500/20">
+                    <i class="fas fa-robot text-[10px] text-white"></i>
+                </div>
+                <span class="text-xs font-semibold text-primary-600 dark:text-primary-400">defAI</span>
+            `;
+            div.className = 'flex flex-col w-full animate-fade-in items-start'; // Align AI to left
         }
 
-        div.appendChild(bubble);
+        div.appendChild(header);
+
+        // Contenu du message
+        const messageBox = document.createElement('div');
+        // On retire le style "bulle" pour l'IA, on garde un léger fond pour l'utilisateur
+
+        if (isUser) {
+            messageBox.className = "px-4 py-3 bg-gray-100 dark:bg-dark-surface rounded-2xl rounded-tr-sm text-gray-800 dark:text-gray-100 max-w-[85%] text-sm";
+            messageBox.textContent = content; // Texte brut pour l'utilisateur
+        } else {
+            // Style "Document" pour l'IA : pas de fond contraint, pleine largeur relative
+            messageBox.className = "w-full pl-0 lg:pl-8 text-gray-800 dark:text-gray-100";
+
+            try {
+                // 1. Parsing Markdown -> HTML
+                // marked.parse renvoie une string HTML
+                const rawHtml = marked.parse(content);
+
+                // 2. Sanitization HTML (Sécurité)
+                // On nettoie le HTML généré, pas le Markdown source !
+                const cleanHtml = DOMPurify.sanitize(rawHtml, {
+                    ALLOWED_TAGS: [
+                        'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'p', 'a', 'ul', 'ol',
+                        'li', 'b', 'i', 'strong', 'em', 'strike', 'code', 'hr', 'br', 'div',
+                        'table', 'thead', 'tbody', 'tr', 'th', 'td', 'pre', 'span', 'img', 'kbd'
+                    ],
+                    ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class', 'target', 'rel', 'data-language'],
+                    FORBID_TAGS: ['script', 'style', 'iframe', 'form', 'object', 'embed', 'link'],
+                    ALLOW_DATA_ATTR: false
+                });
+
+                // 3. Injection sécurisée
+                messageBox.innerHTML = `
+                    <div class="markdown-body prose dark:prose-invert max-w-none">
+                        ${cleanHtml}
+                    </div>
+                `;
+
+                // Highlight.js
+                messageBox.querySelectorAll('pre code').forEach((block) => {
+                    hljs.highlightElement(block);
+                });
+
+                // Bouton de copie
+                // On l'ajoute flottant à droite du bloc
+                const copyContainer = document.createElement('div');
+                copyContainer.className = "flex justify-end mt-2 opacity-0 group-hover:opacity-100 transition-opacity";
+
+                const copyBtn = document.createElement('button');
+                copyBtn.className = "text-xs text-gray-400 hover:text-primary-500 flex items-center gap-1";
+                copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copier';
+                copyBtn.onclick = () => {
+                    this.copyToClipboard(content);
+                    this.showToast('Copié !', 'success');
+                };
+                copyContainer.appendChild(copyBtn);
+                // messageBox.appendChild(copyContainer); // Optionnel, peut être bruyant sur chaque message
+
+            } catch (error) {
+                console.error('Erreur rendu Markdown:', error);
+                messageBox.textContent = content;
+            }
+        }
+
+        div.appendChild(messageBox);
         return div;
     },
 
@@ -635,7 +718,7 @@ const UI = {
         // Handle attachment button & file input
         if (this.elements.attachBtn && this.elements.fileInput) {
             this.elements.attachBtn.addEventListener('click', () => this.elements.fileInput.click());
-            
+
             this.elements.fileInput.addEventListener('change', async (e) => {
                 const files = e.target.files;
                 if (!files || files.length === 0) return;
@@ -660,10 +743,10 @@ const UI = {
                         // Let's check file type.
                         let preset = 'documents_upload';
                         let resourceType = 'auto';
-                        
+
                         // Proceed with upload
                         const result = await uploadToCloudinary(file, preset, resourceType);
-                        
+
                         State.pendingAttachments.push({
                             type: file.type.startsWith('image/') ? 'image' : 'file',
                             name: file.name,
@@ -672,11 +755,11 @@ const UI = {
                             mime_type: file.type || result.format || 'application/octet-stream'
                         });
                     }
-                    
+
                     this.showToast(`${files.length} fichier(s) prêt(s) à l'envoi`, 'success');
                     this.elements.attachBtn.classList.remove('animate-pulse');
                     this.elements.attachBtn.classList.add('text-green-500'); // Indicate success
-                    
+
                 } catch (error) {
                     console.error('Upload failed:', error);
                     this.showToast("Erreur lors de l'upload: " + error.message, 'error');
@@ -713,9 +796,12 @@ const UI = {
 
         // Add User Message (Text)
         if (message) {
-            this.elements.messages.appendChild(this.createMessageElement(message, true));
+            const chatStream = this.elements.chatStream;
+            if (chatStream) {
+                chatStream.appendChild(this.createMessageElement(message, true));
+            }
         }
-        
+
         // Add User Message (Attachments Visual feedback - optional, or just let backend echo)
         // For better UX, we could show them. For now, we trust the backend echo/confirmation.
 
@@ -736,7 +822,10 @@ const UI = {
 
         // Show Typing Indicator
         const typingObj = this.createTypingIndicator();
-        this.elements.messages.appendChild(typingObj);
+        const chatStream = this.elements.chatStream;
+        if (chatStream) {
+            chatStream.appendChild(typingObj);
+        }
         this.scrollToBottom();
 
         try {
@@ -776,7 +865,10 @@ const UI = {
             const aiContent = data.response || data.message || "Je ne sais pas quoi répondre. veuillez réessayer";
 
             // Add AI Message
-            this.elements.messages.appendChild(this.createMessageElement(aiContent, false));
+            const chatStream = this.elements.chatStream;
+            if (chatStream) {
+                chatStream.appendChild(this.createMessageElement(aiContent, false));
+            }
             this.scrollToBottom();
 
             // Highlight Code Blocks
@@ -785,7 +877,10 @@ const UI = {
         } catch (error) {
             console.error('Error:', error);
             typingObj.remove();
-            this.elements.messages.appendChild(this.createMessageElement(`Désolé, une erreur est survenue: ${error.message}`, false));
+            const chatStream = this.elements.chatStream;
+            if (chatStream) {
+                chatStream.appendChild(this.createMessageElement(`Désolé, une erreur est survenue: ${error.message}`, false));
+            }
             this.scrollToBottom();
         } finally {
             State.isTyping = false;
