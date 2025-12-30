@@ -159,7 +159,7 @@
           <!-- Logo et navigation principale -->
           <div class="flex items-center space-x-4 sm:space-x-6 flex-1 min-w-0">
             <a
-              href="{{ url_for('main.index') }}"
+              href="{{ if current_user.role == 'admin' {{ url_for('admin.dashboard') }} elif current_user.role == 'enseignant' {{ url_for('teachers.dashboard') }} elif current_user.role == 'etudiant' {{ url_for('students.dashboard') }} else url_for('main.index') }}"
               class="flex items-center space-x-2 flex-shrink-0"
               data-tooltip="Retour à l'accueil"
             >

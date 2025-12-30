@@ -312,7 +312,7 @@ class NotificationManager {
 
   async markAllAsRead() {
     try {
-      const response = await fetch("/api/notifications/mark-all-read", {
+      const response = await fetch("/notifications/api/mark-all-read", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -373,7 +373,7 @@ class NotificationManager {
     }
 
     try {
-      const response = await fetch("/api/notifications/clear-all", {
+      const response = await fetch("/notifications/api/clear-all", {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

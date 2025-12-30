@@ -1,13 +1,15 @@
-{% extends "base.html" %}
-{% block title %}{{ current_user.nom }} {{ current_user.prenom }} | Mes étudiants{% endblock %}
-{% block content %}
+{% extends "base.html" %} {% block title %}{{ current_user.nom }} {{
+current_user.prenom }} | Mes étudiants{% endblock %} {% block content %}
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
   <!-- Breadcrumb -->
   <nav class="flex mb-6" aria-label="Breadcrumb">
     <ol class="flex items-center space-x-4">
       <li>
         <div>
-          <a href="{{ url_for('teachers.dashboard') }}" class="text-gray-500 hover:text-gray-700 transition-colors">
+          <a
+            href="{{ url_for('teachers.dashboard') }}"
+            class="text-gray-500 hover:text-gray-700 transition-colors"
+          >
             <i class="fas fa-tachometer-alt mr-2"></i>
             Dashboard
           </a>
@@ -31,27 +33,30 @@
   </div>
 
   <!-- Flash Messages -->
-  {% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-  {% for category, message in messages %}
+  {% with messages = get_flashed_messages(with_categories=true) %} {% if
+  messages %} {% for category, message in messages %}
   <div
-    class="mb-4 p-4 rounded-lg {% if category == 'success' %}bg-green-50 border border-green-200 text-green-800{% elif category == 'error' %}bg-red-50 border border-red-200 text-red-800{% elif category == 'warning' %}bg-yellow-50 border border-yellow-200 text-yellow-800{% else %}bg-blue-50 border border-blue-200 text-blue-800{% endif %} flex items-center shadow-sm">
+    class="mb-4 p-4 rounded-lg {% if category == 'success' %}bg-green-50 border border-green-200 text-green-800{% elif category == 'error' %}bg-red-50 border border-red-200 text-red-800{% elif category == 'warning' %}bg-yellow-50 border border-yellow-200 text-yellow-800{% else %}bg-blue-50 border border-blue-200 text-blue-800{% endif %} flex items-center shadow-sm"
+  >
     <i
-      class="fas {% if category == 'success' %}fa-check-circle{% elif category == 'error' %}fa-exclamation-circle{% elif category == 'warning' %}fa-exclamation-triangle{% else %}fa-info-circle{% endif %} mr-3"></i>
+      class="fas {% if category == 'success' %}fa-check-circle{% elif category == 'error' %}fa-exclamation-circle{% elif category == 'warning' %}fa-exclamation-triangle{% else %}fa-info-circle{% endif %} mr-3"
+    ></i>
     <span>{{ message }}</span>
   </div>
-  {% endfor %}
-  {% endif %}
-  {% endwith %}
+  {% endfor %} {% endif %} {% endwith %}
 
   <!-- Statistiques -->
   {% if filieres_enseignees and annees_enseignees %}
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-    <div class="bg-white overflow-hidden shadow-md rounded-xl border border-gray-100 hover:shadow-lg transition-shadow">
+    <div
+      class="bg-white overflow-hidden shadow-md rounded-xl border border-gray-100 hover:shadow-lg transition-shadow"
+    >
       <div class="p-6">
         <div class="flex items-center">
           <div class="flex-shrink-0">
-            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+            <div
+              class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center"
+            >
               <i class="fas fa-user-graduate text-blue-600 text-xl"></i>
             </div>
           </div>
@@ -69,11 +74,15 @@
       </div>
     </div>
 
-    <div class="bg-white overflow-hidden shadow-md rounded-xl border border-gray-100 hover:shadow-lg transition-shadow">
+    <div
+      class="bg-white overflow-hidden shadow-md rounded-xl border border-gray-100 hover:shadow-lg transition-shadow"
+    >
       <div class="p-6">
         <div class="flex items-center">
           <div class="flex-shrink-0">
-            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+            <div
+              class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center"
+            >
               <i class="fas fa-graduation-cap text-green-600 text-xl"></i>
             </div>
           </div>
@@ -91,11 +100,15 @@
       </div>
     </div>
 
-    <div class="bg-white overflow-hidden shadow-md rounded-xl border border-gray-100 hover:shadow-lg transition-shadow">
+    <div
+      class="bg-white overflow-hidden shadow-md rounded-xl border border-gray-100 hover:shadow-lg transition-shadow"
+    >
       <div class="p-6">
         <div class="flex items-center">
           <div class="flex-shrink-0">
-            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+            <div
+              class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center"
+            >
               <i class="fas fa-calendar-alt text-purple-600 text-xl"></i>
             </div>
           </div>
@@ -116,11 +129,16 @@
   {% endif %}
 
   <!-- Liste des étudiants -->
-  <div class="bg-white shadow-md rounded-xl border border-gray-100 overflow-hidden">
+  <div
+    class="bg-white shadow-md rounded-xl border border-gray-100 overflow-hidden"
+  >
     {% if etudiants_data %}
     <div class="px-6 py-5 border-b border-gray-200 bg-gray-50">
       <h3 class="text-lg font-semibold text-gray-900">
-        Liste des étudiants <span class="text-gray-500 font-normal">({{ etudiants_data|length }})</span>
+        Liste des étudiants
+        <span class="text-gray-500 font-normal"
+          >({{ etudiants_data|length }})</span
+        >
       </h3>
     </div>
 
@@ -131,8 +149,11 @@
           <div class="flex items-center flex-1 min-w-0">
             <div class="flex-shrink-0">
               <div
-                class="h-12 w-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center shadow-sm">
-                <span class="text-white font-semibold text-sm">{{ user.prenom[:1] }}{{ user.nom[:1] }}</span>
+                class="h-12 w-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center shadow-sm"
+              >
+                <span class="text-white font-semibold text-sm"
+                  >{{ user.prenom[:1] }}{{ user.nom[:1] }}</span
+                >
               </div>
             </div>
             <div class="ml-4 flex-1 min-w-0">
@@ -142,13 +163,15 @@
                 </h4>
                 {% if etudiant.numero_etudiant %}
                 <span
-                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                >
                   {{ etudiant.numero_etudiant }}
                 </span>
                 {% endif %}
               </div>
               <div class="text-sm text-gray-600 mb-1">
-                <i class="fas fa-envelope text-gray-400 mr-1"></i>{{ user.email }}
+                <i class="fas fa-envelope text-gray-400 mr-1"></i>{{ user.email
+                }}
               </div>
               <div class="flex items-center space-x-3 text-sm">
                 <span class="inline-flex items-center text-gray-700">
@@ -160,22 +183,56 @@
                   <i class="fas fa-layer-group text-gray-400 mr-1"></i>
                   <span class="font-medium">{{ etudiant.annee }}</span>
                 </span>
+                <span class="inline-flex items-center text-gray-700">
+                  <i class="fas fa-layer-group text-gray-400 mr-1"></i>
+                  <span class="font-medium"
+                    ><a
+                      class="text-blue-600 hover:text-blue-800 transition-colors"
+                      href="{{ url_for('profile.view_profile', user_id=etudiant.id) }}"
+                      >Voir profil</a
+                    ></span
+                  >
+                </span>
               </div>
             </div>
           </div>
 
           <div class="flex items-center space-x-4 ml-4">
-            <span class="text-sm text-gray-600 whitespace-nowrap">Présent aujourd'hui</span>
+            <span class="text-sm text-gray-600 whitespace-nowrap"
+              >Présent aujourd'hui</span
+            >
             <div class="relative presence-toggle-wrapper">
               <label class="toggle-switch">
-                <input type="checkbox" class="presence-toggle" data-etudiant-id="{{ etudiant.id }}"
-                  data-etudiant-nom="{{ user.prenom }} {{ user.nom }}" data-matiere-id="{{ matiere_id_defaut }}" {% if
-                  presence_status and presence_status.get(etudiant.id) %}checked{% endif %} {% if not presence_status or
-                  not presence_status.get(etudiant.id) %}disabled{% endif %}>
+                <input
+                  type="checkbox"
+                  class="presence-toggle"
+                  data-etudiant-id="{{ etudiant.id }}"
+                  data-etudiant-nom="{{ user.prenom }} {{ user.nom }}"
+                  data-matiere-id="{{ matiere_id_defaut }}"
+                  {%
+                  if
+                  presence_status
+                  and
+                  presence_status.get(etudiant.id)
+                  %}checked{%
+                  endif
+                  %}
+                  {%
+                  if
+                  not
+                  presence_status
+                  or
+                  not
+                  presence_status.get(etudiant.id)
+                  %}disabled{%
+                  endif
+                  %}
+                />
                 <span class="toggle-slider"></span>
               </label>
               <span
-                class="tooltip-text absolute z-10 w-48 p-2 mt-2 text-xs text-white bg-gray-800 rounded shadow-lg opacity-0 invisible transition-all duration-300">
+                class="tooltip-text absolute z-10 w-48 p-2 mt-2 text-xs text-white bg-gray-800 rounded shadow-lg opacity-0 invisible transition-all duration-300"
+              >
                 Vérification du créneau horaire...
               </span>
             </div>
@@ -186,16 +243,17 @@
     </ul>
     {% else %}
     <div class="px-6 py-16 text-center">
-      <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+      <div
+        class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4"
+      >
         <i class="fas fa-user-graduate text-gray-400 text-3xl"></i>
       </div>
       <h3 class="text-lg font-semibold text-gray-900 mb-2">Aucun étudiant</h3>
       <p class="text-gray-600 max-w-md mx-auto">
-        {% if filieres_enseignees and annees_enseignees %}
-        Aucun étudiant n'est encore inscrit dans vos filières et années d'enseignement.
-        {% else %}
-        Aucune filière ou année ne vous a été assignée pour le moment.
-        {% endif %}
+        {% if filieres_enseignees and annees_enseignees %} Aucun étudiant n'est
+        encore inscrit dans vos filières et années d'enseignement. {% else %}
+        Aucune filière ou année ne vous a été assignée pour le moment. {% endif
+        %}
       </p>
     </div>
     {% endif %}
@@ -203,7 +261,9 @@
 
   <!-- Informations sur les filières enseignées -->
   {% if filieres_enseignees and annees_enseignees %}
-  <div class="mt-8 bg-white shadow-md rounded-xl border border-gray-100 overflow-hidden">
+  <div
+    class="mt-8 bg-white shadow-md rounded-xl border border-gray-100 overflow-hidden"
+  >
     <div class="px-6 py-5 border-b border-gray-200 bg-gray-50">
       <h3 class="text-lg font-semibold text-gray-900">
         Filières et années enseignées
@@ -219,7 +279,8 @@
           <div class="flex flex-wrap gap-2">
             {% for filiere in filieres_enseignees %}
             <span
-              class="inline-flex items-center px-3 py-1.5 rounded-lg text-sm font-medium bg-blue-100 text-blue-800 border border-blue-200">
+              class="inline-flex items-center px-3 py-1.5 rounded-lg text-sm font-medium bg-blue-100 text-blue-800 border border-blue-200"
+            >
               {{ filiere }}
             </span>
             {% endfor %}
@@ -233,7 +294,8 @@
           <div class="flex flex-wrap gap-2">
             {% for annee in annees_enseignees %}
             <span
-              class="inline-flex items-center px-3 py-1.5 rounded-lg text-sm font-medium bg-purple-100 text-purple-800 border border-purple-200">
+              class="inline-flex items-center px-3 py-1.5 rounded-lg text-sm font-medium bg-purple-100 text-purple-800 border border-purple-200"
+            >
               {{ annee }}
             </span>
             {% endfor %}
@@ -246,7 +308,10 @@
 </div>
 
 <!-- Notification Container -->
-<div id="notification-container" class="fixed bottom-4 right-4 z-50 space-y-2"></div>
+<div
+  id="notification-container"
+  class="fixed bottom-4 right-4 z-50 space-y-2"
+></div>
 
 <style>
   /* Toggle Switch Styles */
@@ -289,12 +354,12 @@
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   }
 
-  .toggle-switch input:checked+.toggle-slider {
+  .toggle-switch input:checked + .toggle-slider {
     background-color: #22c55e;
     box-shadow: inset 0 2px 4px rgba(34, 197, 94, 0.3);
   }
 
-  .toggle-switch input:focus+.toggle-slider {
+  .toggle-switch input:focus + .toggle-slider {
     box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
   }
 
@@ -334,7 +399,7 @@
   }
 
   .tooltip-text::after {
-    content: '';
+    content: "";
     position: absolute;
     top: 100%;
     left: 50%;
@@ -357,7 +422,8 @@
     margin-bottom: 10px;
     display: flex;
     align-items: center;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -1px rgba(0, 0, 0, 0.06);
     transform: translateY(20px);
     opacity: 0;
     transition: all 0.3s ease;
@@ -377,11 +443,11 @@
     margin-right: 8px;
   }
 
-  .toggle-switch input:checked+.toggle-slider:before {
+  .toggle-switch input:checked + .toggle-slider:before {
     transform: translateX(26px);
   }
 
-  .toggle-switch input:disabled+.toggle-slider {
+  .toggle-switch input:disabled + .toggle-slider {
     opacity: 0.5;
     cursor: not-allowed;
   }
@@ -476,21 +542,21 @@
 
 <script>
   (function () {
-    'use strict';
+    "use strict";
 
     // Fonction de notification améliorée
-    function showNotification(message, type = 'info') {
-      const container = document.getElementById('notification-container');
+    function showNotification(message, type = "info") {
+      const container = document.getElementById("notification-container");
       if (!container) return;
 
-      const notification = document.createElement('div');
+      const notification = document.createElement("div");
       notification.className = `notification ${type}`;
 
       const icons = {
-        success: 'fa-check-circle',
-        error: 'fa-exclamation-circle',
-        warning: 'fa-exclamation-triangle',
-        info: 'fa-info-circle'
+        success: "fa-check-circle",
+        error: "fa-exclamation-circle",
+        warning: "fa-exclamation-triangle",
+        info: "fa-info-circle",
       };
 
       notification.innerHTML = `
@@ -502,8 +568,8 @@
       container.appendChild(notification);
 
       // Fermeture au clic
-      const closeBtn = notification.querySelector('.notification-close');
-      closeBtn.addEventListener('click', () => {
+      const closeBtn = notification.querySelector(".notification-close");
+      closeBtn.addEventListener("click", () => {
         removeNotification(notification);
       });
 
@@ -514,7 +580,7 @@
     }
 
     function removeNotification(notification) {
-      notification.classList.add('hiding');
+      notification.classList.add("hiding");
       setTimeout(() => {
         if (notification.parentNode) {
           notification.parentNode.removeChild(notification);
@@ -523,60 +589,74 @@
     }
 
     // Récupération du token CSRF
-    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+    const csrfToken = document
+      .querySelector('meta[name="csrf-token"]')
+      ?.getAttribute("content");
 
     // Fonction pour vérifier si on est dans un créneau horaire valide
     async function verifierCreneauHoraire(matiereId) {
       try {
-        const response = await fetch(`{{ url_for('teachers.verifier_creneau') }}?matiere_id=${matiereId}`, {
-          headers: {
-            'X-CSRFToken': csrfToken
+        const response = await fetch(
+          `{{ url_for('teachers.verifier_creneau') }}?matiere_id=${matiereId}`,
+          {
+            headers: {
+              "X-CSRFToken": csrfToken,
+            },
           }
-        });
+        );
 
         if (!response.ok) {
-          throw new Error('Erreur lors de la vérification du créneau');
+          throw new Error("Erreur lors de la vérification du créneau");
         }
 
         return await response.json();
       } catch (error) {
-        console.error('Erreur vérification créneau:', error);
-        return { valide: false, message: 'Impossible de vérifier le créneau horaire' };
+        console.error("Erreur vérification créneau:", error);
+        return {
+          valide: false,
+          message: "Impossible de vérifier le créneau horaire",
+        };
       }
     }
 
     // Fonction pour mettre à jour l'état des toggles en fonction du créneau
     async function mettreAJourToggles() {
-      const toggles = document.querySelectorAll('.presence-toggle');
+      const toggles = document.querySelectorAll(".presence-toggle");
       if (toggles.length === 0) return;
 
       // On prend le premier toggle pour avoir l'ID de la matière
-      const matiereId = parseInt(toggles[0].getAttribute('data-matiere-id'), 10);
+      const matiereId = parseInt(
+        toggles[0].getAttribute("data-matiere-id"),
+        10
+      );
 
       try {
         const creneauInfo = await verifierCreneauHoraire(matiereId);
 
-        toggles.forEach(toggle => {
-          const wrapper = toggle.closest('.presence-toggle-wrapper');
+        toggles.forEach((toggle) => {
+          const wrapper = toggle.closest(".presence-toggle-wrapper");
           const tooltip = toggle.nextElementSibling;
 
           if (creneauInfo.valide) {
             toggle.disabled = false;
-            if (wrapper) wrapper.classList.remove('opacity-50', 'cursor-not-allowed');
-            if (tooltip) tooltip.style.display = 'none';
+            if (wrapper)
+              wrapper.classList.remove("opacity-50", "cursor-not-allowed");
+            if (tooltip) tooltip.style.display = "none";
           } else {
             toggle.disabled = true;
-            if (wrapper) wrapper.classList.add('opacity-50', 'cursor-not-allowed');
+            if (wrapper)
+              wrapper.classList.add("opacity-50", "cursor-not-allowed");
             if (tooltip) {
-              tooltip.textContent = creneauInfo.message || 'Hors créneau horaire';
-              tooltip.style.display = 'block';
+              tooltip.textContent =
+                creneauInfo.message || "Hors créneau horaire";
+              tooltip.style.display = "block";
             }
           }
         });
 
         return creneauInfo.valide;
       } catch (error) {
-        console.error('Erreur lors de la mise à jour des toggles:', error);
+        console.error("Erreur lors de la mise à jour des toggles:", error);
         return false;
       }
     }
@@ -585,26 +665,33 @@
     setInterval(mettreAJourToggles, 60000);
 
     // Vérifier le créneau au chargement de la page
-    document.addEventListener('DOMContentLoaded', mettreAJourToggles);
+    document.addEventListener("DOMContentLoaded", mettreAJourToggles);
 
     // Gestion des toggles de présence avec amélioration
-    document.querySelectorAll('.presence-toggle').forEach(function (toggle) {
-      toggle.addEventListener('change', async function (e) {
+    document.querySelectorAll(".presence-toggle").forEach(function (toggle) {
+      toggle.addEventListener("change", async function (e) {
         // Vérifier à nouveau le créneau avant d'envoyer
-        const matiereId = parseInt(e.target.getAttribute('data-matiere-id'), 10);
+        const matiereId = parseInt(
+          e.target.getAttribute("data-matiere-id"),
+          10
+        );
         const creneauValide = await verifierCreneauHoraire(matiereId);
 
         if (!creneauValide.valide) {
           e.target.checked = !e.target.checked;
           showNotification(
-            creneauValide.message || 'Action non autorisée en dehors des créneaux horaires',
-            'error'
+            creneauValide.message ||
+              "Action non autorisée en dehors des créneaux horaires",
+            "error"
           );
           return;
         }
 
-        const etudiantId = parseInt(e.target.getAttribute('data-etudiant-id'), 10);
-        const etudiantNom = e.target.getAttribute('data-etudiant-nom');
+        const etudiantId = parseInt(
+          e.target.getAttribute("data-etudiant-id"),
+          10
+        );
+        const etudiantNom = e.target.getAttribute("data-etudiant-nom");
         const present = e.target.checked;
         const originalState = !present;
 
@@ -612,18 +699,21 @@
         e.target.disabled = true;
 
         try {
-          const response = await fetch("{{ url_for('teachers.set_etudiant_presence') }}", {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-CSRFToken': csrfToken || ''
-            },
-            body: JSON.stringify({
-              etudiant_id: etudiantId,
-              present: present,
-              matiere_id: matiereId
-            })
-          });
+          const response = await fetch(
+            "{{ url_for('teachers.set_etudiant_presence') }}",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": csrfToken || "",
+              },
+              body: JSON.stringify({
+                etudiant_id: etudiantId,
+                present: present,
+                matiere_id: matiereId,
+              }),
+            }
+          );
 
           if (!response.ok) {
             throw new Error(`Erreur HTTP: ${response.status}`);
@@ -632,26 +722,26 @@
           const data = await response.json();
 
           if (data.success) {
-            const statusText = present ? 'présent' : 'absent';
+            const statusText = present ? "présent" : "absent";
             showNotification(
               `${etudiantNom} marqué(e) comme ${statusText}`,
-              'success'
+              "success"
             );
           } else {
             // Restaurer l'état original en cas d'erreur
             e.target.checked = originalState;
             showNotification(
               data.error || "Erreur lors de l'enregistrement de la présence",
-              'error'
+              "error"
             );
           }
         } catch (error) {
-          console.error('Erreur:', error);
+          console.error("Erreur:", error);
           // Restaurer l'état original en cas d'erreur
           e.target.checked = originalState;
           showNotification(
-            'Erreur de connexion. Veuillez vérifier votre réseau et réessayer.',
-            'error'
+            "Erreur de connexion. Veuillez vérifier votre réseau et réessayer.",
+            "error"
           );
         } finally {
           // Réactiver le toggle

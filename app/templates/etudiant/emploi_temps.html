@@ -383,7 +383,7 @@
       body.innerHTML = '';
 
       try {
-        const response = await fetch('/api/etudiant/emploi-temps');
+        const response = await fetch('/etudiant/api/emploi-temps');
         if (!response.ok) {
           showToast('Erreur lors du chargement de l\'emploi du temps', 'error');
           return;

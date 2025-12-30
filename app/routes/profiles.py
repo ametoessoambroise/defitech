@@ -773,3 +773,311 @@ def utility_processor():
     :rtype: dict
     """
     return dict(get_profile_picture=get_profile_picture)
+
+
+# Routes pour le profil étendu
+@profile_bp.route("/profil-avance")
+@login_required
+def profil_avance():
+    """
+    Affiche la page du profil avancé avec compétences, formations, expériences, etc.
+    
+    :return: Template du profil avancé
+    :rtype: str
+    """
+    from app.models.competence import Competence
+    from app.models.formation import Formation
+    from app.models.langue import Langue
+    from app.models.projet import Projet
+    from app.models.experience import Experience
+    
+    # Récupérer toutes les données de l'utilisateur
+    competences = Competence.query.filter_by(user_id=current_user.id).order_by(Competence.created_at.desc()).all()
+    formations = Formation.query.filter_by(user_id=current_user.id).order_by(Formation.date_debut.desc()).all()
+    langues = Langue.query.filter_by(user_id=current_user.id).order_by(Langue.created_at.desc()).all()
+    projets = Projet.query.filter_by(user_id=current_user.id).order_by(Projet.date_debut.desc()).all()
+    experiences = Experience.query.filter_by(user_id=current_user.id).order_by(Experience.date_debut.desc()).all()
+    
+    return render_template("profile/profil_avance.html", 
+                         competences=competences,
+                         formations=formations,
+                         langues=langues,
+                         projets=projets,
+                         experiences=experiences)
+
+
+# Routes pour les compétences
+@profile_bp.route("/competences/ajouter", methods=["GET", "POST"])
+@login_required
+def ajouter_competence():
+    """
+    Ajoute une nouvelle compétence au profil de l'utilisateur.
+    
+    :return: Redirection vers le profil avancé ou template du formulaire
+    :rtype: Response ou str
+    """
+    from app.models.competence import Competence
+    from app.forms import CompetenceForm
+    
+    form = CompetenceForm()
+    if form.validate_on_submit():
+        competence = Competence(
+            user_id=current_user.id,
+            nom=form.nom.data,
+            niveau=form.niveau.data,
+            categorie=form.categorie.data
+        )
+        db.session.add(competence)
+        db.session.commit()
+        flash("Compétence ajoutée avec succès!", "success")
+        return redirect(url_for("profile.profil_avance"))
+    
+    return render_template("profile/ajouter_competence.html", form=form)
+
+
+@profile_bp.route("/competences/<int:competence_id>/supprimer", methods=["POST"])
+@login_required
+def supprimer_competence(competence_id):
+    """
+    Supprime une compétence du profil de l'utilisateur.
+    
+    :param competence_id: ID de la compétence à supprimer
+    :type competence_id: int
+    :return: Redirection vers le profil avancé
+    :rtype: Response
+    """
+    from app.models.competence import Competence
+    
+    competence = Competence.query.get_or_404(competence_id)
+    if competence.user_id != current_user.id:
+        flash("Accès non autorisé", "error")
+        return redirect(url_for("profile.profil_avance"))
+    
+    db.session.delete(competence)
+    db.session.commit()
+    flash("Compétence supprimée avec succès!", "success")
+    return redirect(url_for("profile.profil_avance"))
+
+
+# Routes pour les formations
+@profile_bp.route("/formations/ajouter", methods=["GET", "POST"])
+@login_required
+def ajouter_formation():
+    """
+    Ajoute une nouvelle formation au profil de l'utilisateur.
+    
+    :return: Redirection vers le profil avancé ou template du formulaire
+    :rtype: Response ou str
+    """
+    from app.models.formation import Formation
+    from app.forms import FormationForm
+    
+    form = FormationForm()
+    if form.validate_on_submit():
+        formation = Formation(
+            user_id=current_user.id,
+            diplome=form.diplome.data,
+            etablissement=form.etablissement.data,
+            domaine=form.domaine.data,
+            description=form.description.data,
+            date_debut=form.date_debut.data,
+            date_fin=form.date_fin.data if not form.en_cours.data == "True" else None,
+            en_cours=form.en_cours.data == "True"
+        )
+        db.session.add(formation)
+        db.session.commit()
+        flash("Formation ajoutée avec succès!", "success")
+        return redirect(url_for("profile.profil_avance"))
+    
+    return render_template("profile/ajouter_formation.html", form=form)
+
+
+@profile_bp.route("/formations/<int:formation_id>/supprimer", methods=["POST"])
+@login_required
+def supprimer_formation(formation_id):
+    """
+    Supprime une formation du profil de l'utilisateur.
+    
+    :param formation_id: ID de la formation à supprimer
+    :type formation_id: int
+    :return: Redirection vers le profil avancé
+    :rtype: Response
+    """
+    from app.models.formation import Formation
+    
+    formation = Formation.query.get_or_404(formation_id)
+    if formation.user_id != current_user.id:
+        flash("Accès non autorisé", "error")
+        return redirect(url_for("profile.profil_avance"))
+    
+    db.session.delete(formation)
+    db.session.commit()
+    flash("Formation supprimée avec succès!", "success")
+    return redirect(url_for("profile.profil_avance"))
+
+
+# Routes pour les langues
+@profile_bp.route("/langues/ajouter", methods=["GET", "POST"])
+@login_required
+def ajouter_langue():
+    """
+    Ajoute une nouvelle langue au profil de l'utilisateur.
+    
+    :return: Redirection vers le profil avancé ou template du formulaire
+    :rtype: Response ou str
+    """
+    from app.models.langue import Langue
+    from app.forms import LangueForm
+    
+    form = LangueForm()
+    if form.validate_on_submit():
+        langue = Langue(
+            user_id=current_user.id,
+            nom=form.nom.data,
+            niveau_ecrit=form.niveau_ecrit.data,
+            niveau_oral=form.niveau_oral.data
+        )
+        db.session.add(langue)
+        db.session.commit()
+        flash("Langue ajoutée avec succès!", "success")
+        return redirect(url_for("profile.profil_avance"))
+    
+    return render_template("profile/ajouter_langue.html", form=form)
+
+
+@profile_bp.route("/langues/<int:langue_id>/supprimer", methods=["POST"])
+@login_required
+def supprimer_langue(langue_id):
+    """
+    Supprime une langue du profil de l'utilisateur.
+    
+    :param langue_id: ID de la langue à supprimer
+    :type langue_id: int
+    :return: Redirection vers le profil avancé
+    :rtype: Response
+    """
+    from app.models.langue import Langue
+    
+    langue = Langue.query.get_or_404(langue_id)
+    if langue.user_id != current_user.id:
+        flash("Accès non autorisé", "error")
+        return redirect(url_for("profile.profil_avance"))
+    
+    db.session.delete(langue)
+    db.session.commit()
+    flash("Langue supprimée avec succès!", "success")
+    return redirect(url_for("profile.profil_avance"))
+
+
+# Routes pour les projets
+@profile_bp.route("/projets/ajouter", methods=["GET", "POST"])
+@login_required
+def ajouter_projet():
+    """
+    Ajoute un nouveau projet au profil de l'utilisateur.
+    
+    :return: Redirection vers le profil avancé ou template du formulaire
+    :rtype: Response ou str
+    """
+    from app.models.projet import Projet
+    from app.forms import ProjetForm
+    
+    form = ProjetForm()
+    if form.validate_on_submit():
+        projet = Projet(
+            user_id=current_user.id,
+            titre=form.titre.data,
+            description=form.description.data,
+            technologies=form.technologies.data,
+            date_debut=form.date_debut.data,
+            date_fin=form.date_fin.data if not form.en_cours.data == "True" else None,
+            lien=form.lien.data,
+            en_cours=form.en_cours.data == "True"
+        )
+        db.session.add(projet)
+        db.session.commit()
+        flash("Projet ajouté avec succès!", "success")
+        return redirect(url_for("profile.profil_avance"))
+    
+    return render_template("profile/ajouter_projet.html", form=form)
+
+
+@profile_bp.route("/projets/<int:projet_id>/supprimer", methods=["POST"])
+@login_required
+def supprimer_projet(projet_id):
+    """
+    Supprime un projet du profil de l'utilisateur.
+    
+    :param projet_id: ID du projet à supprimer
+    :type projet_id: int
+    :return: Redirection vers le profil avancé
+    :rtype: Response
+    """
+    from app.models.projet import Projet
+    
+    projet = Projet.query.get_or_404(projet_id)
+    if projet.user_id != current_user.id:
+        flash("Accès non autorisé", "error")
+        return redirect(url_for("profile.profil_avance"))
+    
+    db.session.delete(projet)
+    db.session.commit()
+    flash("Projet supprimé avec succès!", "success")
+    return redirect(url_for("profile.profil_avance"))
+
+
+# Routes pour les expériences
+@profile_bp.route("/experiences/ajouter", methods=["GET", "POST"])
+@login_required
+def ajouter_experience():
+    """
+    Ajoute une nouvelle expérience professionnelle au profil de l'utilisateur.
+    
+    :return: Redirection vers le profil avancé ou template du formulaire
+    :rtype: Response ou str
+    """
+    from app.models.experience import Experience
+    from app.forms import ExperienceForm
+    
+    form = ExperienceForm()
+    if form.validate_on_submit():
+        experience = Experience(
+            user_id=current_user.id,
+            poste=form.poste.data,
+            entreprise=form.entreprise.data,
+            lieu=form.lieu.data,
+            description=form.description.data,
+            date_debut=form.date_debut.data,
+            date_fin=form.date_fin.data if not form.en_poste.data == "True" else None,
+            en_poste=form.en_poste.data == "True"
+        )
+        db.session.add(experience)
+        db.session.commit()
+        flash("Expérience ajoutée avec succès!", "success")
+        return redirect(url_for("profile.profil_avance"))
+    
+    return render_template("profile/ajouter_experience.html", form=form)
+
+
+@profile_bp.route("/experiences/<int:experience_id>/supprimer", methods=["POST"])
+@login_required
+def supprimer_experience(experience_id):
+    """
+    Supprime une expérience professionnelle du profil de l'utilisateur.
+    
+    :param experience_id: ID de l'expérience à supprimer
+    :type experience_id: int
+    :return: Redirection vers le profil avancé
+    :rtype: Response
+    """
+    from app.models.experience import Experience
+    
+    experience = Experience.query.get_or_404(experience_id)
+    if experience.user_id != current_user.id:
+        flash("Accès non autorisé", "error")
+        return redirect(url_for("profile.profil_avance"))
+    
+    db.session.delete(experience)
+    db.session.commit()
+    flash("Expérience supprimée avec succès!", "success")
+    return redirect(url_for("profile.profil_avance"))

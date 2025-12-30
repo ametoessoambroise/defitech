@@ -1,0 +1,540 @@
+{% extends "base.html" %} {% block title %}{{ current_user.nom }} {{
+current_user.prenom }} | Profil Avancé{% endblock %} {% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <!-- Header -->
+  <div class="mb-8">
+    <nav class="flex mb-6" aria-label="Breadcrumb">
+      <ol class="inline-flex items-center space-x-1 md:space-x-3">
+        <li>
+          <div>
+            <a
+              href="{{ url_for('main.index') }}"
+              class="text-gray-500 hover:text-gray-700 transition-colors"
+            >
+              <i class="fas fa-home mr-2"></i>Accueil
+            </a>
+          </div>
+        </li>
+        <li>
+          <div class="flex items-center">
+            <i class="fas fa-chevron-right text-gray-400 mx-2"></i>
+            <a
+              href="{{ url_for('profile.mon_profil') }}"
+              class="text-gray-500 hover:text-gray-700 transition-colors"
+            >
+              Mon Profil
+            </a>
+          </div>
+        </li>
+        <li>
+          <div class="flex items-center">
+            <i class="fas fa-chevron-right text-gray-400 mx-2"></i>
+            <span class="text-gray-800 font-medium">Profil Avancé</span>
+          </div>
+        </li>
+      </ol>
+    </nav>
+
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">
+          Profil Avancé
+        </h1>
+        <p class="mt-2 text-gray-600">
+          Gérez vos compétences, formations, expériences et projets
+        </p>
+      </div>
+      <div class="mt-4 sm:mt-0">
+        <a
+          href="{{ url_for('profile.mon_profil') }}"
+          class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+        >
+          <i class="fas fa-arrow-left mr-2"></i>Retour au profil
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Flash Messages -->
+  {% with messages = get_flashed_messages(with_categories=true) %} {% if
+  messages %} {% for category, message in messages %}
+  <div
+    class="mb-4 p-4 rounded-lg {% if category == 'success' %}bg-green-50 border border-green-200 text-green-800{% elif category == 'error' %}bg-red-50 border border-red-200 text-red-800{% elif category == 'warning' %}bg-yellow-50 border border-yellow-200 text-yellow-800{% else %}bg-blue-50 border border-blue-200 text-blue-800{% endif %} flex items-center shadow-sm"
+  >
+    <i
+      class="fas {% if category == 'success' %}fa-check-circle{% elif category == 'error' %}fa-exclamation-circle{% elif category == 'warning' %}fa-exclamation-triangle{% else %}fa-info-circle{% endif %} mr-3"
+    ></i>
+    <span>{{ message }}</span>
+  </div>
+  {% endfor %} {% endif %} {% endwith %}
+
+  <!-- Compétences -->
+  <div
+    class="bg-white shadow-md rounded-xl border border-gray-100 overflow-hidden mb-8"
+  >
+    <div class="px-6 py-5 border-b border-gray-200 bg-gray-50">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-semibold text-gray-900">
+          <i class="fas fa-tools text-blue-600 mr-2"></i>Compétences
+          <span class="text-gray-500 font-normal"
+            >({{ competences|length }})</span
+          >
+        </h3>
+        <a
+          href="{{ url_for('profile.ajouter_competence') }}"
+          class="inline-flex items-center px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors"
+        >
+          <i class="fas fa-plus mr-2"></i>Ajouter
+        </a>
+      </div>
+    </div>
+    <div class="p-6">
+      {% if competences %}
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {% for competence in competences %}
+        <div
+          class="bg-gray-50 rounded-lg p-4 border border-gray-200 hover:shadow-md transition-shadow"
+        >
+          <div class="flex items-start justify-between">
+            <div class="flex-1">
+              <h4 class="font-medium text-gray-900">{{ competence.nom }}</h4>
+              <div class="mt-2 space-y-1">
+                <span
+                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {% if competence.niveau == 'expert' %}bg-purple-100 text-purple-800{% elif competence.niveau == 'avancé' %}bg-blue-100 text-blue-800{% elif competence.niveau == 'intermédiaire' %}bg-green-100 text-green-800{% else %}bg-gray-100 text-gray-800{% endif %}"
+                >
+                  {{ competence.niveau|title }}
+                </span>
+                <span
+                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600"
+                >
+                  {{ competence.categorie|title }}
+                </span>
+              </div>
+            </div>
+            <form
+              method="POST"
+              action="{{ url_for('profile.supprimer_competence', competence_id=competence.id) }}"
+              class="ml-2"
+              onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette compétence ?')"
+            >
+              <button
+                type="submit"
+                class="text-red-500 hover:text-red-700 transition-colors"
+              >
+                <i class="fas fa-trash-alt"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="text-center py-8">
+        <div
+          class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4"
+        >
+          <i class="fas fa-tools text-gray-400 text-2xl"></i>
+        </div>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">
+          Aucune compétence
+        </h3>
+        <p class="text-gray-600 mb-4">
+          Ajoutez vos compétences pour enrichir votre profil
+        </p>
+        <a
+          href="{{ url_for('profile.ajouter_competence') }}"
+          class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+        >
+          <i class="fas fa-plus mr-2"></i>Ajouter une compétence
+        </a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Formations -->
+  <div
+    class="bg-white shadow-md rounded-xl border border-gray-100 overflow-hidden mb-8"
+  >
+    <div class="px-6 py-5 border-b border-gray-200 bg-gray-50">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-semibold text-gray-900">
+          <i class="fas fa-graduation-cap text-green-600 mr-2"></i>Formations
+          <span class="text-gray-500 font-normal"
+            >({{ formations|length }})</span
+          >
+        </h3>
+        <a
+          href="{{ url_for('profile.ajouter_formation') }}"
+          class="inline-flex items-center px-3 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors"
+        >
+          <i class="fas fa-plus mr-2"></i>Ajouter
+        </a>
+      </div>
+    </div>
+    <div class="p-6">
+      {% if formations %}
+      <div class="space-y-4">
+        {% for formation in formations %}
+        <div
+          class="bg-gray-50 rounded-lg p-4 border border-gray-200 hover:shadow-md transition-shadow"
+        >
+          <div class="flex items-start justify-between">
+            <div class="flex-1">
+              <h4 class="font-medium text-gray-900">{{ formation.diplome }}</h4>
+              <p class="text-gray-600 mt-1">{{ formation.etablissement }}</p>
+              {% if formation.domaine %}
+              <p class="text-gray-600 text-sm mt-1">
+                Domaine: {{ formation.domaine }}
+              </p>
+              {% endif %} {% if formation.description %}
+              <p class="text-gray-600 text-sm mt-2">
+                {{ formation.description }}
+              </p>
+              {% endif %}
+              <div
+                class="mt-3 flex items-center space-x-4 text-sm text-gray-500"
+              >
+                <span
+                  ><i class="fas fa-calendar mr-1"></i>{{
+                  formation.date_debut.strftime('%m/%Y') if formation.date_debut
+                  else '' }} - {% if formation.en_cours %}Aujourd'hui{% else
+                  %}{{ formation.date_fin.strftime('%m/%Y') if
+                  formation.date_fin else '' }}{% endif %}</span
+                >
+                {% if formation.en_cours %}
+                <span
+                  class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800"
+                >
+                  En cours
+                </span>
+                {% endif %}
+              </div>
+            </div>
+            <form
+              method="POST"
+              action="{{ url_for('profile.supprimer_formation', formation_id=formation.id) }}"
+              class="ml-2"
+              onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette formation ?')"
+            >
+              <button
+                type="submit"
+                class="text-red-500 hover:text-red-700 transition-colors"
+              >
+                <i class="fas fa-trash-alt"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="text-center py-8">
+        <div
+          class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4"
+        >
+          <i class="fas fa-graduation-cap text-gray-400 text-2xl"></i>
+        </div>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">Aucune formation</h3>
+        <p class="text-gray-600 mb-4">
+          Ajoutez vos formations académiques et professionnelles
+        </p>
+        <a
+          href="{{ url_for('profile.ajouter_formation') }}"
+          class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors"
+        >
+          <i class="fas fa-plus mr-2"></i>Ajouter une formation
+        </a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Langues -->
+  <div
+    class="bg-white shadow-md rounded-xl border border-gray-100 overflow-hidden mb-8"
+  >
+    <div class="px-6 py-5 border-b border-gray-200 bg-gray-50">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-semibold text-gray-900">
+          <i class="fas fa-language text-purple-600 mr-2"></i>Langues
+          <span class="text-gray-500 font-normal">({{ langues|length }})</span>
+        </h3>
+        <a
+          href="{{ url_for('profile.ajouter_langue') }}"
+          class="inline-flex items-center px-3 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded-lg transition-colors"
+        >
+          <i class="fas fa-plus mr-2"></i>Ajouter
+        </a>
+      </div>
+    </div>
+    <div class="p-6">
+      {% if langues %}
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {% for langue in langues %}
+        <div
+          class="bg-gray-50 rounded-lg p-4 border border-gray-200 hover:shadow-md transition-shadow"
+        >
+          <div class="flex items-start justify-between">
+            <div class="flex-1">
+              <h4 class="font-medium text-gray-900">{{ langue.nom }}</h4>
+              <div class="mt-2 space-y-1">
+                <div class="text-sm">
+                  <span class="text-gray-600">Écrit:</span>
+                  <span
+                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium {% if langue.niveau_ecrit in ['C1', 'C2'] %}bg-green-100 text-green-800{% elif langue.niveau_ecrit in ['B1', 'B2'] %}bg-blue-100 text-blue-800{% else %}bg-gray-100 text-gray-800{% endif %}"
+                  >
+                    {{ langue.niveau_ecrit }}
+                  </span>
+                </div>
+                <div class="text-sm">
+                  <span class="text-gray-600">Oral:</span>
+                  <span
+                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium {% if langue.niveau_oral in ['C1', 'C2'] %}bg-green-100 text-green-800{% elif langue.niveau_oral in ['B1', 'B2'] %}bg-blue-100 text-blue-800{% else %}bg-gray-100 text-gray-800{% endif %}"
+                  >
+                    {{ langue.niveau_oral }}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <form
+              method="POST"
+              action="{{ url_for('profile.supprimer_langue', langue_id=langue.id) }}"
+              class="ml-2"
+              onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette langue ?')"
+            >
+              <button
+                type="submit"
+                class="text-red-500 hover:text-red-700 transition-colors"
+              >
+                <i class="fas fa-trash-alt"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="text-center py-8">
+        <div
+          class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4"
+        >
+          <i class="fas fa-language text-gray-400 text-2xl"></i>
+        </div>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">Aucune langue</h3>
+        <p class="text-gray-600 mb-4">Ajoutez les langues que vous maîtrisez</p>
+        <a
+          href="{{ url_for('profile.ajouter_langue') }}"
+          class="inline-flex items-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg transition-colors"
+        >
+          <i class="fas fa-plus mr-2"></i>Ajouter une langue
+        </a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Projets -->
+  <div
+    class="bg-white shadow-md rounded-xl border border-gray-100 overflow-hidden mb-8"
+  >
+    <div class="px-6 py-5 border-b border-gray-200 bg-gray-50">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-semibold text-gray-900">
+          <i class="fas fa-project-diagram text-orange-600 mr-2"></i>Projets
+          <span class="text-gray-500 font-normal">({{ projets|length }})</span>
+        </h3>
+        <a
+          href="{{ url_for('profile.ajouter_projet') }}"
+          class="inline-flex items-center px-3 py-2 bg-orange-600 hover:bg-orange-700 text-white text-sm font-medium rounded-lg transition-colors"
+        >
+          <i class="fas fa-plus mr-2"></i>Ajouter
+        </a>
+      </div>
+    </div>
+    <div class="p-6">
+      {% if projets %}
+      <div class="space-y-4">
+        {% for projet in projets %}
+        <div
+          class="bg-gray-50 rounded-lg p-4 border border-gray-200 hover:shadow-md transition-shadow"
+        >
+          <div class="flex items-start justify-between">
+            <div class="flex-1">
+              <h4 class="font-medium text-gray-900">{{ projet.titre }}</h4>
+              {% if projet.description %}
+              <p class="text-gray-600 mt-1">{{ projet.description }}</p>
+              {% endif %} {% if projet.technologies %}
+              <p class="text-gray-600 text-sm mt-2">
+                <i class="fas fa-code mr-1"></i>{{ projet.technologies }}
+              </p>
+              {% endif %} {% if projet.lien %}
+              <a
+                href="{{ projet.lien }}"
+                target="_blank"
+                class="text-blue-600 hover:text-blue-800 text-sm mt-2 inline-block"
+              >
+                <i class="fas fa-external-link-alt mr-1"></i>Voir le projet
+              </a>
+              {% endif %}
+              <div
+                class="mt-3 flex items-center space-x-4 text-sm text-gray-500"
+              >
+                <span
+                  ><i class="fas fa-calendar mr-1"></i>{{
+                  projet.date_debut.strftime('%m/%Y') if projet.date_debut else
+                  '' }} - {% if projet.en_cours %}Aujourd'hui{% else %}{{
+                  projet.date_fin.strftime('%m/%Y') if projet.date_fin else ''
+                  }}{% endif %}</span
+                >
+                {% if projet.en_cours %}
+                <span
+                  class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800"
+                >
+                  En cours
+                </span>
+                {% endif %}
+              </div>
+            </div>
+            <form
+              method="POST"
+              action="{{ url_for('profile.supprimer_projet', projet_id=projet.id) }}"
+              class="ml-2"
+              onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce projet ?')"
+            >
+              <button
+                type="submit"
+                class="text-red-500 hover:text-red-700 transition-colors"
+              >
+                <i class="fas fa-trash-alt"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="text-center py-8">
+        <div
+          class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4"
+        >
+          <i class="fas fa-project-diagram text-gray-400 text-2xl"></i>
+        </div>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">Aucun projet</h3>
+        <p class="text-gray-600 mb-4">
+          Ajoutez vos projets personnels et professionnels
+        </p>
+        <a
+          href="{{ url_for('profile.ajouter_projet') }}"
+          class="inline-flex items-center px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white font-medium rounded-lg transition-colors"
+        >
+          <i class="fas fa-plus mr-2"></i>Ajouter un projet
+        </a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Expériences -->
+  <div
+    class="bg-white shadow-md rounded-xl border border-gray-100 overflow-hidden"
+  >
+    <div class="px-6 py-5 border-b border-gray-200 bg-gray-50">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-semibold text-gray-900">
+          <i class="fas fa-briefcase text-indigo-600 mr-2"></i>Expériences
+          Professionnelles
+          <span class="text-gray-500 font-normal"
+            >({{ experiences|length }})</span
+          >
+        </h3>
+        <a
+          href="{{ url_for('profile.ajouter_experience') }}"
+          class="inline-flex items-center px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors"
+        >
+          <i class="fas fa-plus mr-2"></i>Ajouter
+        </a>
+      </div>
+    </div>
+    <div class="p-6">
+      {% if experiences %}
+      <div class="space-y-4">
+        {% for experience in experiences %}
+        <div
+          class="bg-gray-50 rounded-lg p-4 border border-gray-200 hover:shadow-md transition-shadow"
+        >
+          <div class="flex items-start justify-between">
+            <div class="flex-1">
+              <h4 class="font-medium text-gray-900">{{ experience.poste }}</h4>
+              <p class="text-gray-600 mt-1">{{ experience.entreprise }}</p>
+              {% if experience.lieu %}
+              <p class="text-gray-600 text-sm mt-1">
+                <i class="fas fa-map-marker-alt mr-1"></i>{{ experience.lieu }}
+              </p>
+              {% endif %} {% if experience.description %}
+              <p class="text-gray-600 text-sm mt-2">
+                {{ experience.description }}
+              </p>
+              {% endif %}
+              <div
+                class="mt-3 flex items-center space-x-4 text-sm text-gray-500"
+              >
+                <span
+                  ><i class="fas fa-calendar mr-1"></i>{{
+                  experience.date_debut.strftime('%m/%Y') if
+                  experience.date_debut else '' }} - {% if experience.en_poste
+                  %}Aujourd'hui{% else %}{{
+                  experience.date_fin.strftime('%m/%Y') if experience.date_fin
+                  else '' }}{% endif %}</span
+                >
+                {% if experience.en_poste %}
+                <span
+                  class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800"
+                >
+                  En poste
+                </span>
+                {% endif %}
+              </div>
+            </div>
+            <form
+              method="POST"
+              action="{{ url_for('profile.supprimer_experience', experience_id=experience.id) }}"
+              class="ml-2"
+              onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette expérience ?')"
+            >
+              <button
+                type="submit"
+                class="text-red-500 hover:text-red-700 transition-colors"
+              >
+                <i class="fas fa-trash-alt"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="text-center py-8">
+        <div
+          class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4"
+        >
+          <i class="fas fa-briefcase text-gray-400 text-2xl"></i>
+        </div>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">
+          Aucune expérience
+        </h3>
+        <p class="text-gray-600 mb-4">
+          Ajoutez vos expériences professionnelles
+        </p>
+        <a
+          href="{{ url_for('profile.ajouter_experience') }}"
+          class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors"
+        >
+          <i class="fas fa-plus mr-2"></i>Ajouter une expérience
+        </a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
