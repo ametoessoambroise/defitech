@@ -202,8 +202,11 @@ class CVGenerator:
             formations = self._get_formations()
             langues = self._get_langues()
             projets = self._get_projets()
+            certifications = self._get_certifications()
+            references = self._get_references()
+            centres_interet = self._get_centres_interet()
 
-            return {
+            data = {
                 "utilisateur": self._format_user_info(),
                 "competences": competences,
                 "competences_techniques": competences_techniques,
@@ -211,7 +214,16 @@ class CVGenerator:
                 "formations": formations,
                 "langues": langues,
                 "projets": projets,
+                "certifications": certifications,
+                "references": references,
+                "centres_interet": centres_interet,
             }
+
+            # Ajouter la complétion et les suggestions
+            data["completion"] = self.calculate_profile_completion()
+            data["suggestions"] = self.get_suggestions(data)
+
+            return data
         except Exception as e:
             logger.error(
                 f"Erreur lors de la récupération des données: {e}", exc_info=True
@@ -238,7 +250,84 @@ class CVGenerator:
             "linkedin": getattr(self.user, "linkedin", "") or "",
             "github": getattr(self.user, "github", "") or "",
             "bio": getattr(self.user, "bio", "") or "",
+            "photo_profil": getattr(self.user, "photo_profil", "") or "",
+            "titre_professionnel": getattr(self.user, "titre_professionnel", "") or "",
+            "disponibilite": getattr(self.user, "disponibilite", "") or "",
+            "permis_conduire": getattr(self.user, "permis_conduire", "") or "",
+            "pretentions_salariales": getattr(self.user, "pretentions_salariales", "") or "",
         }
+
+    def calculate_profile_completion(self) -> Dict[str, Any]:
+        """Calcule le pourcentage de complétion du profil"""
+        score = 0
+        details = {}
+
+        # 1. Infos de base (30%)
+        basic_fields = ["nom", "prenom", "email", "telephone", "adresse", "bio"]
+        basic_score = 0
+        for field in basic_fields:
+            if getattr(self.user, field, None):
+                basic_score += 5
+        score += basic_score
+        details["infos_base"] = basic_score
+
+        # 2. Expériences (20%)
+        exp_count = Experience.query.filter_by(user_id=self.user_id).count()
+        exp_score = min(exp_count * 10, 20)
+        score += exp_score
+        details["experiences"] = exp_score
+
+        # 3. Formations (20%)
+        form_count = Formation.query.filter_by(user_id=self.user_id).count()
+        form_score = min(form_count * 10, 20)
+        score += form_score
+        details["formations"] = form_score
+
+        # 4. Compétences (15%)
+        comp_count = Competence.query.filter_by(user_id=self.user_id).count()
+        comp_score = min(comp_count * 5, 15)
+        score += comp_score
+        details["competences"] = comp_score
+
+        # 5. Langues (5%)
+        lang_count = Langue.query.filter_by(user_id=self.user_id).count()
+        lang_score = 5 if lang_count > 0 else 0
+        score += lang_score
+        details["langues"] = lang_score
+
+        # 6. Projets (10%)
+        proj_count = Projet.query.filter_by(user_id=self.user_id).count()
+        proj_score = min(proj_count * 5, 10)
+        score += proj_score
+        details["projets"] = proj_score
+
+        return {"score": score, "details": details}
+
+    def get_suggestions(self, data: Dict) -> List[str]:
+        """Génère des suggestions pour améliorer le profil"""
+        suggestions = []
+        user = data["utilisateur"]
+
+        if not user.get("bio"):
+            suggestions.append(
+                "Ajoutez une biographie pour vous présenter aux recruteurs."
+            )
+        if not user.get("telephone"):
+            suggestions.append(
+                "Ajoutez votre numéro de téléphone pour être recontacté."
+            )
+        if not data.get("experiences"):
+            suggestions.append("Ajoutez au moins une expérience professionnelle.")
+        if not data.get("formations"):
+            suggestions.append("Précisez votre parcours académique.")
+        if len(data.get("competences", [])) < 3:
+            suggestions.append(
+                "Ajoutez plus de compétences pour valoriser votre profil."
+            )
+        if not data.get("projets"):
+            suggestions.append("Mettez en avant vos projets personnels ou académiques.")
+
+        return suggestions
 
     def _get_competences(self) -> List[Dict]:
         """Récupère les compétences générales"""
@@ -305,7 +394,7 @@ class CVGenerator:
             return [
                 {
                     "id": e.id,
-                    "titre": e.titre or "",
+                    "titre": e.poste or "",  # Corrigé: e.titre -> e.poste
                     "entreprise": e.entreprise or "",
                     "lieu": e.lieu or "",
                     "date_debut": (
@@ -337,7 +426,7 @@ class CVGenerator:
                     "id": f.id,
                     "diplome": f.diplome or "",
                     "etablissement": f.etablissement or "",
-                    "lieu": f.lieu or "",
+                    "lieu": "",  # Corrigé: f.lieu n'existe pas dans le modèle Formation
                     "date_debut": (
                         f.date_debut.strftime("%m/%Y") if f.date_debut else ""
                     ),
@@ -360,7 +449,7 @@ class CVGenerator:
                 {
                     "id": l.id,
                     "nom": l.nom,
-                    "niveau": l.niveau,
+                    "niveau": f"{l.niveau_ecrit or ''} / {l.niveau_oral or ''}",  # Corrigé: l.niveau -> niveaux écrit/oral
                     "certification": getattr(l, "certification", None),
                 }
                 for l in langues  # noqa
@@ -369,8 +458,81 @@ class CVGenerator:
             logger.error(f"Erreur lors de la récupération des langues: {e}")
             return []
 
+    def _get_certifications(self) -> List[Dict]:
+        """Récupère les certifications (si le modèle existe)"""
+        try:
+            # Vérifier si le modèle Certification existe
+            try:
+                from app.models.certification import Certification
+                certifications = Certification.query.filter_by(user_id=self.etudiant.user_id).all()
+                return [
+                    {
+                        "id": c.id,
+                        "nom": c.nom,
+                        "organisme": c.organisme,
+                        "date_obtention": c.date_obtention.strftime("%m/%Y") if c.date_obtention else "",
+                        "date_expiration": c.date_expiration.strftime("%m/%Y") if c.date_expiration else "",
+                        "description": c.description or "",
+                    }
+                    for c in certifications
+                ]
+            except ImportError:
+                # Le modèle n'existe pas, retourner une liste vide
+                return []
+        except Exception as e:
+            logger.error(f"Erreur lors de la récupération des certifications: {e}")
+            return []
+
+    def _get_references(self) -> List[Dict]:
+        """Récupère les références (si le modèle existe)"""
+        try:
+            # Vérifier si le modèle Reference existe
+            try:
+                from app.models.reference import Reference
+                references = Reference.query.filter_by(user_id=self.etudiant.user_id).all()
+                return [
+                    {
+                        "id": r.id,
+                        "nom": r.nom,
+                        "poste": r.poste,
+                        "entreprise": r.entreprise,
+                        "email": r.email,
+                        "telephone": r.telephone,
+                        "relation": r.relation,
+                    }
+                    for r in references
+                ]
+            except ImportError:
+                # Le modèle n'existe pas, retourner une liste vide
+                return []
+        except Exception as e:
+            logger.error(f"Erreur lors de la récupération des références: {e}")
+            return []
+
+    def _get_centres_interet(self) -> List[Dict]:
+        """Récupère les centres d'intérêt (si le modèle existe)"""
+        try:
+            # Vérifier si le modele CentreInteret existe
+            try:
+                from app.models.centre_interet import CentreInteret
+                centres = CentreInteret.query.filter_by(user_id=self.etudiant.user_id).all()
+                return [
+                    {
+                        "id": c.id,
+                        "nom": c.nom,
+                        "description": c.description or "",
+                        "categorie": c.categorie or "Général",
+                    }
+                    for c in centres
+                ]
+            except ImportError:
+                # Le modèle n'existe pas, retourner une liste vide
+                return []
+        except Exception as e:
+            logger.error(f"Erreur lors de la récupération des centres d'intérêt: {e}")
+            return []
+
     def _get_projets(self) -> List[Dict]:
-        """Récupère les projets"""
         try:
             projets = Projet.query.filter_by(user_id=self.etudiant.user_id).all()
             return [
@@ -380,15 +542,15 @@ class CVGenerator:
                     "description": p.description or "",
                     "lien": getattr(p, "lien", "") or "",
                     "technologies": (
-                        p.technologies.split(",")
-                        if hasattr(p, "technologies") and p.technologies
-                        else []
+                        p.technologies.split(",") if p.technologies else []
                     ),
-                    "date_realisation": (
-                        p.date_realisation.strftime("%m/%Y")
-                        if hasattr(p, "date_realisation") and p.date_realisation
-                        else ""
+                    "date_debut": (
+                        p.date_debut.strftime("%m/%Y") if p.date_debut else ""
                     ),
+                    "date_fin": (
+                        p.date_fin.strftime("%m/%Y") if p.date_fin else "Présent"
+                    ),
+                    "en_cours": p.en_cours,
                 }
                 for p in projets
             ]
@@ -981,7 +1143,7 @@ Génère uniquement le texte formaté, sans explications additionnelles.
         prompt = """
 GÉNÈRE UNE PAGE HTML DE CV avec ces caractéristiques :
 - Utilise Tailwind CSS (classes comme bg-blue-100, p-4, rounded-lg, etc.)
-- Structure : En-tête (nom, contact), Profil, Expériences, Formations, Compétences
+- Structure : En-tête (nom, contact, photo), Profil, Expériences, Formations, Compétences, Langues, Projets, Certifications, Références, Centres d'intérêt
 - Design moderne, épuré et responsive
 - Couleurs : bleus et gris professionnels
 - Sections en cartes avec ombres légères
@@ -991,21 +1153,69 @@ EXEMPLE DE STRUCTURE :
 ```
 <div class="max-w-4xl mx-auto p-4">
   <header class="text-center mb-8">
-    <h1 class="text-3xl font-bold">Prénom NOM</h1>
-    <p class="text-gray-600">Poste recherché</p>
-    <div class="mt-2 space-x-4">
-      <span>email@exemple.com</span>
-      <span>•</span>
-      <span>+33 6 12 34 56 78</span>
+    <div class="flex items-center justify-center mb-4">
+      <img src="photo_url" class="w-20 h-20 rounded-full mr-4" alt="Photo">
+      <div>
+        <h1 class="text-3xl font-bold">Prénom NOM</h1>
+        <p class="text-gray-600">Titre professionnel</p>
+        <div class="mt-2 space-x-4">
+          <span>email@exemple.com</span>
+          <span>•</span>
+          <span>+33 6 12 34 56 78</span>
+        </div>
+        <div class="mt-1 text-sm text-gray-500">
+          <span>Disponibilité: Immédiate</span>
+          <span>•</span>
+          <span>Permis: B</span>
+        </div>
+      </div>
     </div>
   </header>
   
   <section class="mb-8">
     <h2 class="text-xl font-semibold border-b-2 border-blue-500 pb-1">Profil</h2>
-    <p class="mt-2">Description courte du profil professionnel.</p>
+    <p class="mt-2">Bio/résumé professionnel concis.</p>
   </section>
   
-  <!-- Autres sections -->
+  <section class="mb-8">
+    <h2 class="text-xl font-semibold border-b-2 border-blue-500 pb-1">Expériences</h2>
+    <!-- Expériences avec dates et descriptions -->
+  </section>
+  
+  <section class="mb-8">
+    <h2 class="text-xl font-semibold border-b-2 border-blue-500 pb-1">Formations</h2>
+    <!-- Formations avec diplômes et établissements -->
+  </section>
+  
+  <section class="mb-8">
+    <h2 class="text-xl font-semibold border-b-2 border-blue-500 pb-1">Compétences</h2>
+    <!-- Compétences techniques et générales -->
+  </section>
+  
+  <section class="mb-8">
+    <h2 class="text-xl font-semibold border-b-2 border-blue-500 pb-1">Langues</h2>
+    <!-- Langues avec niveaux -->
+  </section>
+  
+  <section class="mb-8">
+    <h2 class="text-xl font-semibold border-b-2 border-blue-500 pb-1">Projets</h2>
+    <!-- Projets pertinents -->
+  </section>
+  
+  <section class="mb-8">
+    <h2 class="text-xl font-semibold border-b-2 border-blue-500 pb-1">Certifications</h2>
+    <!-- Certifications professionnelles -->
+  </section>
+  
+  <section class="mb-8">
+    <h2 class="text-xl font-semibold border-b-2 border-blue-500 pb-1">Références</h2>
+    <!-- Références professionnelles -->
+  </section>
+  
+  <section class="mb-8">
+    <h2 class="text-xl font-semibold border-b-2 border-blue-500 pb-1">Centres d'intérêt</h2>
+    <!-- Loisirs et activités -->
+  </section>
 </div>
 ```
 
@@ -1022,9 +1232,21 @@ INSTRUCTIONS FINALES :
 1. Génère UNIQUEMENT le code HTML (sans balises ```html)
 2. Utilise des classes Tailwind pour le style
 3. Sois concis mais professionnel
-4. Inclus toutes les sections pertinentes des données fournies
+4. Inclus toutes les sections pertinentes des données fournies :
+   - En-tête avec photo, titre professionnel, disponibilité, permis
+   - Profil (bio)
+   - Expériences professionnelles
+   - Formations
+   - Compétences (techniques et générales)
+   - Langues avec niveaux
+   - Projets pertinents
+   - Certifications (si disponibles)
+   - Références (si disponibles)
+   - Centres d'intérêt (si disponibles)
 5. Formatte les dates de manière lisible (ex: "Janvier 2020 - Mars 2022")
 6. Assure-toi que le code est valide et bien structuré
+7. N'affiche que les sections qui ont des données (sauf Profil qui est obligatoire)
+8. Pour la photo, utilise l'URL fournie ou une icône par défaut si vide
 """
 
         return prompt

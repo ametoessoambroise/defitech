@@ -218,6 +218,24 @@
         }
       }
 
+      /* Loading Indicators */
+      .loader-container {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem 1rem;
+        border-radius: 1rem;
+        margin-bottom: 1rem;
+        width: fit-content;
+        animation: fadeIn 0.3s ease-out;
+      }
+
+      .web-search-loader {
+        background: rgba(59, 130, 246, 0.1);
+        border: 1px solid rgba(59, 130, 246, 0.2);
+        color: #3b82f6;
+      }
+
       /* Toggle Switch */
       .toggle-checkbox:checked {
         right: 0;
@@ -226,6 +244,141 @@
 
       .toggle-checkbox:checked + .toggle-label {
         background-color: #3b82f6;
+      }
+
+      .image-gen-loader {
+        background: rgba(147, 51, 234, 0.1);
+        border: 1px solid rgba(147, 51, 234, 0.2);
+        color: #9333ea;
+      }
+
+      /* Image Placeholder & Transitions */
+      .ai-image-container {
+        position: relative;
+        width: 100%;
+        max-width: 512px;
+        aspect-ratio: 1 / 1;
+        margin: 1rem 0;
+        border-radius: 1rem;
+        overflow: hidden;
+        border: 1px solid rgba(148, 163, 184, 0.2);
+      }
+
+      .ai-image-placeholder {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        color: #64748b;
+        animation: pulse-placeholder 2s infinite ease-in-out;
+      }
+
+      .dark .ai-image-placeholder {
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        color: #94a3b8;
+      }
+
+      .ai-image-placeholder i {
+        font-size: 3rem;
+        opacity: 0.5;
+        animation: rotate-gen 4s infinite linear;
+      }
+
+      .ai-image-placeholder span {
+        font-size: 0.875rem;
+        font-weight: 500;
+        opacity: 0.8;
+      }
+
+      .ai-image-final {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0;
+        transition: opacity 1s ease-in-out;
+      }
+
+      .ai-image-final.loaded {
+        opacity: 1;
+      }
+
+      .ai-image-final.loaded + .ai-image-placeholder {
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.5s ease-out;
+      }
+
+      @keyframes pulse-placeholder {
+        0%,
+        100% {
+          opacity: 0.6;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+
+      @keyframes rotate-gen {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .loader-icon {
+        animation: spin 2s linear infinite;
+      }
+
+      @keyframes spin {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(5px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .fade-out {
+        animation: fadeOut 0.3s ease-in forwards;
+      }
+
+      @keyframes fadeOut {
+        from {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        to {
+          opacity: 0;
+          transform: translateY(-5px);
+        }
       }
     </style>
   </head>
@@ -437,6 +590,9 @@
               </button>
             </div>
           </div>
+
+          <!-- Indication de chargement dynamique (Recherche Web / Image) -->
+          <div id="dynamicLoaders" class="px-4 space-y-2 mb-4"></div>
         </div>
 
         <!-- Input Area -->

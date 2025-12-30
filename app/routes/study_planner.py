@@ -26,7 +26,7 @@ from flask import current_app
 # Configuration API Gemini
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 GEMINI_API_URL = (
-    "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key="
+    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key="
     + GEMINI_API_KEY
 )
 
@@ -177,11 +177,15 @@ def clean_json_response(text):
                         reconstructed = reconstructed.replace(",]", "]")
 
                         parsed = json.loads(reconstructed)
-                        current_app.logger.info("JSON reconstruit et parsé avec succès")  # Debug
+                        current_app.logger.info(
+                            "JSON reconstruit et parsé avec succès"
+                        )  # Debug
                         return parsed
 
                 except Exception as e3:
-                    current_app.logger.error(f"Erreur reconstruction JSON: {e3}")  # Debug
+                    current_app.logger.error(
+                        f"Erreur reconstruction JSON: {e3}"
+                    )  # Debug
 
             # Si tout échoue, essayer de trouver un tableau JSON
             start = text.find("[")
@@ -224,19 +228,13 @@ def call_gemini_api(prompt, temperature=0.7):
 
         try:
             response = requests.post(
-                GEMINI_API_URL, 
-                headers=headers, 
-                json=data, 
-                timeout=30
+                GEMINI_API_URL, headers=headers, json=data, timeout=30
             )
             current_app.logger.info(f"Réponse reçue : {response.status_code}")
 
         except requests.exceptions.RequestException as e:
             current_app.logger.error(f"Erreur de connexion à l'API Gemini: {str(e)}")
-            return {
-                "success": False, 
-                "error": f"Erreur de connexion à l'API: {str(e)}"
-            }
+            return {"success": False, "error": f"Erreur de connexion à l'API: {str(e)}"}
 
         if response.status_code == 200:
             try:
@@ -260,11 +258,13 @@ def call_gemini_api(prompt, temperature=0.7):
                                 parsed_json = json.loads(text_response)
                                 return {"success": True, "data": parsed_json}
                             except json.JSONDecodeError as e:
-                                current_app.logger.error(f"Erreur de parsing JSON: {str(e)}")
+                                current_app.logger.error(
+                                    f"Erreur de parsing JSON: {str(e)}"
+                                )
                                 return {
                                     "success": False,
                                     "error": "Format de réponse invalide",
-                                    "raw_text": text_response
+                                    "raw_text": text_response,
                                 }
 
                 # Si on arrive ici, la structure de la réponse est inattendue
@@ -272,7 +272,7 @@ def call_gemini_api(prompt, temperature=0.7):
                 return {
                     "success": False,
                     "error": "Format de réponse inattendu",
-                    "raw_response": result
+                    "raw_response": result,
                 }
 
             except json.JSONDecodeError as e:
@@ -280,7 +280,7 @@ def call_gemini_api(prompt, temperature=0.7):
                 return {
                     "success": False,
                     "error": "Réponse invalide de l'API",
-                    "raw_response": response.text
+                    "raw_response": response.text,
                 }
 
         # Gestion des erreurs HTTP
@@ -296,15 +296,12 @@ def call_gemini_api(prompt, temperature=0.7):
         return {
             "success": False,
             "error": error_msg,
-            "status_code": response.status_code
+            "status_code": response.status_code,
         }
 
     except Exception as e:
         current_app.logger.error(f"Erreur inattendue: {str(e)}", exc_info=True)
-        return {
-            "success": False,
-            "error": f"Erreur inattendue: {str(e)}"
-        }
+        return {"success": False, "error": f"Erreur inattendue: {str(e)}"}
 
 
 @study_planner_bp.route("/")

@@ -11,6 +11,7 @@ from flask import (
     current_app,
     redirect,
     url_for,
+    send_from_directory,
 )
 from flask_login import login_required, current_user
 import json
@@ -1369,13 +1370,17 @@ def chat():
                     for attachment in attachments:
                         # On attend maintenant des objets avec {url, name, type, size, mime_type}
                         if attachment.get("url"):
-                            processed_attachments.append({
-                                "type": attachment.get("type", "file"),
-                                "name": attachment.get("name", "unknown"),
-                                "url": attachment.get("url"),
-                                "size": attachment.get("size", 0),
-                                "mime_type": attachment.get("mime_type", "application/octet-stream")
-                            })
+                            processed_attachments.append(
+                                {
+                                    "type": attachment.get("type", "file"),
+                                    "name": attachment.get("name", "unknown"),
+                                    "url": attachment.get("url"),
+                                    "size": attachment.get("size", 0),
+                                    "mime_type": attachment.get(
+                                        "mime_type", "application/octet-stream"
+                                    ),
+                                }
+                            )
 
                 # Sauvegarder le message utilisateur avec pièces jointes
                 save_message(
@@ -1873,6 +1878,36 @@ def get_quota_status():
     except Exception as e:
         logger.error(f"Erreur récupération quota: {e}")
         return jsonify({"error": "Erreur serveur"}), 500
+
+
+@ai_assistant_bp.route("/image-status/<task_id>")
+@login_required
+def get_image_status_endpoint(task_id):
+    """Vérifie le statut d'une génération d'image"""
+    try:
+        status = check_image_status(task_id)
+        return jsonify(status)
+    except Exception as e:
+        logger.error(f"Erreur check_image_status: {e}")
+        return jsonify({"status": "error", "error": str(e)}), 500
+
+
+@ai_assistant_bp.route("/image/<filename>")
+@login_required
+def serve_ai_image(filename):
+    """Sert une image générée par l'IA"""
+    upload_path = os.path.join(
+        current_app.root_path, "static", "uploads", "ai_attachments"
+    )
+    if not os.path.exists(upload_path):
+        os.makedirs(upload_path, exist_ok=True)
+
+    # Rechercher le fichier récursivement dans les dossiers de conversation
+    for root, dirs, files in os.walk(upload_path):
+        if filename in files:
+            return send_from_directory(root, filename)
+
+    return jsonify({"error": "Image non trouvée"}), 404
 
 
 # 4. AJOUT d'une nouvelle route pour les statistiques de génération

@@ -24,7 +24,8 @@ const CONFIG = {
         fileInput: '#fileInput',
         voiceBtn: '#voiceInputBtn',
         conversationList: '#conversationList',
-        toastContainer: '#toast-container'
+        toastContainer: '#toast-container',
+        dynamicLoaders: '#dynamicLoaders'
     }
 };
 
@@ -306,7 +307,7 @@ const UI = {
             document.documentElement.classList.remove('dark');
             document.documentElement.setAttribute('data-theme', 'light');
         }
-        
+
         // Listen for system theme changes
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
             if (State.isSystemTheme) {
@@ -320,7 +321,7 @@ const UI = {
             }
         });
     },
-    
+
     setupTheme() {
         // Apply saved theme or system preference
         if (State.theme === 'dark' || (State.isSystemTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -358,19 +359,19 @@ const UI = {
                 document.documentElement.setAttribute('data-theme', 'light');
             }
         }
-        
+
         // Update UI elements
         this.updateThemeToggleIcon();
     },
-    
+
     updateThemeToggleIcon() {
         const themeToggle = this.elements.themeToggle;
         if (!themeToggle) return;
-        
+
         const isDark = document.documentElement.classList.contains('dark');
         const moonIcon = themeToggle.querySelector('.fa-moon');
         const sunIcon = themeToggle.querySelector('.fa-sun');
-        
+
         if (isDark) {
             moonIcon?.classList.add('hidden');
             sunIcon?.classList.remove('hidden');
@@ -496,7 +497,7 @@ const UI = {
         }
     },
 
-    createMessageElement(content, isUser) {
+    createMessageElement(content, isUser, attachments = []) {
         const messageGroup = document.createElement('div');
 
         if (isUser) {
@@ -516,12 +517,11 @@ const UI = {
             messageGroup.className = 'message-group ai-message mb-6 w-full animate-slide-up';
 
             try {
-                // Debug logs
-                console.log('Contenu AI brut:', content);
-                console.log('Contenu AI JSON:', JSON.stringify(content));
+                // Parse AI Content (Handle special tags like images)
+                const processedContent = this.formatAIContent(content, attachments);
 
                 // Parse Markdown
-                const parsedMarkdown = marked.parse(content);
+                const parsedMarkdown = marked.parse(processedContent);
 
                 // Sanitize HTML
                 const cleanHtml = DOMPurify.sanitize(parsedMarkdown, {
@@ -530,8 +530,8 @@ const UI = {
                         'li', 'b', 'i', 'strong', 'em', 'strike', 'code', 'hr', 'br', 'div',
                         'table', 'thead', 'tbody', 'tr', 'th', 'td', 'pre', 'span', 'img', 'kbd'
                     ],
-                    ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class', 'target', 'rel', 'data-language'],
-                    ALLOW_DATA_ATTR: false
+                    ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class', 'target', 'rel', 'data-language', 'data-filename', 'data-task-id'],
+                    ALLOW_DATA_ATTR: true
                 });
 
                 // Content wrapper (no background, full width)
@@ -573,6 +573,14 @@ const UI = {
                 contentWrapper.appendChild(copyBtn);
                 messageGroup.appendChild(contentWrapper);
 
+                // Start Polling for images in this message if any
+                setTimeout(() => {
+                    contentWrapper.querySelectorAll('.ai-image-container').forEach(container => {
+                        const taskId = container.dataset.taskId;
+                        if (taskId) this.pollImageStatus(taskId, container);
+                    });
+                }, 100);
+
             } catch (error) {
                 console.error('Erreur lors du rendu du message:', error);
                 messageGroup.innerHTML = `
@@ -588,7 +596,6 @@ const UI = {
 
         return messageGroup;
     },
-
     createTypingIndicator() {
         const div = document.createElement('div');
         div.className = 'flex w-full mb-6 justify-start animate-fade-in';
@@ -601,6 +608,144 @@ const UI = {
             </div>
         `;
         return div;
+    },
+
+    showWebSearchLoader() {
+        const container = document.getElementById('dynamicLoaders');
+        if (!container) return;
+
+        const loader = document.createElement('div');
+        loader.id = 'webSearchLoader';
+        loader.className = 'loader-container web-search-loader';
+        loader.innerHTML = `
+    <i class="fas fa-globe loader-icon"></i>
+    <span class="text-sm font-medium">Recherche d'informations en cours...</span>
+`;
+        container.appendChild(loader);
+    },
+
+    hideWebSearchLoader() {
+        const loader = document.getElementById('webSearchLoader');
+        if (loader) {
+            loader.classList.add('fade-out');
+            setTimeout(() => loader.remove(), 300);
+        }
+    },
+
+    showImageGenLoader() {
+        const container = document.getElementById('dynamicLoaders');
+        if (!container) return;
+
+        const loader = document.createElement('div');
+        loader.id = 'imageGenLoader';
+        loader.className = 'loader-container image-gen-loader';
+        loader.innerHTML = `
+    < i class="fas fa-magic loader-icon" ></i >
+        <span class="text-sm font-medium">Génération de l'image éducative...</span>
+`;
+        container.appendChild(loader);
+    },
+
+    hideImageGenLoader() {
+        const loader = document.getElementById('imageGenLoader');
+        if (loader) {
+            loader.classList.add('fade-out');
+            setTimeout(() => loader.remove(), 300);
+        }
+    },
+
+    async typeAIStream(content, container, attachments = []) {
+        const words = content.split(' ');
+        let currentText = '';
+
+        // Créer l'élément de message AI vide
+        const messageEl = this.createMessageElement('', false, attachments);
+        container.appendChild(messageEl);
+        const contentDiv = messageEl.querySelector('.markdown-body');
+
+        for (let i = 0; i < words.length; i++) {
+            currentText += words[i] + ' ';
+
+            // Format content with images if valid tags are complete
+            const processedText = this.formatAIContent(currentText, attachments);
+            contentDiv.innerHTML = marked.parse(processedText);
+
+            // Re-highlight code blocks if any
+            contentDiv.querySelectorAll('pre code').forEach((block) => {
+                hljs.highlightElement(block);
+            });
+
+            this.scrollToBottom();
+            // Délai pour l'effet de streaming
+            await new Promise(resolve => setTimeout(resolve, 30 + Math.random() * 20));
+        }
+
+        // Start Polling for images after stream is done
+        contentDiv.querySelectorAll('.ai-image-container').forEach(container => {
+            const taskId = container.dataset.taskId;
+            if (taskId) this.pollImageStatus(taskId, container);
+        });
+    },
+
+    formatAIContent(content, attachments = []) {
+        let processed = content;
+
+        // Match [Image en cours de génération: FILENAME]
+        const imagePattern = /\[Image en cours de génération: ([^\]]+)\]/g;
+        processed = processed.replace(imagePattern, (match, filename) => {
+            // Find task_id in attachments if available
+            const att = (attachments || []).find(a => a.name === filename);
+            const taskId = att ? att.task_id : '';
+
+            return `<div class="ai-image-container" data-filename="${filename}" data-task-id="${taskId}">
+                <img src="/api/ai/image/${filename}" class="ai-image-final" onerror="this.style.display='none'" onload="this.style.display='block'; this.classList.add('loaded')">
+                <div class="ai-image-placeholder">
+                    <i class="fas fa-magic"></i>
+                    <span>Intelligence Artificielle génère...</span>
+                </div>
+            </div>`;
+        });
+
+        return processed;
+    },
+
+    async pollImageStatus(taskId, container) {
+        let attempts = 0;
+        const maxAttempts = 60; // 2 minutes approx
+        const img = container.querySelector('.ai-image-final');
+        const placeholderText = container.querySelector('.ai-image-placeholder span');
+
+        const check = async () => {
+            try {
+                const response = await axios.get(`/api/ai/image-status/${taskId}`);
+                const data = response.data;
+
+                if (data.status === 'completed') {
+                    // Image ready! Update src to force reload if needed
+                    const filename = container.dataset.filename;
+                    img.src = `/api/ai/image/${filename}?t=${new Date().getTime()}`;
+                    img.style.display = 'block';
+                    img.classList.add('loaded');
+                    return;
+                } else if (data.status === 'failed') {
+                    placeholderText.textContent = "Échec de la génération";
+                    container.querySelector('i').className = 'fas fa-exclamation-triangle text-red-500';
+                    return;
+                }
+
+                attempts++;
+                if (attempts < maxAttempts) {
+                    setTimeout(check, 2000);
+                } else {
+                    placeholderText.textContent = "Temps expiré";
+                }
+            } catch (error) {
+                console.error('Polling error:', error);
+                setTimeout(check, 5000);
+            }
+        };
+
+        check();
     },
 
     async copyToClipboard(text) {
@@ -635,9 +780,9 @@ const UI = {
         el.className += ' ' + colorClass;
 
         el.innerHTML = `
-            <i class="fas ${icons[type] || icons.info} text-lg"></i>
-            <span class="text-sm font-medium">${message}</span>
-        `;
+    < i class="fas ${icons[type] || icons.info} text-lg" ></i >
+        <span class="text-sm font-medium">${message}</span>
+`;
 
         container.appendChild(el);
 
@@ -744,7 +889,7 @@ const UI = {
         if (this.elements.form) {
             this.elements.form.addEventListener('submit', this.handleSubmit.bind(this));
         }
-        
+
         if (this.elements.themeToggle) {
             this.elements.themeToggle.addEventListener('click', () => this.toggleTheme());
             this.updateThemeToggleIcon(); // Set initial icon state
@@ -916,11 +1061,29 @@ const UI = {
                 State.currentConversationId = data.conversation_id;
             }
 
+            // Gérer les loaders dynamiques basés sur la réponse
+            if (data.has_web_search) {
+                this.showWebSearchLoader();
+                await new Promise(resolve => setTimeout(resolve, 1500)); // Petit délai pour l'effet visuel
+                this.hideWebSearchLoader();
+            }
+
+            if (data.has_image_generation) {
+                this.showImageGenLoader();
+            }
+
             // Note: The API returns { success: true, response: "AI Message...", ... }
             const aiContent = data.response || data.message || "Je ne sais pas quoi répondre. veuillez réessayer";
 
-            // Add AI Message
-            this.elements.messages.appendChild(this.createMessageElement(aiContent, false));
+            // Add AI Message with Streaming Effect
+            await this.typeAIStream(aiContent, this.elements.messages, data.attachments || []);
+
+            if (data.has_image_generation) {
+                // Si une image est en cours, on pourrait attendre ou laisser le polling (existant peut-être) faire le job
+                // Ici on cache juste le loader après le texte
+                setTimeout(() => this.hideImageGenLoader(), 2000);
+            }
+
             this.scrollToBottom();
 
             // Highlight Code Blocks

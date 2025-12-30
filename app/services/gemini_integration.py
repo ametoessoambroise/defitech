@@ -19,7 +19,7 @@ class GeminiIntegration:
     def __init__(self, api_key: str, model: str = "gemini-2.5-flash"):
         self.api_key = api_key
         self.model = model
-        self.base_url = f"https://generativelanguage.googleapis.com/v1/models/{model}:generateContent"
+        self.base_url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
         self.max_retries = 3
         self.timeout = 300  # Augmentation à 300 secondes (5 minutes)
 
@@ -48,10 +48,11 @@ class GeminiIntegration:
         )
 
     def _prepare_request(self, prompt: str, temperature: float) -> Dict[str, Any]:
-        """Prépare les données de la requête API"""
+        """Prépare les données de la requête API avec les outils activés"""
 
         return {
             "contents": [{"parts": [{"text": prompt}]}],
+            "tools": [{"google_search": {}}],
             "generationConfig": {
                 "temperature": temperature,
                 "topK": 40,
@@ -221,6 +222,13 @@ class GeminiIntegration:
             # Extraire le texte
             text_response = content["parts"][0].get("text", "")
 
+            # Détecter la recherche web (grounding)
+            grounding_metadata = candidate.get("groundingMetadata", {})
+            has_web_search = bool(
+                grounding_metadata.get("searchEntryPoint")
+                or grounding_metadata.get("groundingChunks")
+            )
+
             if not text_response:
                 return {
                     "success": False,
@@ -233,6 +241,9 @@ class GeminiIntegration:
             # Analyser les demandes de données dans la réponse
             data_requests = self._parse_data_requests(text_response)
 
+            # Détecter la génération d'images
+            has_image_generation = "[IMAGE_EDUCATIVE:" in text_response
+
             # Nettoyer la réponse
             logger.info(f"Réponse brute de Gemini: {text_response[:200]}...")
             cleaned_response = self._clean_response_text(text_response, prompt)
@@ -242,6 +253,9 @@ class GeminiIntegration:
                 "success": True,
                 "response": cleaned_response,
                 "data_requests": data_requests,
+                "has_web_search": has_web_search,
+                "has_image_generation": has_image_generation,
+                "grounding_metadata": grounding_metadata,
                 "finish_reason": finish_reason,
                 "usage_metadata": result.get("usageMetadata", {}),
                 "model_version": result.get("modelVersion", "unknown"),
@@ -516,4 +530,3 @@ class GeminiIntegration:
 
         # Fallback pour types simples
         return f"    - {str(data)}"
-

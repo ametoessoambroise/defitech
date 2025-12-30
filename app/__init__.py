@@ -1,6 +1,6 @@
 """DEFITECH application package."""
 
-__version__ = '0.1.0'  # Version of the application
+__version__ = "1.1.1"  # Version of the application
 
 from flask import Flask, url_for
 from markupsafe import Markup, escape
@@ -93,20 +93,26 @@ def create_app(config_class=None):
     login_manager.login_view = "auth.login"
 
     # Filtre personnalisé pour les images de profil
-    @app.template_filter('profile_image')
+    @app.template_filter("profile_image")
     def profile_image_filter(photo_profil):
         if not photo_profil:
-            return url_for('static', filename='assets/favicon.ico', _external=True)
-        
+            return url_for("static", filename="assets/favicon.ico", _external=True)
+
         # Si c'est déjà une URL complète, on la retourne telle quelle
-        if isinstance(photo_profil, str) and photo_profil.startswith(('http://', 'https://')):
+        if isinstance(photo_profil, str) and photo_profil.startswith(
+            ("http://", "https://")
+        ):
             return photo_profil
-            
+
         # Sinon, on construit l'URL à partir du chemin relatif
         try:
-            return url_for('static', filename=f'uploads/profile_pics/{photo_profil}', _external=True)
+            return url_for(
+                "static",
+                filename=f"uploads/profile_pics/{photo_profil}",
+                _external=True,
+            )
         except Exception:
-            return url_for('static', filename='assets/favicon.ico', _external=True)
+            return url_for("static", filename="assets/favicon.ico", _external=True)
 
     # Register Blueprints
     from app.routes.auth import auth_bp
@@ -148,7 +154,7 @@ def create_app(config_class=None):
     app.register_blueprint(study_planner_bp)
     app.register_blueprint(ai_assistant_bp)
     app.register_blueprint(notifications_bp)
-    app.register_blueprint(image_search_bp, url_prefix='/image-search')
+    app.register_blueprint(image_search_bp, url_prefix="/image-search")
 
     # Register SocketIO handlers
     register_socketio_handlers(socketio)
@@ -218,16 +224,10 @@ def create_app(config_class=None):
         except (json.JSONDecodeError, TypeError):
             return []
 
-    # Initialize AI Generator
+    # Initialize AI Generator (Gemini Image Service)
     import app.services.ai_image_generator as ai_gen
 
-    model_path = os.path.join(
-        os.path.dirname(app.root_path), "ImageSearch", "data", "image_model.h5"
-    )
-    encoder_path = os.path.join(
-        os.path.dirname(app.root_path), "ImageSearch", "data", "label_encoder.pkl"
-    )
-    app.ai_generator = ai_gen.AIImageGenerator(model_path, encoder_path)
+    app.ai_generator = ai_gen.get_generator()
 
     return app
 

@@ -47,9 +47,12 @@ def preview_cv():
             pour l'aperçu
     """
     try:
-        # Check CSRF token from headers
+        # Check CSRF token from headers using Flask-WTF
+        from flask_wtf.csrf import validate_csrf
         csrf_token = request.headers.get("X-CSRFToken")
-        if not csrf_token or csrf_token != request.cookies.get("csrftoken"):
+        try:
+            validate_csrf(csrf_token)
+        except Exception:
             current_app.logger.warning("Invalid or missing CSRF token")
             return jsonify({"success": False, "message": "Invalid CSRF token"}), 403
 
@@ -115,6 +118,15 @@ def generate_cv():
         - fichier (file): Fichier généré du CV si le format demandé est "pdf" ou "docx"
     """
     try:
+        # Check CSRF token from headers using Flask-WTF
+        from flask_wtf.csrf import validate_csrf
+        csrf_token = request.headers.get("X-CSRFToken")
+        try:
+            validate_csrf(csrf_token)
+        except Exception:
+            current_app.logger.warning("Invalid or missing CSRF token")
+            return jsonify({"success": False, "message": "Invalid CSRF token"}), 403
+
         data = request.get_json()
         format_type = data.get("format", "pdf")
         template_id = data.get("template", "modern")

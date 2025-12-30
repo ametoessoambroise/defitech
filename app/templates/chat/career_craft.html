@@ -7,7 +7,7 @@
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
     <title>CareerCraft - Générateur de CV IA</title>
-    <meta name="csrf-token" content="{{ csrf_token }}" />
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
     <link
       rel="shortcut icon"
       href="https://res.cloudinary.com/dmokvhpjt/image/upload/v1766894416/bijcryrbjli0daglbsim.png"
@@ -32,162 +32,116 @@
         touch-action: manipulation;
       }
 
-      /* Custom scrollbar */
-      .custom-scrollbar::-webkit-scrollbar {
-        width: 4px;
+      /* iOS Safe Areas */
+      @supports (padding: max(0px)) {
+        .safe-top {
+          padding-top: max(env(safe-area-inset-top), 0px);
+        }
+        .safe-bottom {
+          padding-bottom: max(env(safe-area-inset-bottom), 0px);
+        }
       }
 
-      .custom-scrollbar::-webkit-scrollbar-track {
-        background: #f1f5f9;
-      }
-
-      .custom-scrollbar::-webkit-scrollbar-thumb {
-        background: #cbd5e0;
-        border-radius: 2px;
-      }
-
-      /* Animations */
+      /* Smooth Animations */
       @keyframes slideUp {
         from {
           opacity: 0;
-          transform: translateY(10px);
+          transform: translateY(20px);
         }
-
         to {
           opacity: 1;
           transform: translateY(0);
         }
       }
 
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      .animate-slide-up {
+        animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .animate-fade-in {
+        animation: fadeIn 0.2s ease-out;
+      }
+
+      /* Custom Scrollbar */
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 3px;
+      }
+
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 3px;
+      }
+
+      /* iOS Momentum Scrolling */
+      .ios-scroll {
+        -webkit-overflow-scrolling: touch;
+      }
+
+      /* Touch Feedback */
+      .touch-active:active {
+        transform: scale(0.97);
+        transition: transform 0.1s ease;
+      }
+
+      /* Backdrop Blur Support */
+      @supports (backdrop-filter: blur(10px)) {
+        .backdrop-blur-ios {
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+        }
+      }
+
+      /* Floating Button */
+      #defaiBtn {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      #defaiBtn:active {
+        transform: scale(0.95);
+      }
+
+      /* Loading Spinner */
       @keyframes spin {
         to {
           transform: rotate(360deg);
         }
       }
 
-      .animate-slide-up {
-        animation: slideUp 0.3s ease-out;
-      }
-
       .animate-spin {
         animation: spin 1s linear infinite;
       }
 
-      /* Safe area for iOS */
-      @supports (padding: max(0px)) {
-        .safe-top {
-          padding-top: max(1rem, env(safe-area-inset-top));
-        }
-
-        .safe-bottom {
-          padding-bottom: max(1rem, env(safe-area-inset-bottom));
-        }
-
-        .safe-left {
-          padding-left: max(1rem, env(safe-area-inset-left));
-        }
-
-        .safe-right {
-          padding-right: max(1rem, env(safe-area-inset-right));
-        }
+      /* Bottom Sheet */
+      .bottom-sheet {
+        transform: translateY(100%);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
-      /* Preview container */
-      #cvPreview {
-        min-height: 400px;
+      .bottom-sheet.active {
+        transform: translateY(0);
       }
 
-      @media (min-width: 768px) {
-        #cvPreview {
-          min-height: 600px;
-        }
+      /* Modal Overlay */
+      .modal-overlay {
+        opacity: 0;
+        transition: opacity 0.3s ease;
       }
 
-      @media (min-width: 1024px) {
-        #cvPreview {
-          min-height: 800px;
-        }
-      }
-
-      /* Mobile touch targets */
-      @media (max-width: 768px) {
-        .touch-target {
-          min-height: 44px;
-          min-width: 44px;
-        }
-
-        .mobile-padding {
-          padding-left: clamp(0.75rem, 4vw, 1rem);
-          padding-right: clamp(0.75rem, 4vw, 1rem);
-        }
-
-        .mobile-py {
-          padding-top: clamp(0.75rem, 3vw, 1rem);
-          padding-bottom: clamp(0.75rem, 3vw, 1rem);
-        }
-      }
-
-      /* Responsive text sizes */
-      .text-responsive-xs {
-        font-size: clamp(0.75rem, 2.5vw, 0.875rem);
-      }
-
-      .text-responsive-sm {
-        font-size: clamp(0.875rem, 3vw, 1rem);
-      }
-
-      .text-responsive-base {
-        font-size: clamp(1rem, 3.5vw, 1.125rem);
-      }
-
-      /* Smooth transitions */
-      .smooth-transition {
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-      }
-
-      /* iOS momentum scrolling */
-      .ios-scroll {
-        -webkit-overflow-scrolling: touch;
-      }
-
-      /* Better touch feedback */
-      .touch-feedback:active {
-        transform: scale(0.98);
-      }
-
-      /* Responsive grid */
-      .responsive-grid {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: clamp(0.75rem, 3vw, 1.5rem);
-      }
-
-      @media (min-width: 1024px) {
-        .responsive-grid {
-          grid-template-columns: 1fr 2fr;
-        }
-      }
-
-      /* Mobile modal animation */
-      .modal-slide-up {
-        animation: slideUp 0.3s ease-out;
-      }
-
-      /* Responsive spacing utilities */
-      .px-responsive {
-        padding-left: clamp(0.75rem, 4vw, 1rem);
-        padding-right: clamp(0.75rem, 4vw, 1rem);
-      }
-
-      .py-responsive {
-        padding-top: clamp(0.5rem, 3vw, 0.75rem);
-        padding-bottom: clamp(0.5rem, 3vw, 0.75rem);
-      }
-
-      /* Button responsive sizing */
-      .btn-responsive {
-        padding: clamp(0.5rem, 2.5vw, 0.75rem) clamp(0.75rem, 3vw, 1rem);
-        font-size: clamp(0.875rem, 2.5vw, 1rem);
+      .modal-overlay.active {
+        opacity: 1;
       }
     </style>
   </head>
@@ -195,67 +149,45 @@
   <body class="bg-gray-50">
     <!-- Header -->
     <header
-      class="bg-white border-b border-gray-200 sticky top-0 z-10 safe-top shadow-sm mobile-padding"
+      class="bg-white border-b border-gray-100 sticky top-0 z-40 safe-top"
     >
-      <div class="mobile-py">
+      <div class="px-4 py-3 sm:px-6 sm:py-4">
         <div class="flex items-center justify-between">
-          <div class="flex items-center justify-center gap-3 sm:gap-4">
+          <div class="flex items-center gap-3">
             <img
               src="https://res.cloudinary.com/dmokvhpjt/image/upload/v1766894504/dl6awojzn5wcjheacxbf.png"
               alt="logo"
-              class="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover"
+              class="w-10 h-10 rounded-full object-cover"
             />
             <div>
-              <h1
-                class="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 leading-tight"
-              >
-                CareerCraft
-              </h1>
-              <p class="text-xs sm:text-sm text-gray-500 mt-0.5">
-                Générateur de CV IA
-              </p>
+              <h1 class="text-lg font-semibold text-gray-900">CareerCraft</h1>
+              <p class="text-xs text-gray-500">Générateur CV IA</p>
             </div>
           </div>
 
-          <div class="flex items-center gap-2">
-            <button
-              onclick="window.history.back()"
-              class="bg-blue-500 text-white px-3 py-2 rounded-md hover:bg-blue-600 active:bg-blue-700 transition-colors touch-target touch-feedback btn-responsive"
-            >
-              <i class="fas fa-arrow-left mr-1 sm:mr-2"></i>
-              <span class="hidden sm:inline">Retour</span>
-            </button>
-
-            <!-- Template selector (mobile) -->
-            <select
-              id="templateSelect"
-              class="lg:hidden px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 touch-target"
-            >
-              <option value="modern">Moderne</option>
-              <option value="classic">Classique</option>
-              <option value="creative">Créatif</option>
-            </select>
-          </div>
+          <button
+            onclick="window.history.back()"
+            class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 bg-gray-50 rounded-lg active:bg-gray-100 transition-colors touch-active min-h-[44px]"
+          >
+            <i class="fas fa-arrow-left text-xs"></i>
+            <span class="hidden sm:inline">Retour</span>
+          </button>
         </div>
       </div>
     </header>
 
     <!-- Main Content -->
-    <main class="pb-20 lg:pb-8">
-      <div class="max-w-7xl mx-auto mobile-padding py-responsive">
-        <div class="responsive-grid">
-          <!-- Sidebar (Desktop only) -->
+    <main class="pb-32 lg:pb-8">
+      <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
+        <div class="lg:grid lg:grid-cols-12 lg:gap-6">
+          <!-- Desktop Sidebar -->
           <aside class="hidden lg:block lg:col-span-3 space-y-4">
             <!-- Template Selection -->
-            <div
-              class="bg-white rounded-xl p-4 border border-gray-200 shadow-sm"
-            >
-              <h2 class="text-sm font-semibold text-gray-900 mb-3">
-                Modèle de CV
-              </h2>
+            <div class="bg-white rounded-lg p-4 border border-gray-100">
+              <h2 class="text-sm font-semibold text-gray-900 mb-3">Modèle</h2>
               <select
                 id="templateSelectDesktop"
-                class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 smooth-transition"
+                class="w-full px-3 py-2 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value="modern">Moderne</option>
                 <option value="classic">Classique</option>
@@ -263,61 +195,63 @@
               </select>
             </div>
 
-            <!-- Data Summary -->
-            <div
-              class="bg-white rounded-xl p-4 border border-gray-200 shadow-sm"
-            >
+            <!-- Stats -->
+            <div class="bg-white rounded-lg p-4 border border-gray-100">
               <h2 class="text-sm font-semibold text-gray-900 mb-3">
-                Vos données
+                Statistiques
               </h2>
-              <div class="space-y-2 text-sm">
-                <div class="flex items-center justify-between py-1">
-                  <span class="text-gray-600">Expériences</span>
-                  <span id="expCount" class="font-semibold text-gray-900"
+              <div class="space-y-2">
+                <div class="flex items-center justify-between">
+                  <span class="text-sm text-gray-600">Expériences</span>
+                  <span
+                    id="expCount"
+                    class="text-sm font-semibold text-gray-900"
                     >0</span
                   >
                 </div>
-                <div class="flex items-center justify-between py-1">
-                  <span class="text-gray-600">Formations</span>
-                  <span id="eduCount" class="font-semibold text-gray-900"
+                <div class="flex items-center justify-between">
+                  <span class="text-sm text-gray-600">Formations</span>
+                  <span
+                    id="eduCount"
+                    class="text-sm font-semibold text-gray-900"
                     >0</span
                   >
                 </div>
-                <div class="flex items-center justify-between py-1">
-                  <span class="text-gray-600">Compétences</span>
-                  <span id="skillsCount" class="font-semibold text-gray-900"
+                <div class="flex items-center justify-between">
+                  <span class="text-sm text-gray-600">Compétences</span>
+                  <span
+                    id="skillsCount"
+                    class="text-sm font-semibold text-gray-900"
                     >0</span
                   >
                 </div>
               </div>
             </div>
 
-            <!-- Export Options -->
-            <div
-              class="bg-white rounded-xl p-4 border border-gray-200 shadow-sm"
-            >
+            <!-- Export -->
+            <div class="bg-white rounded-lg p-4 border border-gray-100">
               <h2 class="text-sm font-semibold text-gray-900 mb-3">Exporter</h2>
               <div class="space-y-2">
                 <button
                   id="exportPdfDesktop"
-                  class="w-full bg-red-500 hover:bg-red-600 active:bg-red-700 text-white py-2.5 px-4 rounded-lg text-sm font-medium transition-colors flex items-center justify-center touch-target touch-feedback smooth-transition"
+                  class="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-red-500 rounded-lg hover:bg-red-600 active:bg-red-700 transition-colors touch-active"
                 >
-                  <i class="fas fa-file-pdf mr-2"></i>
-                  PDF
+                  <i class="fas fa-file-pdf"></i>
+                  <span>PDF</span>
                 </button>
                 <button
                   id="exportDocxDesktop"
-                  class="w-full bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white py-2.5 px-4 rounded-lg text-sm font-medium transition-colors flex items-center justify-center touch-target touch-feedback smooth-transition"
+                  class="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600 active:bg-blue-700 transition-colors touch-active"
                 >
-                  <i class="fas fa-file-word mr-2"></i>
-                  Word
+                  <i class="fas fa-file-word"></i>
+                  <span>Word</span>
                 </button>
                 <button
                   id="exportLinkedInDesktop"
-                  class="w-full bg-blue-700 hover:bg-blue-800 active:bg-blue-900 text-white py-2.5 px-4 rounded-lg text-sm font-medium transition-colors flex items-center justify-center touch-target touch-feedback smooth-transition"
+                  class="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800 active:bg-blue-900 transition-colors touch-active"
                 >
-                  <i class="fab fa-linkedin mr-2"></i>
-                  LinkedIn
+                  <i class="fab fa-linkedin"></i>
+                  <span>LinkedIn</span>
                 </button>
               </div>
             </div>
@@ -325,22 +259,35 @@
 
           <!-- CV Preview -->
           <div class="lg:col-span-9">
+            <!-- Mobile Template Selector -->
+            <div class="lg:hidden mb-4">
+              <label class="block text-xs font-medium text-gray-700 mb-2"
+                >Modèle de CV</label
+              >
+              <select
+                id="templateSelect"
+                class="w-full px-3 py-2.5 text-sm bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent min-h-[44px]"
+              >
+                <option value="modern">Moderne</option>
+                <option value="classic">Classique</option>
+                <option value="creative">Créatif</option>
+              </select>
+            </div>
+
             <div
-              class="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm"
+              class="bg-white rounded-lg border border-gray-100 overflow-hidden"
             >
               <!-- Preview Header -->
               <div
-                class="flex items-center justify-between mobile-padding py-responsive border-b border-gray-200"
+                class="flex items-center justify-between px-4 py-3 border-b border-gray-100"
               >
-                <h2 class="text-base sm:text-lg font-semibold text-gray-900">
-                  Aperçu du CV
-                </h2>
+                <h2 class="text-base font-semibold text-gray-900">Aperçu</h2>
                 <button
                   id="refreshPreview"
-                  class="flex items-center space-x-2 px-3 py-1.5 sm:px-4 sm:py-2 text-sm text-blue-600 hover:bg-blue-50 rounded-lg transition-colors touch-target touch-feedback smooth-transition"
+                  class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg active:bg-blue-100 transition-colors touch-active min-h-[44px]"
                 >
-                  <i class="fas fa-sync-alt"></i>
-                  <span class="hidden sm:inline">Actualiser</span>
+                  <i class="fas fa-sync-alt text-xs"></i>
+                  <span>Actualiser</span>
                 </button>
               </div>
 
@@ -349,21 +296,24 @@
                 class="p-4 lg:p-6 custom-scrollbar overflow-y-auto ios-scroll"
                 style="max-height: calc(100vh - 280px)"
               >
-                <div id="cvPreview" class="bg-gray-50 rounded-lg">
+                <div
+                  id="cvPreview"
+                  class="bg-gray-50 rounded-lg min-h-[400px] lg:min-h-[600px]"
+                >
                   <!-- Empty State -->
                   <div
-                    class="flex flex-col items-center justify-center h-full py-16 sm:py-20 text-center px-4"
+                    class="flex flex-col items-center justify-center h-full py-20 px-4 text-center"
                   >
-                    <i
-                      class="fas fa-file-alt text-gray-300 text-4xl sm:text-5xl mb-3 sm:mb-4"
-                    ></i>
-                    <p
-                      class="text-gray-600 font-medium mb-1 text-responsive-sm"
+                    <div
+                      class="w-16 h-16 mb-4 rounded-full bg-gray-100 flex items-center justify-center"
                     >
+                      <i class="fas fa-file-alt text-2xl text-gray-400"></i>
+                    </div>
+                    <p class="text-base font-medium text-gray-900 mb-1">
                       Votre CV s'affichera ici
                     </p>
-                    <p class="text-sm text-gray-400 text-responsive-xs">
-                      Cliquez sur Actualiser pour générer
+                    <p class="text-sm text-gray-500">
+                      Cliquez sur Actualiser pour générer l'aperçu
                     </p>
                   </div>
                 </div>
@@ -376,81 +326,91 @@
 
     <!-- Mobile Bottom Bar -->
     <div
-      class="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 safe-bottom z-20 shadow-lg"
+      class="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 z-30 safe-bottom backdrop-blur-ios bg-opacity-95"
     >
-      <div class="mobile-padding py-responsive">
-        <div class="grid grid-cols-3 gap-2 sm:gap-3">
+      <div class="px-4 py-3">
+        <div class="grid grid-cols-3 gap-2">
           <button
             id="exportPdf"
-            class="bg-red-500 hover:bg-red-600 active:bg-red-700 text-white py-2.5 px-3 rounded-lg text-xs sm:text-sm font-medium transition-colors flex items-center justify-center touch-target touch-feedback smooth-transition"
+            class="flex flex-col items-center justify-center gap-1 py-2.5 text-red-500 bg-red-50 rounded-lg active:bg-red-100 transition-colors touch-active min-h-[56px]"
           >
-            <i class="fas fa-file-pdf mr-1.5"></i>
-            PDF
+            <i class="fas fa-file-pdf text-lg"></i>
+            <span class="text-xs font-medium">PDF</span>
           </button>
           <button
             id="exportDocx"
-            class="bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white py-2.5 px-3 rounded-lg text-xs sm:text-sm font-medium transition-colors flex items-center justify-center touch-target touch-feedback smooth-transition"
+            class="flex flex-col items-center justify-center gap-1 py-2.5 text-blue-500 bg-blue-50 rounded-lg active:bg-blue-100 transition-colors touch-active min-h-[56px]"
           >
-            <i class="fas fa-file-word mr-1.5"></i>
-            Word
+            <i class="fas fa-file-word text-lg"></i>
+            <span class="text-xs font-medium">Word</span>
           </button>
           <button
             id="exportLinkedIn"
-            class="bg-blue-700 hover:bg-blue-800 active:bg-blue-900 text-white py-2.5 px-3 rounded-lg text-xs sm:text-sm font-medium transition-colors flex items-center justify-center touch-target touch-feedback smooth-transition"
+            class="flex flex-col items-center justify-center gap-1 py-2.5 text-blue-700 bg-blue-50 rounded-lg active:bg-blue-100 transition-colors touch-active min-h-[56px]"
           >
-            <i class="fab fa-linkedin mr-1.5"></i>
-            LinkedIn
+            <i class="fab fa-linkedin text-lg"></i>
+            <span class="text-xs font-medium">LinkedIn</span>
           </button>
         </div>
       </div>
     </div>
 
-    <!-- Data Summary Modal (Mobile) -->
+    <!-- Mobile Stats Button -->
     <button
       id="showDataModal"
-      class="lg:hidden fixed right-4 bottom-24 w-12 h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg flex items-center justify-center z-10 touch-target touch-feedback smooth-transition"
+      class="lg:hidden fixed right-4 bottom-24 w-14 h-14 bg-blue-600 text-white rounded-full shadow-lg flex items-center justify-center z-20 touch-active"
     >
-      <i class="fas fa-info"></i>
+      <i class="fas fa-chart-bar text-lg"></i>
     </button>
 
-    <div
-      id="dataModal"
-      class="hidden fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
-    >
+    <!-- Stats Modal -->
+    <div id="dataModal" class="hidden fixed inset-0 z-50 lg:hidden">
       <div
-        class="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl p-4 sm:p-6 modal-slide-up safe-bottom"
+        class="modal-overlay absolute inset-0 bg-black bg-opacity-50"
+        id="modalOverlay"
+      ></div>
+      <div
+        class="bottom-sheet absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl safe-bottom"
       >
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-lg font-semibold text-gray-900">Vos données</h2>
-          <button
-            id="closeDataModal"
-            class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 touch-target touch-feedback"
-          >
-            <i class="fas fa-times text-gray-500"></i>
-          </button>
-        </div>
-        <div class="space-y-3">
-          <div
-            class="flex items-center justify-between py-2 border-b border-gray-100"
-          >
-            <span class="text-gray-600">Expériences</span>
-            <span id="expCountMobile" class="font-semibold text-gray-900"
-              >0</span
+        <div class="px-4 py-5">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-semibold text-gray-900">Statistiques</h2>
+            <button
+              id="closeDataModal"
+              class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 active:bg-gray-200 transition-colors touch-active"
             >
+              <i class="fas fa-times text-gray-600"></i>
+            </button>
           </div>
-          <div
-            class="flex items-center justify-between py-2 border-b border-gray-100"
-          >
-            <span class="text-gray-600">Formations</span>
-            <span id="eduCountMobile" class="font-semibold text-gray-900"
-              >0</span
+          <div class="space-y-3">
+            <div
+              class="flex items-center justify-between py-3 border-b border-gray-100"
             >
-          </div>
-          <div class="flex items-center justify-between py-2">
-            <span class="text-gray-600">Compétences</span>
-            <span id="skillsCountMobile" class="font-semibold text-gray-900"
-              >0</span
+              <span class="text-sm text-gray-600">Expériences</span>
+              <span
+                id="expCountMobile"
+                class="text-base font-semibold text-gray-900"
+                >0</span
+              >
+            </div>
+            <div
+              class="flex items-center justify-between py-3 border-b border-gray-100"
             >
+              <span class="text-sm text-gray-600">Formations</span>
+              <span
+                id="eduCountMobile"
+                class="text-base font-semibold text-gray-900"
+                >0</span
+              >
+            </div>
+            <div class="flex items-center justify-between py-3">
+              <span class="text-sm text-gray-600">Compétences</span>
+              <span
+                id="skillsCountMobile"
+                class="text-base font-semibold text-gray-900"
+                >0</span
+              >
+            </div>
           </div>
         </div>
       </div>
@@ -462,141 +422,131 @@
       class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
     >
       <div
-        class="bg-white p-4 sm:p-6 rounded-xl shadow-2xl text-center mx-4 max-w-xs sm:max-w-sm"
+        class="bg-white p-6 rounded-2xl shadow-2xl text-center mx-4 max-w-xs animate-fade-in"
       >
         <div
-          class="w-10 h-10 sm:w-12 sm:h-12 border-4 border-gray-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-3 sm:mb-4"
+          class="w-12 h-12 border-4 border-gray-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"
         ></div>
-        <p
-          id="loadingText"
-          class="text-sm sm:text-base font-medium text-gray-900"
-        >
+        <p id="loadingText" class="text-sm font-medium text-gray-900">
           Génération en cours...
         </p>
       </div>
     </div>
 
-    <!-- Toast Notification -->
+    <!-- Toast -->
     <div
       id="toast"
-      class="hidden fixed top-4 left-1/2 -translate-x-1/2 bg-gray-900 text-white px-4 py-3 rounded-lg shadow-lg z-50 text-sm max-w-xs sm:max-w-sm mx-4 animate-slide-up"
+      class="hidden fixed top-4 left-4 right-4 sm:left-1/2 sm:-translate-x-1/2 sm:max-w-sm bg-gray-900 text-white px-4 py-3 rounded-lg shadow-lg z-50 animate-slide-up"
     >
-      <div class="flex items-center space-x-2">
-        <i class="fas fa-check-circle"></i>
-        <span id="toastMessage">Action réussie</span>
+      <div class="flex items-center gap-2">
+        <i id="toastIcon" class="fas fa-check-circle"></i>
+        <span id="toastMessage" class="text-sm font-medium"
+          >Action réussie</span
+        >
       </div>
     </div>
 
+    <!-- Floating Assistant Button -->
     <button
       id="defaiBtn"
       onclick="window.location.href='/defAI'"
       title="Defai Votre Assistant"
-      class="w-12 h-12 z-[9999] rounded-full outline-none fixed bottom-4 right-4 shadow-lg hover:scale-110 transition-all duration-150"
+      class="w-14 h-14 rounded-full fixed bottom-4 right-4 shadow-xl z-50 outline-none"
     >
       <img
         src="https://res.cloudinary.com/dmokvhpjt/image/upload/v1766894468/gep1294qd7tbddgvtmpj.png"
         alt="logo"
+        class="w-full h-full rounded-full"
       />
     </button>
 
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         // DOM Elements
-        const exportPdfBtn = document.getElementById("exportPdf");
-        const exportDocxBtn = document.getElementById("exportDocx");
-        const exportLinkedInBtn = document.getElementById("exportLinkedIn");
-        const exportPdfDesktopBtn = document.getElementById("exportPdfDesktop");
-        const exportDocxDesktopBtn =
-          document.getElementById("exportDocxDesktop");
-        const exportLinkedInDesktopBtn = document.getElementById(
-          "exportLinkedInDesktop"
-        );
-        const refreshPreviewBtn = document.getElementById("refreshPreview");
-        const templateSelect = document.getElementById("templateSelect");
-        const templateSelectDesktop = document.getElementById(
-          "templateSelectDesktop"
-        );
-        const loadingOverlay = document.getElementById("loadingOverlay");
-        const loadingText = document.getElementById("loadingText");
-        const cvPreview = document.getElementById("cvPreview");
-        const showDataModalBtn = document.getElementById("showDataModal");
-        const closeDataModalBtn = document.getElementById("closeDataModal");
-        const dataModal = document.getElementById("dataModal");
-        const toast = document.getElementById("toast");
-        const toastMessage = document.getElementById("toastMessage");
+        const elements = {
+          exportPdf: document.getElementById("exportPdf"),
+          exportDocx: document.getElementById("exportDocx"),
+          exportLinkedIn: document.getElementById("exportLinkedIn"),
+          exportPdfDesktop: document.getElementById("exportPdfDesktop"),
+          exportDocxDesktop: document.getElementById("exportDocxDesktop"),
+          exportLinkedInDesktop: document.getElementById(
+            "exportLinkedInDesktop"
+          ),
+          refreshPreview: document.getElementById("refreshPreview"),
+          templateSelect: document.getElementById("templateSelect"),
+          templateSelectDesktop: document.getElementById(
+            "templateSelectDesktop"
+          ),
+          loadingOverlay: document.getElementById("loadingOverlay"),
+          loadingText: document.getElementById("loadingText"),
+          cvPreview: document.getElementById("cvPreview"),
+          showDataModal: document.getElementById("showDataModal"),
+          closeDataModal: document.getElementById("closeDataModal"),
+          dataModal: document.getElementById("dataModal"),
+          modalOverlay: document.getElementById("modalOverlay"),
+          toast: document.getElementById("toast"),
+          toastMessage: document.getElementById("toastMessage"),
+          toastIcon: document.getElementById("toastIcon"),
+          defaiBtn: document.getElementById("defaiBtn"),
+        };
 
-        const btn = document.getElementById("defaiBtn");
-
+        // Draggable Assistant Button
         let dragging = false;
         let offsetX = 0;
         let offsetY = 0;
 
         function startDrag(x, y) {
           dragging = true;
-          offsetX = x - btn.offsetLeft;
-          offsetY = y - btn.offsetTop;
-          btn.style.transition = "none";
-          btn.style.cursor = "grabbing";
+          offsetX = x - elements.defaiBtn.offsetLeft;
+          offsetY = y - elements.defaiBtn.offsetTop;
+          elements.defaiBtn.style.transition = "none";
         }
 
         function moveDrag(x, y) {
           if (!dragging) return;
-
-          btn.style.left = x - offsetX + "px";
-          btn.style.top = y - offsetY + "px";
+          elements.defaiBtn.style.left = `${x - offsetX}px`;
+          elements.defaiBtn.style.top = `${y - offsetY}px`;
         }
 
         function endDrag() {
           if (!dragging) return;
           dragging = false;
-          btn.style.cursor = "grab";
-          btn.style.transition = "all 0.25s ease";
-
+          elements.defaiBtn.style.transition = "all 0.2s ease";
           snapToCorner();
         }
 
         function snapToCorner() {
           const vw = window.innerWidth;
           const vh = window.innerHeight;
-          const bw = btn.offsetWidth;
-          const bh = btn.offsetHeight;
+          const bw = elements.defaiBtn.offsetWidth;
+          const bh = elements.defaiBtn.offsetHeight;
+          const x = elements.defaiBtn.offsetLeft;
+          const y = elements.defaiBtn.offsetTop;
 
-          const x = btn.offsetLeft;
-          const y = btn.offsetTop;
-
-          const dist = {
+          const corners = {
             tl: Math.hypot(x, y),
             tr: Math.hypot(vw - x - bw, y),
             bl: Math.hypot(x, vh - y - bh),
             br: Math.hypot(vw - x - bw, vh - y - bh),
           };
 
-          const nearest = Object.entries(dist).sort(
+          const nearest = Object.entries(corners).sort(
             (a, b) => a[1] - b[1]
           )[0][0];
+          const margin = 16;
 
-          switch (nearest) {
-            case "tl":
-              btn.style.left = "10px";
-              btn.style.top = "10px";
-              break;
-            case "tr":
-              btn.style.left = vw - bw - 10 + "px";
-              btn.style.top = "10px";
-              break;
-            case "bl":
-              btn.style.left = "10px";
-              btn.style.top = vh - bh - 10 + "px";
-              break;
-            case "br":
-              btn.style.left = vw - bw - 10 + "px";
-              btn.style.top = vh - bh - 10 + "px";
-              break;
-          }
+          const positions = {
+            tl: { left: `${margin}px`, top: `${margin}px` },
+            tr: { left: `${vw - bw - margin}px`, top: `${margin}px` },
+            bl: { left: `${margin}px`, top: `${vh - bh - margin}px` },
+            br: { left: `${vw - bw - margin}px`, top: `${vh - bh - margin}px` },
+          };
+
+          Object.assign(elements.defaiBtn.style, positions[nearest]);
         }
 
-        /* -------------------- PC (mouse) -------------------- */
-        btn.addEventListener("mousedown", (e) =>
+        // Mouse events
+        elements.defaiBtn.addEventListener("mousedown", (e) =>
           startDrag(e.clientX, e.clientY)
         );
         document.addEventListener("mousemove", (e) =>
@@ -604,164 +554,161 @@
         );
         document.addEventListener("mouseup", endDrag);
 
-        /* -------------------- Mobile (touch) -------------------- */
-        btn.addEventListener("touchstart", (e) => {
+        // Touch events
+        elements.defaiBtn.addEventListener("touchstart", (e) => {
           const t = e.touches[0];
           startDrag(t.clientX, t.clientY);
         });
-
         document.addEventListener("touchmove", (e) => {
           const t = e.touches[0];
           moveDrag(t.clientX, t.clientY);
         });
-
         document.addEventListener("touchend", endDrag);
 
-        // Sync template selectors
-        if (templateSelect && templateSelectDesktop) {
-          templateSelect.addEventListener("change", function () {
-            templateSelectDesktop.value = this.value;
+        // Template Sync
+        if (elements.templateSelect && elements.templateSelectDesktop) {
+          elements.templateSelect.addEventListener("change", function () {
+            elements.templateSelectDesktop.value = this.value;
           });
-          templateSelectDesktop.addEventListener("change", function () {
-            templateSelect.value = this.value;
-          });
-        }
-
-        // Modal handlers
-        if (showDataModalBtn) {
-          showDataModalBtn.addEventListener("click", function () {
-            dataModal.classList.remove("hidden");
-          });
-        }
-
-        if (closeDataModalBtn) {
-          closeDataModalBtn.addEventListener("click", function () {
-            dataModal.classList.add("hidden");
-          });
-        }
-
-        if (dataModal) {
-          dataModal.addEventListener("click", function (e) {
-            if (e.target === dataModal) {
-              dataModal.classList.add("hidden");
+          elements.templateSelectDesktop.addEventListener(
+            "change",
+            function () {
+              elements.templateSelect.value = this.value;
             }
-          });
+          );
         }
 
+        // Modal Handlers
+        function showModal() {
+          elements.dataModal.classList.remove("hidden");
+          setTimeout(() => {
+            elements.modalOverlay.classList.add("active");
+            elements.dataModal
+              .querySelector(".bottom-sheet")
+              .classList.add("active");
+          }, 10);
+        }
+
+        function hideModal() {
+          elements.modalOverlay.classList.remove("active");
+          elements.dataModal
+            .querySelector(".bottom-sheet")
+            .classList.remove("active");
+          setTimeout(() => {
+            elements.dataModal.classList.add("hidden");
+          }, 300);
+        }
+
+        elements.showDataModal?.addEventListener("click", showModal);
+        elements.closeDataModal?.addEventListener("click", hideModal);
+        elements.modalOverlay?.addEventListener("click", hideModal);
+
+        // Utility Functions
         function getCSRFToken() {
           const token = document.querySelector('meta[name="csrf-token"]');
           return token ? token.getAttribute("content") : "";
         }
 
-        // Show loading
         function showLoading(message = "Traitement en cours...") {
-          loadingText.textContent = message;
-          loadingOverlay.classList.remove("hidden");
+          elements.loadingText.textContent = message;
+          elements.loadingOverlay.classList.remove("hidden");
         }
 
-        // Hide loading
         function hideLoading() {
-          loadingOverlay.classList.add("hidden");
+          elements.loadingOverlay.classList.add("hidden");
         }
 
-        // Show toast
         function showToast(message, type = "success") {
-          toastMessage.textContent = message;
-          toast.classList.remove("hidden");
+          elements.toastMessage.textContent = message;
 
           if (type === "error") {
-            toast.classList.remove("bg-gray-900");
-            toast.classList.add("bg-red-500");
+            elements.toast.classList.remove("bg-gray-900");
+            elements.toast.classList.add("bg-red-500");
+            elements.toastIcon.className = "fas fa-exclamation-circle";
           } else {
-            toast.classList.remove("bg-red-500");
-            toast.classList.add("bg-gray-900");
+            elements.toast.classList.remove("bg-red-500");
+            elements.toast.classList.add("bg-gray-900");
+            elements.toastIcon.className = "fas fa-check-circle";
           }
 
+          elements.toast.classList.remove("hidden");
+
           setTimeout(() => {
-            toast.style.opacity = "0";
+            elements.toast.style.opacity = "0";
             setTimeout(() => {
-              toast.classList.add("hidden");
-              toast.style.opacity = "1";
+              elements.toast.classList.add("hidden");
+              elements.toast.style.opacity = "1";
             }, 300);
           }, 3000);
         }
 
-        // Update data counts
+        // API Functions
         async function updateDataCounts() {
           try {
-            const response = await fetch(
-              "/api/career-craft/preview",
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  "X-CSRFToken": getCSRFToken(),
-                },
-                credentials: "same-origin",
-              }
-            );
+            const response = await fetch("/api/career-craft/preview", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCSRFToken(),
+              },
+              credentials: "same-origin",
+            });
 
             if (!response.ok)
               throw new Error("Erreur lors de la récupération des données");
 
             const data = await response.json();
             if (data.success && data.data) {
-              const expCount = data.data.experiences?.length || 0;
-              const eduCount = data.data.formations?.length || 0;
-              const skillsCount =
-                (data.data.competences?.length || 0) +
-                (data.data.competences_techniques?.length || 0);
+              const counts = {
+                exp: data.data.experiences?.length || 0,
+                edu: data.data.formations?.length || 0,
+                skills:
+                  (data.data.competences?.length || 0) +
+                  (data.data.competences_techniques?.length || 0),
+              };
 
-              // Update all counters
-              document.getElementById("expCount").textContent = expCount;
-              document.getElementById("eduCount").textContent = eduCount;
-              document.getElementById("skillsCount").textContent = skillsCount;
+              document.getElementById("expCount").textContent = counts.exp;
+              document.getElementById("eduCount").textContent = counts.edu;
+              document.getElementById("skillsCount").textContent =
+                counts.skills;
 
               const expCountMobile = document.getElementById("expCountMobile");
               const eduCountMobile = document.getElementById("eduCountMobile");
               const skillsCountMobile =
                 document.getElementById("skillsCountMobile");
 
-              if (expCountMobile) expCountMobile.textContent = expCount;
-              if (eduCountMobile) eduCountMobile.textContent = eduCount;
+              if (expCountMobile) expCountMobile.textContent = counts.exp;
+              if (eduCountMobile) eduCountMobile.textContent = counts.edu;
               if (skillsCountMobile)
-                skillsCountMobile.textContent = skillsCount;
+                skillsCountMobile.textContent = counts.skills;
             }
           } catch (error) {
             console.error("Erreur:", error);
           }
         }
 
-        // Generate preview
         async function generatePreview() {
           showLoading("Génération de l'aperçu...");
-          const template = templateSelect
-            ? templateSelect.value
-            : templateSelectDesktop.value;
+          const template =
+            elements.templateSelect?.value ||
+            elements.templateSelectDesktop.value;
 
           try {
-            const response = await fetch(
-              "/api/career-craft/generate",
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  "X-CSRFToken": getCSRFToken(),
-                },
-                body: JSON.stringify({
-                  format: "preview",
-                  template: template,
-                }),
-                credentials: "same-origin",
-              }
-            );
+            const response = await fetch("/api/career-craft/generate", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCSRFToken(),
+              },
+              body: JSON.stringify({ format: "preview", template }),
+              credentials: "same-origin",
+            });
 
-            if (!response.ok)
-              throw new Error("Erreur lors de la génération de l'aperçu");
+            if (!response.ok) throw new Error("Erreur lors de la génération");
 
             const data = await response.json();
             if (data.success && data.preview) {
-              cvPreview.innerHTML = data.preview;
+              elements.cvPreview.innerHTML = data.preview;
               showToast("Aperçu généré avec succès");
             }
           } catch (error) {
@@ -772,38 +719,30 @@
           }
         }
 
-        // Export CV
         async function exportCV(format) {
-          showLoading(`Génération du CV en ${format.toUpperCase()}...`);
-          const template = templateSelect
-            ? templateSelect.value
-            : templateSelectDesktop.value;
+          showLoading(`Génération du ${format.toUpperCase()}...`);
+          const template =
+            elements.templateSelect?.value ||
+            elements.templateSelectDesktop.value;
 
           try {
-            const response = await fetch(
-              `/api/career-craft/generate`,
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  "X-CSRFToken": getCSRFToken(),
-                },
-                body: JSON.stringify({
-                  format: format,
-                  template: template,
-                }),
-                credentials: "same-origin",
-              }
-            );
+            const response = await fetch("/api/career-craft/generate", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCSRFToken(),
+              },
+              body: JSON.stringify({ format, template }),
+              credentials: "same-origin",
+            });
 
-            if (!response.ok)
-              throw new Error(`Erreur lors de la génération du ${format}`);
+            if (!response.ok) throw new Error(`Erreur lors de la génération`);
 
             if (format === "linkedin") {
               const data = await response.json();
               if (data.success && data.url) {
                 window.open(data.url, "_blank");
-                showToast("CV LinkedIn généré avec succès");
+                showToast("CV LinkedIn généré");
               }
             } else {
               const blob = await response.blob();
@@ -819,36 +758,32 @@
             }
           } catch (error) {
             console.error("Erreur:", error);
-            showToast(`Erreur lors de l'export en ${format}`, "error");
+            showToast(`Erreur lors de l'export`, "error");
           } finally {
             hideLoading();
           }
         }
 
-        // Event listeners
-        refreshPreviewBtn.addEventListener("click", generatePreview);
+        // Event Listeners
+        elements.refreshPreview.addEventListener("click", generatePreview);
 
         // Mobile buttons
-        if (exportPdfBtn)
-          exportPdfBtn.addEventListener("click", () => exportCV("pdf"));
-        if (exportDocxBtn)
-          exportDocxBtn.addEventListener("click", () => exportCV("docx"));
-        if (exportLinkedInBtn)
-          exportLinkedInBtn.addEventListener("click", () =>
-            exportCV("linkedin")
-          );
+        elements.exportPdf?.addEventListener("click", () => exportCV("pdf"));
+        elements.exportDocx?.addEventListener("click", () => exportCV("docx"));
+        elements.exportLinkedIn?.addEventListener("click", () =>
+          exportCV("linkedin")
+        );
 
         // Desktop buttons
-        if (exportPdfDesktopBtn)
-          exportPdfDesktopBtn.addEventListener("click", () => exportCV("pdf"));
-        if (exportDocxDesktopBtn)
-          exportDocxDesktopBtn.addEventListener("click", () =>
-            exportCV("docx")
-          );
-        if (exportLinkedInDesktopBtn)
-          exportLinkedInDesktopBtn.addEventListener("click", () =>
-            exportCV("linkedin")
-          );
+        elements.exportPdfDesktop?.addEventListener("click", () =>
+          exportCV("pdf")
+        );
+        elements.exportDocxDesktop?.addEventListener("click", () =>
+          exportCV("docx")
+        );
+        elements.exportLinkedInDesktop?.addEventListener("click", () =>
+          exportCV("linkedin")
+        );
 
         // Initial load
         updateDataCounts();
