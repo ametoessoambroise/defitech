@@ -182,10 +182,10 @@
   <script>
     const CONFIG = {
       adminId: {{ admin.id }},
-    userId: { { current_user.id } },
-    userAvatar: "{{ current_user.photo_profil or '' }}",
+      userId: {{ current_user.id }},
+      userAvatar: "{{ current_user.photo_profil or '' }}",
       adminAvatar: "{{ admin.photo_profil or '' }}"
-        };
+    };
 
     // DOM Elements
     const DOM = {
