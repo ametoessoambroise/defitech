@@ -292,12 +292,12 @@ def devoirs():
         # Notifier tous les étudiants concernés
         etudiants = Etudiant.query.filter_by(filiere=filiere, annee=annee).all()
         for etu in etudiants:
-            notif = Notification(
+            Notification.creer_notification(
                 user_id=etu.user_id,
-                message=f"Nouveau {type_devoir} : {titre} pour {filiere} {annee}",
+                titre=f"Nouveau {type_devoir}",
+                message=f"Sujet : {titre} - {filiere} {annee}",
                 type="info",
             )
-            db.session.add(notif)
         db.session.commit()
         flash(
             f"{type_devoir.capitalize()} envoyé à tous les étudiants de {filiere} {annee}.",
@@ -306,7 +306,6 @@ def devoirs():
         return redirect(url_for("teachers.devoirs"))
 
     return render_template("enseignant/devoirs.html", filieres=filieres, annees=annees)
-
 
 @teachers_bp.route("/emploi-temps")
 @login_required
@@ -351,8 +350,26 @@ def api_emploi_temps():
 
     jours = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"]
 
+    # Définition des créneaux fixes (Cours et Pauses)
+    horaire_config = [
+        {"label": "07:00 - 10:00", "type": "cours"},
+        {"label": "10:00 - 10:30", "type": "pause", "nom": "Récréation"},
+        {"label": "10:30 - 12:30", "type": "cours"},
+        {"label": "12:30 - 13:30", "type": "pause", "nom": "Déjeuner"},
+        {"label": "13:30 - 15:30", "type": "cours"},
+        {"label": "15:30 - 16:00", "type": "pause", "nom": "Pause"},
+        {"label": "16:00 - 18:00", "type": "cours"},
+    ]
+
     if not filieres or not annees:
-        return jsonify({"jours": jours, "horaires": [], "creneaux": []})
+        return jsonify(
+            {
+                "jours": jours,
+                "horaires": [h["label"] for h in horaire_config],
+                "horaire_config": horaire_config,
+                "creneaux": [],
+            }
+        )
 
     filiere_ids = [
         Filiere.query.filter_by(nom=f).first().id
@@ -380,20 +397,11 @@ def api_emploi_temps():
             hf_h, hf_m = map(int, hf.split(":")[:2])
         else:
             hf_h, hf_m = hf.hour, hf.minute
-        return f"{hd_h:02d}h{hd_m:02d} - {hf_h:02d}h{hf_m:02d}"
-
-    horaire_labels = []
-    for e in emplois:
-        if e.jour in jours and e.heure_debut and e.heure_fin:
-            label = format_label(e)
-            if label not in horaire_labels:
-                horaire_labels.append(label)
-
-    horaire_labels.sort()
+        return f"{hd_h:02d}:{hd_m:02d} - {hf_h:02d}:{hf_m:02d}"
 
     creneaux_json = []
     for e in emplois:
-        if e.jour not in jours or not e.heure_debut or not e.heure_fin:
+        if not e.heure_debut or not e.heure_fin:
             continue
         label = format_label(e)
         matiere = Matiere.query.get(e.matiere_id) if e.matiere_id else None
@@ -403,11 +411,21 @@ def api_emploi_temps():
                 "jour": e.jour,
                 "horaire": label,
                 "matiere": matiere.nom if matiere else None,
+                "filiere": e.filiere.nom if e.filiere else "Inconnue",
+                "annee": matiere.annee if matiere else "N/A",
                 "salle": e.salle,
+                "type": "cours",
             }
         )
 
-    return jsonify({"jours": jours, "horaires": horaire_labels, "creneaux": creneaux_json})
+    return jsonify(
+        {
+            "jours": jours,
+            "horaires": [h["label"] for h in horaire_config],
+            "horaire_config": horaire_config,
+            "creneaux": creneaux_json,
+        }
+    )
 
 
 @teachers_bp.route("/presence", methods=["GET", "POST"])
@@ -487,6 +505,7 @@ def presence():
         selected_date=selected_date,
         etudiants=etudiants,
     )
+
 
 @teachers_bp.route("/devoirs-a-corriger")
 @login_required

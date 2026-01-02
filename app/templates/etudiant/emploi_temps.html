@@ -1,45 +1,42 @@
-{% extends "base.html" %}
-{% block title %}Mon emplois du temps | DEFITECH{% endblock %}
-{% block extra_css %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-<script src="https://cdn.tailwindcss.com"></script>
+{% extends "base.html" %} {% block title %}Mon emplois du temps | DEFITECH{%
+endblock %} {% block extra_css %}
 <script>
   tailwind.config = {
-    darkMode: 'class',
+    darkMode: "class",
     theme: {
       extend: {
         colors: {
           primary: {
-            50: '#eef2ff',
-            100: '#e0e7ff',
-            200: '#c7d2fe',
-            300: '#a5b4fc',
-            400: '#818cf8',
-            500: '#6366f1',
-            600: '#4f46e5',
-            700: '#4338ca',
-            800: '#3730a3',
-            900: '#312e81',
-          }
+            50: "#eef2ff",
+            100: "#e0e7ff",
+            200: "#c7d2fe",
+            300: "#a5b4fc",
+            400: "#818cf8",
+            500: "#6366f1",
+            600: "#4f46e5",
+            700: "#4338ca",
+            800: "#3730a3",
+            900: "#312e81",
+          },
         },
         animation: {
-          'fade-in': 'fadeIn 0.5s ease-in-out',
-          'slide-up': 'slideUp 0.5s ease-out',
-          'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          "fade-in": "fadeIn 0.5s ease-in-out",
+          "slide-up": "slideUp 0.5s ease-out",
+          "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
         },
         keyframes: {
           fadeIn: {
-            '0%': { opacity: '0', transform: 'translateY(10px)' },
-            '100%': { opacity: '1', transform: 'translateY(0)' },
+            "0%": { opacity: "0", transform: "translateY(10px)" },
+            "100%": { opacity: "1", transform: "translateY(0)" },
           },
           slideUp: {
-            '0%': { opacity: '0', transform: 'translateY(20px)' },
-            '100%': { opacity: '1', transform: 'translateY(0)' },
-          }
-        }
-      }
-    }
-  }
+            "0%": { opacity: "0", transform: "translateY(20px)" },
+            "100%": { opacity: "1", transform: "translateY(0)" },
+          },
+        },
+      },
+    },
+  };
 </script>
 <style>
   @keyframes spin {
@@ -83,21 +80,24 @@
     scrollbar-width: none;
   }
 </style>
-{% endblock %}
-
-{% block content %}
+{% endblock %} {% block content %}
 
 <div
-  class="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50/30 dark:from-gray-900 dark:to-gray-800 py-6 sm:py-8 transition-colors duration-300">
+  class="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50/30 dark:from-gray-900 dark:to-gray-800 py-6 sm:py-8 transition-colors duration-300"
+>
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
     <!-- Header Card -->
     <div
-      class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl mb-6 sm:mb-8 overflow-hidden border border-gray-100 dark:border-gray-700">
-      <div class="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-5 sm:py-6">
+      class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl mb-6 sm:mb-8 overflow-hidden border border-gray-100 dark:border-gray-700"
+    >
+      <div
+        class="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-5 sm:py-6"
+      >
         <div class="flex items-center justify-between flex-wrap gap-4">
           <div class="flex items-center space-x-4">
-            <div class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
+            <div
+              class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center"
+            >
               <i class="fas fa-calendar-alt text-white text-xl"></i>
             </div>
             <div>
@@ -107,8 +107,10 @@
               </p>
             </div>
           </div>
-          <button id="toggle-dark-mode"
-            class="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 transition-all duration-300 hover:scale-105 active:scale-95">
+          <button
+            id="toggle-dark-mode"
+            class="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 transition-all duration-300 hover:scale-105 active:scale-95"
+          >
             <i class="fas fa-moon dark:hidden"></i>
             <i class="fas fa-sun hidden dark:inline"></i>
           </button>
@@ -116,37 +118,53 @@
       </div>
 
       <!-- Controls Section -->
-      <div class="px-6 py-5 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
-        <div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+      <div
+        class="px-6 py-5 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50"
+      >
+        <div
+          class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4"
+        >
           <!-- Week Navigator -->
-          <div class="flex items-center justify-center lg:justify-start space-x-3 sm:space-x-4">
-            <button id="prev-week"
-              class="p-2.5 sm:p-3 rounded-xl bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 hover:border-gray-400 dark:hover:border-gray-500 transition-all duration-300 hover:scale-105 active:scale-95 shadow-sm">
+          <div
+            class="flex items-center justify-center lg:justify-start space-x-3 sm:space-x-4"
+          >
+            <button
+              id="prev-week"
+              class="p-2.5 sm:p-3 rounded-xl bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 hover:border-gray-400 dark:hover:border-gray-500 transition-all duration-300 hover:scale-105 active:scale-95 shadow-sm"
+            >
               <i class="fas fa-chevron-left"></i>
             </button>
             <div class="text-center">
-              <span class="text-base sm:text-lg font-bold text-gray-900 dark:text-white block">
+              <span
+                class="text-base sm:text-lg font-bold text-gray-900 dark:text-white block"
+              >
                 Semaine du {{ now.strftime('%d/%m/%Y') }}
               </span>
               <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                 au {{ (now + timedelta(days=4)).strftime('%d/%m/%Y') }}
               </span>
             </div>
-            <button id="next-week"
-              class="p-2.5 sm:p-3 rounded-xl bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 hover:border-gray-400 dark:hover:border-gray-500 transition-all duration-300 hover:scale-105 active:scale-95 shadow-sm">
+            <button
+              id="next-week"
+              class="p-2.5 sm:p-3 rounded-xl bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 hover:border-gray-400 dark:hover:border-gray-500 transition-all duration-300 hover:scale-105 active:scale-95 shadow-sm"
+            >
               <i class="fas fa-chevron-right"></i>
             </button>
           </div>
 
           <!-- Action Buttons -->
           <div class="flex space-x-2 sm:space-x-3">
-            <button id="export-btn"
-              class="flex-1 sm:flex-none px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all duration-300 hover:shadow-lg hover:shadow-green-600/30 hover:-translate-y-0.5 active:translate-y-0 font-semibold flex items-center justify-center gap-2">
+            <button
+              id="export-btn"
+              class="flex-1 sm:flex-none px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all duration-300 hover:shadow-lg hover:shadow-green-600/30 hover:-translate-y-0.5 active:translate-y-0 font-semibold flex items-center justify-center gap-2"
+            >
               <i class="fas fa-download"></i>
               <span class="hidden sm:inline">Exporter</span>
             </button>
-            <button id="print-btn"
-              class="flex-1 sm:flex-none px-4 sm:px-6 py-2.5 sm:py-3 bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-600 hover:border-gray-400 dark:hover:border-gray-500 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 font-semibold flex items-center justify-center gap-2">
+            <button
+              id="print-btn"
+              class="flex-1 sm:flex-none px-4 sm:px-6 py-2.5 sm:py-3 bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-600 hover:border-gray-400 dark:hover:border-gray-500 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 font-semibold flex items-center justify-center gap-2"
+            >
               <i class="fas fa-print"></i>
               <span class="hidden sm:inline">Imprimer</span>
             </button>
@@ -157,12 +175,19 @@
       <!-- Schedule Table -->
       <div class="p-4 sm:p-6">
         <div
-          class="overflow-x-auto rounded-xl border-2 border-gray-200 dark:border-gray-700 shadow-inner bg-white dark:bg-gray-900">
-          <table id="timetable" class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+          class="overflow-x-auto rounded-xl border-2 border-gray-200 dark:border-gray-700 shadow-inner bg-white dark:bg-gray-900"
+        >
+          <table
+            id="timetable"
+            class="min-w-full divide-y divide-gray-200 dark:divide-gray-700"
+          >
             <thead id="timetable-head">
               <!-- Rempli dynamiquement via JS -->
             </thead>
-            <tbody id="timetable-body" class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+            <tbody
+              id="timetable-body"
+              class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700"
+            >
               <!-- Rempli dynamiquement via JS -->
             </tbody>
           </table>
@@ -170,46 +195,74 @@
 
         <!-- Legend -->
         <div
-          class="mt-6 sm:mt-8 p-4 sm:p-6 bg-gradient-to-br from-gray-50 to-blue-50/50 dark:from-gray-800 dark:to-gray-800/50 rounded-xl border-2 border-gray-200 dark:border-gray-700 shadow-sm">
+          class="mt-6 sm:mt-8 p-4 sm:p-6 bg-gradient-to-br from-gray-50 to-blue-50/50 dark:from-gray-800 dark:to-gray-800/50 rounded-xl border-2 border-gray-200 dark:border-gray-700 shadow-sm"
+        >
           <div class="flex items-center gap-3 mb-4">
             <div
-              class="w-10 h-10 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
+              class="w-10 h-10 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl flex items-center justify-center shadow-lg"
+            >
               <i class="fas fa-info-circle text-white"></i>
             </div>
-            <h4 class="font-bold text-gray-900 dark:text-white text-lg">Légende des cours</h4>
+            <h4 class="font-bold text-gray-900 dark:text-white text-lg">
+              Légende des cours
+            </h4>
           </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          <div
+            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4"
+          >
             <div
-              class="flex items-center gap-3 p-3 bg-white dark:bg-gray-700 rounded-xl border-2 border-blue-200 dark:border-blue-800 hover:border-blue-400 dark:hover:border-blue-600 transition-all duration-300 hover:shadow-md cursor-pointer group">
+              class="flex items-center gap-3 p-3 bg-white dark:bg-gray-700 rounded-xl border-2 border-blue-200 dark:border-blue-800 hover:border-blue-400 dark:hover:border-blue-600 transition-all duration-300 hover:shadow-md cursor-pointer group"
+            >
               <div
-                class="w-8 h-8 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900/50 dark:to-blue-800/50 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                class="w-8 h-8 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900/50 dark:to-blue-800/50 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform"
+              >
                 <i class="fas fa-book text-blue-600 dark:text-blue-400"></i>
               </div>
-              <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">Cours magistral</span>
+              <span
+                class="text-sm font-semibold text-gray-700 dark:text-gray-300"
+                >Cours magistral</span
+              >
             </div>
             <div
-              class="flex items-center gap-3 p-3 bg-white dark:bg-gray-700 rounded-xl border-2 border-pink-200 dark:border-pink-800 hover:border-pink-400 dark:hover:border-pink-600 transition-all duration-300 hover:shadow-md cursor-pointer group">
+              class="flex items-center gap-3 p-3 bg-white dark:bg-gray-700 rounded-xl border-2 border-pink-200 dark:border-pink-800 hover:border-pink-400 dark:hover:border-pink-600 transition-all duration-300 hover:shadow-md cursor-pointer group"
+            >
               <div
-                class="w-8 h-8 bg-gradient-to-br from-pink-100 to-pink-200 dark:from-pink-900/50 dark:to-pink-800/50 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-                <i class="fas fa-pencil-ruler text-pink-600 dark:text-pink-400"></i>
+                class="w-8 h-8 bg-gradient-to-br from-pink-100 to-pink-200 dark:from-pink-900/50 dark:to-pink-800/50 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform"
+              >
+                <i
+                  class="fas fa-pencil-ruler text-pink-600 dark:text-pink-400"
+                ></i>
               </div>
-              <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">Travaux pratiques</span>
+              <span
+                class="text-sm font-semibold text-gray-700 dark:text-gray-300"
+                >Travaux pratiques</span
+              >
             </div>
             <div
-              class="flex items-center gap-3 p-3 bg-white dark:bg-gray-700 rounded-xl border-2 border-red-200 dark:border-red-800 hover:border-red-400 dark:hover:border-red-600 transition-all duration-300 hover:shadow-md cursor-pointer group">
+              class="flex items-center gap-3 p-3 bg-white dark:bg-gray-700 rounded-xl border-2 border-red-200 dark:border-red-800 hover:border-red-400 dark:hover:border-red-600 transition-all duration-300 hover:shadow-md cursor-pointer group"
+            >
               <div
-                class="w-8 h-8 bg-gradient-to-br from-red-100 to-red-200 dark:from-red-900/50 dark:to-red-800/50 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                class="w-8 h-8 bg-gradient-to-br from-red-100 to-red-200 dark:from-red-900/50 dark:to-red-800/50 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform"
+              >
                 <i class="fas fa-flask text-red-600 dark:text-red-400"></i>
               </div>
-              <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">Laboratoire</span>
+              <span
+                class="text-sm font-semibold text-gray-700 dark:text-gray-300"
+                >Laboratoire</span
+              >
             </div>
             <div
-              class="flex items-center gap-3 p-3 bg-white dark:bg-gray-700 rounded-xl border-2 border-cyan-200 dark:border-cyan-800 hover:border-cyan-400 dark:hover:border-cyan-600 transition-all duration-300 hover:shadow-md cursor-pointer group">
+              class="flex items-center gap-3 p-3 bg-white dark:bg-gray-700 rounded-xl border-2 border-cyan-200 dark:border-cyan-800 hover:border-cyan-400 dark:hover:border-cyan-600 transition-all duration-300 hover:shadow-md cursor-pointer group"
+            >
               <div
-                class="w-8 h-8 bg-gradient-to-br from-cyan-100 to-cyan-200 dark:from-cyan-900/50 dark:to-cyan-800/50 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                class="w-8 h-8 bg-gradient-to-br from-cyan-100 to-cyan-200 dark:from-cyan-900/50 dark:to-cyan-800/50 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform"
+              >
                 <i class="fas fa-running text-cyan-600 dark:text-cyan-400"></i>
               </div>
-              <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">Sport</span>
+              <span
+                class="text-sm font-semibold text-gray-700 dark:text-gray-300"
+                >Sport</span
+              >
             </div>
           </div>
         </div>
@@ -217,9 +270,12 @@
         <!-- Statistics Section -->
         <div class="mt-6 sm:mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div
-            class="bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl p-5 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+            class="bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl p-5 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+          >
             <div class="flex items-center justify-between mb-3">
-              <div class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
+              <div
+                class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center"
+              >
                 <i class="fas fa-book-open text-2xl"></i>
               </div>
               <span class="text-3xl font-bold" id="total-slots">0</span>
@@ -228,9 +284,12 @@
           </div>
 
           <div
-            class="bg-gradient-to-br from-green-600 to-emerald-600 rounded-xl p-5 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+            class="bg-gradient-to-br from-green-600 to-emerald-600 rounded-xl p-5 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+          >
             <div class="flex items-center justify-between mb-3">
-              <div class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
+              <div
+                class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center"
+              >
                 <i class="fas fa-check-circle text-2xl"></i>
               </div>
               <span class="text-3xl font-bold" id="occupied-slots">0</span>
@@ -239,9 +298,12 @@
           </div>
 
           <div
-            class="bg-gradient-to-br from-purple-600 to-pink-600 rounded-xl p-5 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+            class="bg-gradient-to-br from-purple-600 to-pink-600 rounded-xl p-5 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+          >
             <div class="flex items-center justify-between mb-3">
-              <div class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
+              <div
+                class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center"
+              >
                 <i class="fas fa-clock text-2xl"></i>
               </div>
               <span class="text-3xl font-bold" id="free-slots">0</span>
@@ -253,26 +315,40 @@
     </div>
 
     <!-- Quick Tips Card -->
-    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-5 sm:p-6 border border-gray-100 dark:border-gray-700">
+    <div
+      class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-5 sm:p-6 border border-gray-100 dark:border-gray-700"
+    >
       <div class="flex items-start gap-4">
         <div
-          class="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
+          class="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg"
+        >
           <i class="fas fa-lightbulb text-white text-xl"></i>
         </div>
         <div class="flex-1">
-          <h4 class="font-bold text-gray-900 dark:text-white text-lg mb-2">Astuces rapides</h4>
+          <h4 class="font-bold text-gray-900 dark:text-white text-lg mb-2">
+            Astuces rapides
+          </h4>
           <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
             <li class="flex items-start gap-2">
-              <i class="fas fa-check-circle text-green-500 mt-0.5 flex-shrink-0"></i>
+              <i
+                class="fas fa-check-circle text-green-500 mt-0.5 flex-shrink-0"
+              ></i>
               <span>Cliquez sur un cours pour voir plus de détails</span>
             </li>
             <li class="flex items-start gap-2">
-              <i class="fas fa-check-circle text-green-500 mt-0.5 flex-shrink-0"></i>
+              <i
+                class="fas fa-check-circle text-green-500 mt-0.5 flex-shrink-0"
+              ></i>
               <span>Utilisez les flèches pour naviguer entre les semaines</span>
             </li>
             <li class="flex items-start gap-2">
-              <i class="fas fa-check-circle text-green-500 mt-0.5 flex-shrink-0"></i>
-              <span>Exportez votre emploi du temps au format PDF ou imprimez-le</span>
+              <i
+                class="fas fa-check-circle text-green-500 mt-0.5 flex-shrink-0"
+              ></i>
+              <span
+                >Exportez votre emploi du temps au format PDF ou
+                imprimez-le</span
+              >
             </li>
           </ul>
         </div>
@@ -281,68 +357,113 @@
   </div>
 </div>
 
-<div id="calcul" class="hidden"></div>
-
-{% block extra_js %}
-
+{% endblock %} {% block extra_js %}
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
+  document.addEventListener("DOMContentLoaded", function () {
+    let isLoading = false;
+
     // Dark Mode Toggle
-    const darkModeToggle = document.getElementById('toggle-dark-mode');
-    const isDark = localStorage.getItem('darkMode') === 'true';
+    const darkModeToggle = document.getElementById("toggle-dark-mode");
+    const isDark = localStorage.getItem("darkMode") === "true";
 
     if (isDark) {
-      document.documentElement.classList.add('dark');
+      document.documentElement.classList.add("dark");
     }
 
-    darkModeToggle?.addEventListener('click', () => {
-      document.documentElement.classList.toggle('dark');
-      console.log('clicked !');
-      localStorage.setItem('darkMode', document.documentElement.classList.contains('dark'));
+    darkModeToggle?.addEventListener("click", () => {
+      document.documentElement.classList.toggle("dark");
+      localStorage.setItem(
+        "darkMode",
+        document.documentElement.classList.contains("dark")
+      );
     });
 
     // Print functionality
-    document.getElementById('print-btn').addEventListener('click', function () {
-      window.print();
-    });
+    document
+      .getElementById("print-btn")
+      ?.addEventListener("click", function () {
+        window.print();
+      });
+
+    // Toast notification
+    function showToast(message, type = "info") {
+      const toast = document.createElement("div");
+      const colors = {
+        info: "bg-blue-500",
+        success: "bg-green-500",
+        warning: "bg-yellow-500",
+        error: "bg-red-500",
+      };
+
+      const icons = {
+        info: "fa-info-circle",
+        success: "fa-check-circle",
+        warning: "fa-exclamation-triangle",
+        error: "fa-times-circle",
+      };
+
+      toast.className = `fixed bottom-4 right-4 ${colors[type]} text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 min-w-[300px] max-w-md transform translate-x-full transition-transform duration-300 z-50`;
+      toast.innerHTML = `
+        <i class="fas ${icons[type]} text-xl"></i>
+        <span class="flex-1">${message}</span>
+        <button onclick="this.parentElement.remove()" class="hover:bg-white/20 rounded-lg p-1 transition-colors">
+          <i class="fas fa-times"></i>
+        </button>
+      `;
+
+      document.body.appendChild(toast);
+      setTimeout(() => toast.classList.remove("translate-x-full"), 100);
+
+      setTimeout(() => {
+        toast.classList.add("translate-x-full");
+        setTimeout(() => toast.remove(), 300);
+      }, 4000);
+    }
 
     // Export functionality (placeholder)
-    document.getElementById('export-btn').addEventListener('click', function () {
-      showToast('Exportation en cours...', 'info');
-      // Add your export logic here
-    });
+    document
+      .getElementById("export-btn")
+      ?.addEventListener("click", function () {
+        showToast("Exportation en cours...", "info");
+      });
 
     // Week navigation (placeholder)
-    document.getElementById('prev-week').addEventListener('click', function () {
-      showToast('Navigation vers la semaine précédente', 'info');
-      // Add navigation logic here
-    });
+    document
+      .getElementById("prev-week")
+      ?.addEventListener("click", function () {
+        showToast("Navigation vers la semaine précédente", "info");
+      });
 
-    document.getElementById('next-week').addEventListener('click', function () {
-      showToast('Navigation vers la semaine suivante', 'info');
-      // Add navigation logic here
-    });
+    document
+      .getElementById("next-week")
+      ?.addEventListener("click", function () {
+        showToast("Navigation vers la semaine suivante", "info");
+      });
 
     function calculateStats(totalSlots, occupiedSlots) {
       const freeSlots = totalSlots - occupiedSlots;
-      document.getElementById('occupied-slots').textContent = occupiedSlots;
-      document.getElementById('free-slots').textContent = freeSlots;
+      const occupiedEl = document.getElementById("occupied-slots");
+      const freeEl = document.getElementById("free-slots");
+      if (occupiedEl) occupiedEl.textContent = occupiedSlots;
+      if (freeEl) freeEl.textContent = freeSlots;
     }
 
     function createEmptyCell() {
-      const empty = document.createElement('div');
-      empty.className = 'h-[100px] flex items-center justify-center text-gray-300 dark:text-gray-700 rounded-xl border-2 border-dashed border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-colors';
+      const empty = document.createElement("div");
+      empty.className =
+        "h-[100px] flex items-center justify-center text-gray-300 dark:text-gray-700 rounded-xl border-2 border-dashed border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-colors";
       empty.innerHTML = '<i class="fas fa-minus text-sm"></i>';
       return empty;
     }
 
     function createCourseCard(creneau) {
-      const card = document.createElement('div');
-      card.className = 'course-card group bg-gradient-to-br from-blue-100 to-blue-50 dark:from-blue-900/30 dark:to-blue-800/20 p-3 sm:p-4 rounded-xl border-2 border-blue-200 dark:border-blue-800 hover:border-blue-400 dark:hover:border-blue-600 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer min-h-[100px]';
+      const card = document.createElement("div");
+      card.className =
+        "course-card group bg-gradient-to-br from-blue-100 to-blue-50 dark:from-blue-900/30 dark:to-blue-800/20 p-3 sm:p-4 rounded-xl border-2 border-blue-200 dark:border-blue-800 hover:border-blue-400 dark:hover:border-blue-600 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer min-h-[100px]";
 
-      const enseignant = creneau.enseignant || 'Non défini';
-      const matiere = creneau.matiere || '---';
-      const salle = creneau.salle || '-';
+      const enseignant = creneau.enseignant || "Non défini";
+      const matiere = creneau.matiere || "---";
+      const salle = creneau.salle || "-";
 
       card.innerHTML = `
         <div class="flex flex-col h-full justify-between space-y-2">
@@ -367,46 +488,82 @@
         </div>
       `;
 
-      card.addEventListener('click', function () {
-        showToast(`Cours: ${matiere}`, 'info');
+      card.addEventListener("click", function () {
+        showToast(`Cours: ${matiere}`, "info");
       });
 
       return card;
     }
 
-    async function loadEmploiTemps() {
-      const head = document.getElementById('timetable-head');
-      const body = document.getElementById('timetable-body');
-      if (!head || !body) return;
+    function createBreakCard(config) {
+      const card = document.createElement("div");
+      card.className =
+        "bg-gray-100 dark:bg-gray-800/40 p-3 rounded-xl border-2 border-dashed border-gray-200 dark:border-gray-700 flex items-center justify-center min-h-[100px] opacity-70";
+      card.innerHTML = `
+        <div class="text-center">
+          <i class="fas ${
+            config.nom === "Déjeuner" ? "fa-utensils" : "fa-coffee"
+          } text-gray-400 dark:text-gray-500 mb-1"></i>
+          <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest">${
+            config.nom
+          }</p>
+        </div>
+      `;
+      return card;
+    }
 
-      head.innerHTML = '';
-      body.innerHTML = '';
+    async function loadEmploiTemps() {
+      if (isLoading) return;
+      isLoading = true;
+
+      const head = document.getElementById("timetable-head");
+      const body = document.getElementById("timetable-body");
+      if (!head || !body) {
+        isLoading = false;
+        return;
+      }
 
       try {
-        const response = await fetch('/etudiant/api/emploi-temps');
+        const response = await fetch("/etudiant/api/emploi-temps");
         if (!response.ok) {
-          showToast('Erreur lors du chargement de l\'emploi du temps', 'error');
+          showToast("Erreur lors du chargement de l'emploi du temps", "error");
+          isLoading = false;
           return;
         }
 
         const data = await response.json();
-        const jours = data.jours || ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'];
+
+        // Vider le tableau JUSTE AVANT de le remplir pour éviter les doublons lors d'appels rapides
+        head.innerHTML = "";
+        body.innerHTML = "";
+
+        const jours = data.jours || [
+          "Lundi",
+          "Mardi",
+          "Mercredi",
+          "Jeudi",
+          "Vendredi",
+        ];
         const horaires = data.horaires || [];
         const creneaux = data.creneaux || [];
 
         const totalSlots = horaires.length * jours.length;
 
-        const headerRow = document.createElement('tr');
-        headerRow.className = 'bg-gradient-to-r from-gray-100 to-gray-50 dark:from-gray-800 dark:to-gray-800/50';
+        const headerRow = document.createElement("tr");
+        headerRow.className =
+          "bg-gradient-to-r from-gray-100 to-gray-50 dark:from-gray-800 dark:to-gray-800/50";
 
-        const thHoraire = document.createElement('th');
-        thHoraire.className = 'sticky left-0 z-10 px-4 sm:px-6 py-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider bg-gradient-to-r from-gray-100 to-gray-50 dark:from-gray-800 dark:to-gray-800/50 border-r-2 border-gray-300 dark:border-gray-600';
-        thHoraire.innerHTML = '<div class="flex items-center gap-2"><i class="fas fa-clock text-blue-600 dark:text-blue-400"></i><span>Horaire</span></div>';
+        const thHoraire = document.createElement("th");
+        thHoraire.className =
+          "sticky left-0 z-10 px-4 sm:px-6 py-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider bg-gradient-to-r from-gray-100 to-gray-50 dark:from-gray-800 dark:to-gray-800/50 border-r-2 border-gray-300 dark:border-gray-600";
+        thHoraire.innerHTML =
+          '<div class="flex items-center gap-2"><i class="fas fa-clock text-blue-600 dark:text-blue-400"></i><span>Horaire</span></div>';
         headerRow.appendChild(thHoraire);
 
-        jours.forEach(jour => {
-          const th = document.createElement('th');
-          th.className = 'px-4 sm:px-6 py-4 text-center text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider border-r-2 border-gray-200 dark:border-gray-700 last:border-r-0';
+        jours.forEach((jour) => {
+          const th = document.createElement("th");
+          th.className =
+            "px-4 sm:px-6 py-4 text-center text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider border-r-2 border-gray-200 dark:border-gray-700 last:border-r-0";
           th.innerHTML = `
             <div class="flex flex-col items-center gap-1">
               <i class="fas fa-calendar-day text-blue-600 dark:text-blue-400 text-sm"></i>
@@ -420,30 +577,45 @@
 
         let occupiedSlots = 0;
 
-        horaires.forEach(horaireLabel => {
-          const row = document.createElement('tr');
-          row.className = 'hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-200';
+        const horaireConfig = data.horaire_config || [];
 
-          const tdHoraire = document.createElement('td');
-          tdHoraire.className = 'sticky left-0 z-10 px-4 sm:px-6 py-4 text-sm font-bold text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-800 border-r-2 border-gray-300 dark:border-gray-600 whitespace-nowrap';
+        horaireConfig.forEach((config) => {
+          const row = document.createElement("tr");
+          row.className =
+            config.type === "pause"
+              ? "bg-gray-50/50 dark:bg-gray-900/20"
+              : "hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-200";
+
+          const tdHoraire = document.createElement("td");
+          tdHoraire.className =
+            "sticky left-0 z-10 px-4 sm:px-6 py-4 text-sm font-bold text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-800 border-r-2 border-gray-300 dark:border-gray-600 whitespace-nowrap";
           tdHoraire.innerHTML = `
             <div class="flex items-center gap-2">
-              <i class="fas fa-clock text-gray-400 dark:text-gray-500 text-xs"></i>
-              <span>${horaireLabel}</span>
+              <i class="fas fa-clock ${
+                config.type === "pause" ? "text-blue-400" : "text-gray-400"
+              } dark:text-gray-500 text-xs"></i>
+              <span>${config.label}</span>
             </div>
           `;
           row.appendChild(tdHoraire);
 
-          jours.forEach(jour => {
-            const td = document.createElement('td');
-            td.className = 'px-3 sm:px-4 py-3 border-r-2 border-gray-200 dark:border-gray-700 last:border-r-0';
+          jours.forEach((jour) => {
+            const td = document.createElement("td");
+            td.className =
+              "px-3 sm:px-4 py-3 border-r-2 border-gray-200 dark:border-gray-700 last:border-r-0";
 
-            const match = creneaux.find(c => c.jour === jour && c.horaire === horaireLabel);
-            if (match) {
-              td.appendChild(createCourseCard(match));
-              occupiedSlots += 1;
+            if (config.type === "pause") {
+              td.appendChild(createBreakCard(config));
             } else {
-              td.appendChild(createEmptyCell());
+              const match = creneaux.find(
+                (c) => c.jour === jour && c.horaire === config.label
+              );
+              if (match) {
+                td.appendChild(createCourseCard(match));
+                occupiedSlots += 1;
+              } else {
+                td.appendChild(createEmptyCell());
+              }
             }
 
             row.appendChild(td);
@@ -453,46 +625,17 @@
         });
 
         calculateStats(totalSlots, occupiedSlots);
-        document.getElementById('total-slots').textContent = totalSlots;
+        const totalSlotsEl = document.getElementById("total-slots");
+        if (totalSlotsEl) totalSlotsEl.textContent = totalSlots;
       } catch (error) {
-        console.error('Erreur chargement emploi du temps:', error);
-        showToast('Erreur réseau lors du chargement de l\'emploi du temps', 'error');
+        console.error("Erreur chargement emploi du temps:", error);
+        showToast(
+          "Erreur réseau lors du chargement de l'emploi du temps",
+          "error"
+        );
+      } finally {
+        isLoading = false;
       }
-    }
-
-    // Toast notification
-    function showToast(message, type = 'info') {
-      const toast = document.createElement('div');
-      const colors = {
-        info: 'bg-blue-500',
-        success: 'bg-green-500',
-        warning: 'bg-yellow-500',
-        error: 'bg-red-500'
-      };
-
-      const icons = {
-        info: 'fa-info-circle',
-        success: 'fa-check-circle',
-        warning: 'fa-exclamation-triangle',
-        error: 'fa-times-circle'
-      };
-
-      toast.className = `fixed bottom-4 right-4 ${colors[type]} text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 min-w-[300px] max-w-md transform translate-x-full transition-transform duration-300 z-50`;
-      toast.innerHTML = `
-        <i class="fas ${icons[type]} text-xl"></i>
-        <span class="flex-1">${message}</span>
-        <button onclick="this.parentElement.remove()" class="hover:bg-white/20 rounded-lg p-1 transition-colors">
-          <i class="fas fa-times"></i>
-        </button>
-      `;
-
-      document.body.appendChild(toast);
-      setTimeout(() => toast.classList.remove('translate-x-full'), 100);
-
-      setTimeout(() => {
-        toast.classList.add('translate-x-full');
-        setTimeout(() => toast.remove(), 300);
-      }, 4000);
     }
 
     // Initialize
@@ -524,6 +667,4 @@
     }
   }
 </style>
-{% endblock %}
-
 {% endblock %}

@@ -114,55 +114,63 @@
                     <tbody class="bg-white divide-y divide-gray-200">
                         {% for horaire in horaires %}
                         <tr class="hover:bg-blue-50 transition-colors">
-                            <td class="px-4 py-3 text-sm font-bold text-gray-900 border border-gray-300 bg-gray-50">
+                            <td class="px-4 py-3 text-sm font-bold text-gray-900 border border-gray-300 bg-gray-50 text-center">
                                 {{ horaire }}
                             </td>
                             {% for jour in jours %}
                             <td class="px-3 py-3 border border-gray-300">
                                 {% set creneau = emploi_dict[jour][horaire] %}
-                                <div class="space-y-2">
-                                    <!-- Heures -->
-                                    <div class="grid grid-cols-2 gap-2">
-                                        <div>
-                                            <label class="block text-xs font-medium text-gray-600 mb-1">Début</label>
-                                            <input type="time" name="heure_debut_{{ jour }}_{{ horaire }}"
-                                                class="w-full border border-gray-300 rounded-md px-2 py-1.5 text-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                                value="{{ creneau.heure_debut.strftime('%H:%M') if creneau and creneau.heure_debut else '' }}">
-                                        </div>
-                                        <div>
-                                            <label class="block text-xs font-medium text-gray-600 mb-1">Fin</label>
-                                            <input type="time" name="heure_fin_{{ jour }}_{{ horaire }}"
-                                                class="w-full border border-gray-300 rounded-md px-2 py-1.5 text-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                                value="{{ creneau.heure_fin.strftime('%H:%M') if creneau and creneau.heure_fin else '' }}">
-                                        </div>
-                                    </div>
-
+                                <div class="space-y-4">
                                     <!-- Matière -->
                                     <div>
-                                        <label class="block text-xs font-medium text-gray-600 mb-1">Matière</label>
                                         <select name="matiere_{{ jour }}_{{ horaire }}"
-                                            class="w-full border border-gray-300 rounded-md px-2 py-1.5 text-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                            <option value="">-- Sélectionner --</option>
+                                            class="w-full border border-gray-300 rounded-md px-2 py-1.5 text-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white">
+                                            <option value="">-- Libre --</option>
                                             {% for m in matieres %}
-                                            <option value="{{ m.id }}" {% if creneau and creneau.matiere and
-                                                creneau.matiere.id==m.id %}selected{% endif %}>
+                                            <option value="{{ m.id }}" {% if creneau and creneau.matiere and creneau.matiere.id==m.id %}selected{% endif %}>
                                                 {{ m.nom }}
                                             </option>
                                             {% endfor %}
                                         </select>
                                     </div>
 
-                                    <!-- Salle
-                                    <div>
-                                        <label class="block text-xs font-medium text-gray-600 mb-1">Salle</label>
+                                    <!-- Salle -->
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
+                                            <i class="fas fa-door-open text-gray-400 text-[10px]"></i>
+                                        </div>
                                         <input type="text" name="salle_{{ jour }}_{{ horaire }}"
-                                            class="w-full border border-gray-300 rounded-md px-2 py-1.5 text-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                            placeholder="Ex: A101" value="{{ creneau.salle if creneau else '' }}">
-                                    </div> -->
+                                            class="w-full pl-6 border border-gray-300 rounded-md px-2 py-1 text-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                            placeholder="Salle" value="{{ creneau.salle if creneau else '' }}">
+                                    </div>
                                 </div>
                             </td>
                             {% endfor %}
                         </tr>
+                        
+                        {# Insertion des pauses après certains créneaux #}
+                        {% if horaire == "07:00 - 10:00" %}
+                        <tr class="bg-gray-100/80 backdrop-blur-sm">
+                            <td class="px-4 py-2 text-[10px] font-black text-gray-400 border border-gray-300 text-center uppercase tracking-widest">10:00 - 10:30</td>
+                            <td colspan="{{ jours|length }}" class="px-4 py-2 text-center text-xs font-bold text-blue-500 uppercase tracking-[0.3em] border border-gray-300 italic">
+                                <i class="fas fa-coffee mr-2"></i> Récréation
+                            </td>
+                        </tr>
+                        {% elif horaire == "10:30 - 12:30" %}
+                        <tr class="bg-gray-100/80 backdrop-blur-sm">
+                            <td class="px-4 py-2 text-[10px] font-black text-gray-400 border border-gray-300 text-center uppercase tracking-widest">12:30 - 13:30</td>
+                            <td colspan="{{ jours|length }}" class="px-4 py-2 text-center text-xs font-bold text-green-500 uppercase tracking-[0.3em] border border-gray-300 italic">
+                                <i class="fas fa-utensils mr-2"></i> Pause Déjeuner
+                            </td>
+                        </tr>
+                        {% elif horaire == "13:30 - 15:30" %}
+                        <tr class="bg-gray-100/80 backdrop-blur-sm">
+                            <td class="px-4 py-2 text-[10px] font-black text-gray-400 border border-gray-300 text-center uppercase tracking-widest">15:30 - 16:00</td>
+                            <td colspan="{{ jours|length }}" class="px-4 py-2 text-center text-xs font-bold text-blue-500 uppercase tracking-[0.3em] border border-gray-300 italic">
+                                <i class="fas fa-apple-alt mr-2"></i> Pause Goûter
+                            </td>
+                        </tr>
+                        {% endif %}
                         {% endfor %}
                     </tbody>
                 </table>
@@ -179,62 +187,75 @@
                         {% for horaire in horaires %}
                         {% set creneau = emploi_dict[jour][horaire] %}
                         <div class="p-4 bg-white hover:bg-gray-50 transition-colors">
-                            <div class="flex items-center justify-between mb-3">
-                                <span class="font-bold text-gray-900 text-sm">{{ horaire }}</span>
-                                <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">
-                                    Créneau
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
+                                        <i class="fas fa-clock text-blue-600 text-xs"></i>
+                                    </div>
+                                    <span class="font-black text-gray-900 text-base">{{ horaire }}</span>
+                                </div>
+                                <span class="px-2 py-1 bg-blue-50 text-blue-600 text-[10px] font-bold rounded uppercase tracking-tighter">
+                                    Cours
                                 </span>
                             </div>
 
-                            <div class="space-y-3">
-                                <!-- Heures -->
-                                <div class="grid grid-cols-2 gap-3">
-                                    <div>
-                                        <label class="block text-xs font-medium text-gray-700 mb-1.5">
-                                            <i class="far fa-clock text-gray-400 mr-1"></i>Début
-                                        </label>
-                                        <input type="time" name="heure_debut_{{ jour }}_{{ horaire }}"
-                                            class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                            value="{{ creneau.heure_debut.strftime('%H:%M') if creneau and creneau.heure_debut else '' }}">
-                                    </div>
-                                    <div>
-                                        <label class="block text-xs font-medium text-gray-700 mb-1.5">
-                                            <i class="far fa-clock text-gray-400 mr-1"></i>Fin
-                                        </label>
-                                        <input type="time" name="heure_fin_{{ jour }}_{{ horaire }}"
-                                            class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                            value="{{ creneau.heure_fin.strftime('%H:%M') if creneau and creneau.heure_fin else '' }}">
-                                    </div>
-                                </div>
-
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <!-- Matière -->
                                 <div>
-                                    <label class="block text-xs font-medium text-gray-700 mb-1.5">
-                                        <i class="fas fa-book text-gray-400 mr-1"></i>Matière
+                                    <label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase tracking-wider">
+                                        Matière
                                     </label>
                                     <select name="matiere_{{ jour }}_{{ horaire }}"
-                                        class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                        class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50/50">
                                         <option value="">-- Sélectionner une matière --</option>
                                         {% for m in matieres %}
-                                        <option value="{{ m.id }}" {% if creneau and creneau.matiere and
-                                            creneau.matiere.id==m.id %}selected{% endif %}>
+                                        <option value="{{ m.id }}" {% if creneau and creneau.matiere and creneau.matiere.id==m.id %}selected{% endif %}>
                                             {{ m.nom }}
                                         </option>
                                         {% endfor %}
                                     </select>
                                 </div>
 
-                                <!-- Salle
+                                <!-- Salle -->
                                 <div>
-                                    <label class="block text-xs font-medium text-gray-700 mb-1.5">
-                                        <i class="fas fa-door-open text-gray-400 mr-1"></i>Salle
+                                    <label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase tracking-wider">
+                                        Salle
                                     </label>
-                                    <input type="text" name="salle_{{ jour }}_{{ horaire }}"
-                                        class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                        placeholder="Ex: A101, B205..." value="{{ creneau.salle if creneau else '' }}">
-                                </div> -->
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <i class="fas fa-door-open text-gray-400 text-xs"></i>
+                                        </div>
+                                        <input type="text" name="salle_{{ jour }}_{{ horaire }}"
+                                            class="w-full pl-9 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50/50"
+                                            placeholder="Ex: A101" value="{{ creneau.salle if creneau else '' }}">
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                        
+                        {# Insertion des pauses après certains créneaux sur Mobile #}
+                        {% if horaire == "07:00 - 10:00" %}
+                        <div class="bg-gray-50 px-4 py-3 flex items-center justify-between border-y border-gray-200">
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-coffee text-blue-500"></i>
+                                <span class="text-xs font-bold text-gray-600 uppercase tracking-widest">10:00 - 10:30 (Récréation)</span>
+                            </div>
+                        </div>
+                        {% elif horaire == "10:30 - 12:30" %}
+                        <div class="bg-gray-50 px-4 py-3 flex items-center justify-between border-y border-gray-200">
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-utensils text-green-500"></i>
+                                <span class="text-xs font-bold text-gray-600 uppercase tracking-widest">12:30 - 13:30 (Déjeuner)</span>
+                            </div>
+                        </div>
+                        {% elif horaire == "13:30 - 15:30" %}
+                        <div class="bg-gray-50 px-4 py-3 flex items-center justify-between border-y border-gray-200">
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-apple-alt text-blue-500"></i>
+                                <span class="text-xs font-bold text-gray-600 uppercase tracking-widest">15:30 - 16:00 (Pause)</span>
+                            </div>
+                        </div>
+                        {% endif %}
                         {% endfor %}
                     </div>
                 </div>

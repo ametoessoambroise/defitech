@@ -1482,18 +1482,14 @@ def supprimer_filiere(filiere_id):
 @login_required
 def gestion_matieres_filiere(filiere_id):
     """
-    Page de gestion des matières d'une filière.
+    API pour récupérer les matières d'une filière.
     """
     if current_user.role != "admin":
         return jsonify({"error": "Accès non autorisé"}), 403
 
     filiere = Filiere.query.get_or_404(filiere_id)
-    matieres = (
-        Matiere.query.join(EmploiTemps)
-        .filter(EmploiTemps.filiere_id == filiere_id)
-        .distinct()
-        .all()
-    )
+    # Récupérer toutes les matières de cette filière (sans jointure restrictive)
+    matieres = Matiere.query.filter_by(filiere_id=filiere_id).all()
 
     # Créer la liste des matières avec les informations nécessaires
     matieres_data = []
@@ -1501,7 +1497,7 @@ def gestion_matieres_filiere(filiere_id):
         matiere_data = {
             "id": m.id,
             "nom": m.nom,
-            "code": m.code if hasattr(m, "code") else "",
+            "annee": m.annee,  # Ajout de l'année
             "filiere_nom": filiere.nom,
             "filiere_id": filiere.id,
             "enseignant_id": m.enseignant_id,
@@ -1545,16 +1541,16 @@ def ajouter_matiere_filiere():
         if not enseignant:
             return jsonify({"success": False, "message": "Enseignant non trouvé"}), 404
 
-        # Vérifier si l'enseignant n'a pas déjà 2 matières maximum
+        # Vérifier si l'enseignant n'a pas déjà 2 matières maximum pour cette année
         matieres_enseignant = Matiere.query.filter_by(
-            enseignant_id=enseignant_id
+            enseignant_id=enseignant_id, annee=annee
         ).count()
         if matieres_enseignant >= 2:
             return (
                 jsonify(
                     {
                         "success": False,
-                        "message": f"L'enseignant {enseignant.user.prenom} {enseignant.user.nom} a déjà atteint le maximum de 2 matières autorisées",
+                        "message": f"L'enseignant {enseignant.user.prenom} {enseignant.user.nom} a déjà atteint le maximum de 2 matières autorisées pour l'année {annee}",
                     }
                 ),
                 400,
@@ -1584,21 +1580,39 @@ def ajouter_matiere_filiere():
 
         # Vérifier si la matière est déjà associée à la filière
         if EmploiTemps is not None:
-            existe_deja = EmploiTemps.query.filter_by(
-                filiere_id=filiere_id, matiere_id=matiere.id
+            # Vérifier si l'enseignant est déjà occupé sur ce créneau par défaut
+            default_day = "Lundi"
+            default_start = datetime.strptime("07:00", "%H:%M").time()
+
+            collision_enseignant = EmploiTemps.query.filter_by(
+                enseignant_id=enseignant_id, jour=default_day, heure_debut=default_start
             ).first()
 
-            if not existe_deja:
-                # Créer un emploi du temps par défaut (à compléter par l'admin)
+            # Vérifier aussi la salle par défaut (À définir) pour éviter UniqueViolation sur la salle
+            default_salle = "À définir"
+            collision_salle = EmploiTemps.query.filter_by(
+                salle=default_salle, jour=default_day, heure_debut=default_start
+            ).first()
+
+            if not collision_enseignant and not collision_salle:
+                # Créer un emploi du temps par défaut uniquement si le créneau est libre
                 emploi = EmploiTemps(
                     filiere_id=filiere_id,
                     matiere_id=matiere.id,
-                    jour="Lundi",
-                    heure_debut=datetime.strptime("08:00", "%H:%M").time(),
+                    enseignant_id=enseignant_id,
+                    jour=default_day,
+                    heure_debut=default_start,
                     heure_fin=datetime.strptime("10:00", "%H:%M").time(),
-                    salle="A définir",
+                    salle=default_salle,
                 )
                 db.session.add(emploi)
+            else:
+                flash(
+                    f"Créneau par défaut (Lundi 07h) non créé pour {nom} car l'enseignant ou la salle est déjà occupé."
+                )
+                current_app.logger.warning(
+                    f"Créneau par défaut (Lundi 07h) non créé pour {nom} car l'enseignant ou la salle est déjà occupé."
+                )
 
         db.session.commit()
         return jsonify(
@@ -1720,6 +1734,25 @@ def modifier_matiere(matiere_id):
         if not enseignant:
             return jsonify({"success": False, "message": "Enseignant non trouvé"}), 404
 
+        # Vérifier si l'enseignant n'a pas déjà atteint la limite pour cette année
+        # On exclut la matière actuelle du compte
+        matieres_count = Matiere.query.filter(
+            Matiere.enseignant_id == enseignant_id,
+            Matiere.annee == annee,
+            Matiere.id != matiere_id,
+        ).count()
+
+        if matieres_count >= 2:
+            return (
+                jsonify(
+                    {
+                        "success": False,
+                        "message": f"L'enseignant {enseignant.user.prenom} {enseignant.user.nom} a déjà atteint sa limite de 2 matières pour {annee}",
+                    }
+                ),
+                400,
+            )
+
         # Vérifier si la matière existe déjà avec le même nom pour la même année
         matiere_existante = Matiere.query.filter(
             Matiere.nom == nom.strip().lower(),
@@ -1790,6 +1823,7 @@ def manage_matiere():
             nom = data.get("nom")
             filiere_id = data.get("filiere_id")
             enseignant_id = data.get("enseignant_id")
+            annee = data.get("annee", "1ère année")
 
             if not all([nom, filiere_id, enseignant_id]):
                 return (
@@ -1802,8 +1836,23 @@ def manage_matiere():
                     400,
                 )
 
+            # Vérification du quota
+            matieres_count = Matiere.query.filter_by(
+                enseignant_id=enseignant_id, annee=annee
+            ).count()
+            if matieres_count >= 2:
+                return (
+                    jsonify(
+                        {
+                            "success": False,
+                            "message": f"Cet enseignant a déjà 2 matières en {annee}",
+                        }
+                    ),
+                    400,
+                )
+
             nouvelle_matiere = Matiere(
-                nom=nom, filiere_id=filiere_id, enseignant_id=enseignant_id
+                nom=nom, filiere_id=filiere_id, enseignant_id=enseignant_id, annee=annee
             )
             db.session.add(nouvelle_matiere)
             db.session.commit()
@@ -1837,6 +1886,26 @@ def manage_matiere():
             matiere.nom = data.get("nom", matiere.nom)
             matiere.filiere_id = data.get("filiere_id", matiere.filiere_id)
             matiere.enseignant_id = data.get("enseignant_id", matiere.enseignant_id)
+            matiere.annee = data.get("annee", matiere.annee)
+
+            # Vérification du quota après modif potentielle de l'enseignant ou l'année
+            matieres_count = Matiere.query.filter(
+                Matiere.enseignant_id == matiere.enseignant_id,
+                Matiere.annee == matiere.annee,
+                Matiere.id != matiere_id,
+            ).count()
+
+            if matieres_count >= 2:
+                db.session.rollback()
+                return (
+                    jsonify(
+                        {
+                            "success": False,
+                            "message": f"Limite de 2 matières atteinte pour cet enseignant en {matiere.annee}",
+                        }
+                    ),
+                    400,
+                )
 
             db.session.commit()
 
@@ -2411,37 +2480,96 @@ def admin_emploi_temps():
     # Récupération des données pour les listes déroulantes
     filieres = Filiere.query.all()
     annees = Annee.query.all()
-    matieres = Matiere.query.all()  # Pour le formulaire d'édition
 
     selected_filiere = filiere_id
     selected_annee = annee_id
 
-    # Structure de données pour l'emploi du temps
+    # Récupération de l'objet année pour obtenir son nom (car Matiere utilise le nom en string)
+    target_annee = None
+    if selected_annee:
+        target_annee = Annee.query.get(selected_annee)
+
+    # Filtrer les matières spécifiquement pour la filière et l'année sélectionnée
+    if selected_filiere and target_annee:
+        matieres = Matiere.query.filter_by(
+            filiere_id=selected_filiere, annee=target_annee.nom
+        ).all()
+    else:
+        matieres = []  # Liste vide si rien n'est sélectionné
+
+    # Structure de données pour l'emploi du temps (Créneaux Fixes)
     jours = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"]
     horaires = [
-        "08:00 - 10:00",
-        "10:00 - 12:00",
-        "12:00 - 14:00",
-        "14:00 - 16:00",
+        "07:00 - 10:00",
+        "10:30 - 12:30",
+        "13:30 - 15:30",
         "16:00 - 18:00",
-        "18:00 - 20:00",
     ]
+
+    # Traitement du formulaire POST (Enregistrement)
+    if request.method == "POST" and selected_filiere:
+        try:
+            for jour in jours:
+                for horaire in horaires:
+                    matiere_id = request.form.get(f"matiere_{jour}_{horaire}")
+                    salle = request.form.get(f"salle_{jour}_{horaire}", "À définir")
+
+                    heure_debut_str, heure_fin_str = horaire.split(" - ")
+                    heure_debut = datetime.strptime(heure_debut_str, "%H:%M").time()
+                    heure_fin = datetime.strptime(heure_fin_str, "%H:%M").time()
+
+                    # Chercher le créneau existant par heure_debut (unique pour un jour/filière dans ce système)
+                    emploi = EmploiTemps.query.filter_by(
+                        filiere_id=selected_filiere, jour=jour, heure_debut=heure_debut
+                    ).first()
+
+                    if matiere_id:
+                        matiere = Matiere.query.get(matiere_id)
+                        if not emploi:
+                            emploi = EmploiTemps(
+                                filiere_id=selected_filiere,
+                                matiere_id=matiere_id,
+                                enseignant_id=matiere.enseignant_id,
+                                jour=jour,
+                                heure_debut=heure_debut,
+                                heure_fin=heure_fin,
+                                salle=salle,
+                            )
+                            db.session.add(emploi)
+                        else:
+                            emploi.matiere_id = matiere_id
+                            emploi.enseignant_id = matiere.enseignant_id
+                            emploi.heure_fin = heure_fin
+                            emploi.salle = salle
+                    elif emploi:
+                        # Si matiere_id est vide dans le formulaire, on supprime le créneau existant
+                        db.session.delete(emploi)
+
+            db.session.commit()
+            flash("Emploi du temps mis à jour avec succès.", "success")
+        except Exception as e:
+            db.session.rollback()
+            flash(f"Erreur lors de l'enregistrement : {str(e)}", "error")
+
+        return redirect(
+            url_for(
+                "admin.admin_emploi_temps",
+                filiere=selected_filiere,
+                annee=selected_annee,
+            )
+        )
 
     emploi_dict = {jour: {h: None for h in horaires} for jour in jours}
 
     # Si filière et année sélectionnées, remplir emploi_dict
     if selected_filiere:
-        query = EmploiTemps.query.filter_by(filiere_id=selected_filiere)
-        # Note: Filtrage par année si le modèle le permettait directement ou via jointure
-        # Pour l'instant on garde simple comme demandé
-        emplois = query.all()
+        emplois = EmploiTemps.query.filter_by(filiere_id=selected_filiere).all()
 
         for emp in emplois:
             if emp.heure_debut:
                 h_debut = emp.heure_debut.strftime("%H:%M")
-                # Trouver le créneau correspondant
+                # Trouver le créneau correspondant (soit exact, soit qui commence à la même heure)
                 for h in horaires:
-                    # On compare juste le début pour la correspondance simple
                     if h.startswith(h_debut):
                         emploi_dict[emp.jour][h] = emp
                         break

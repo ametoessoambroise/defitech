@@ -137,7 +137,12 @@
 
         // Intercept buttons with onclick that navigate
         const button = e.target.closest("button");
-        if (button && button.hasAttribute("onclick")) {
+        if (
+          button &&
+          button.type !== "submit" &&
+          button.type !== "reset" &&
+          button.hasAttribute("onclick")
+        ) {
           const onclickAttr = button.getAttribute("onclick") || "";
           if (
             onclickAttr.includes("location.href") ||

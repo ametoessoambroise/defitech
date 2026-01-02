@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify, session
 from flask_login import login_required, current_user
-from app.extensions import db
+from app.extensions import db, csrf
 from datetime import datetime, timedelta
 import secrets
 import base64
@@ -38,6 +38,7 @@ def get_status():
 
 
 @app_lock_bp.route("/api/app-lock/verify-pin", methods=["POST"])
+@csrf.exempt
 @login_required
 def verify_pin():
     """Vérifie le code PIN et prolonge la session de déverrouillage."""
@@ -71,6 +72,7 @@ def verify_pin():
 
 
 @app_lock_bp.route("/api/app-lock/verify-password", methods=["POST"])
+@csrf.exempt
 @login_required
 def verify_password():
     """Vérifie le mot de passe principal en cas d'oubli du PIN."""
@@ -257,6 +259,7 @@ def authentication_options():
 
 
 @app_lock_bp.route("/api/app-lock/webauthn/login-verify", methods=["POST"])
+@csrf.exempt
 @login_required
 def authentication_verify():
     """Vérifie la réponse d'authentification et déverrouille l'application."""

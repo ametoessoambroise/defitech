@@ -236,13 +236,24 @@ def api_etudiant_emploi_temps():
     if not filiere_obj:
         return jsonify({"jours": [], "horaires": [], "creneaux": []})
 
-    jours = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi"]
+    jours = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"]
+
+    # Définition des créneaux fixes (Cours et Pauses)
+    horaire_config = [
+        {"label": "07:00 - 10:00", "type": "cours"},
+        {"label": "10:00 - 10:30", "type": "pause", "nom": "Récréation"},
+        {"label": "10:30 - 12:30", "type": "cours"},
+        {"label": "12:30 - 13:30", "type": "pause", "nom": "Déjeuner"},
+        {"label": "13:30 - 15:30", "type": "cours"},
+        {"label": "15:30 - 16:00", "type": "pause", "nom": "Pause"},
+        {"label": "16:00 - 18:00", "type": "cours"},
+    ]
+
     emplois = EmploiTemps.query.filter_by(filiere_id=filiere_obj.id).all()
 
     def format_label(emploi):
         hd = emploi.heure_debut
         hf = emploi.heure_fin
-        # Gérer strings éventuelles
         if isinstance(hd, str):
             hd_h, hd_m = map(int, hd.split(":")[:2])
         else:
@@ -251,21 +262,11 @@ def api_etudiant_emploi_temps():
             hf_h, hf_m = map(int, hf.split(":")[:2])
         else:
             hf_h, hf_m = hf.hour, hf.minute
-        return f"{hd_h:02d}h{hd_m:02d} - {hf_h:02d}h{hf_m:02d}"
-
-    # Construire la liste unique des créneaux horaires
-    horaire_labels = []
-    for e in emplois:
-        if e.jour in jours and e.heure_debut and e.heure_fin:
-            label = format_label(e)
-            if label not in horaire_labels:
-                horaire_labels.append(label)
-
-    horaire_labels.sort()  # Tri lexical suffisant pour HHhMM
+        return f"{hd_h:02d}:{hd_m:02d} - {hf_h:02d}:{hf_m:02d}"
 
     creneaux_json = []
     for e in emplois:
-        if e.jour not in jours or not e.heure_debut or not e.heure_fin:
+        if not e.heure_debut or not e.heure_fin:
             continue
         label = format_label(e)
         matiere = Matiere.query.get(e.matiere_id) if e.matiere_id else None
@@ -282,9 +283,15 @@ def api_etudiant_emploi_temps():
                 "matiere": matiere.nom if matiere else None,
                 "enseignant": enseignant_nom,
                 "salle": e.salle,
+                "type": "cours",
             }
         )
 
     return jsonify(
-        {"jours": jours, "horaires": horaire_labels, "creneaux": creneaux_json}
+        {
+            "jours": jours,
+            "horaires": [h["label"] for h in horaire_config],
+            "horaire_config": horaire_config,
+            "creneaux": creneaux_json,
+        }
     )

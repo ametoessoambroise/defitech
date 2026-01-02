@@ -145,9 +145,6 @@
     {% if current_user.is_authenticated and current_user.is_app_lock_enabled %}
     {% include 'components/lock_screen.html' %} {% endif %}
 
-    <!-- Barre de progression -->
-    {% include 'components/progress_bar.html' %}
-
     <!-- Curseur personnalisé -->
     <div
       id="cursor"
@@ -308,7 +305,7 @@
 
                 {% if matiere is defined and matiere %}
                 <a
-                  href="{{ url_for('room', course_id=matiere.id) }}"
+                  href="{{ url_for('videoconference.room', course_id=matiere.id) }}"
                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-green-50 transition"
                 >
                   <i class="fas fa-video mr-2 text-green-600"></i>Meet

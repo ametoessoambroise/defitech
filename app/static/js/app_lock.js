@@ -13,7 +13,8 @@ const AppLock = {
     state: {
         isEnabled: false,
         isLocked: false,
-        lastActivity: Date.now()
+        lastActivity: Date.now(),
+        isVerifying: false
     },
 
     async init() {
@@ -96,7 +97,9 @@ const AppLock = {
 
         if (this.digits.length === this.config.pinLength) {
             // Auto-verify à 6 chiffres
-            setTimeout(() => this.verifyPIN(), 200);
+            if (!this.state.isVerifying) {
+                setTimeout(() => this.verifyPIN(), 200);
+            }
         }
     },
 
@@ -118,16 +121,29 @@ const AppLock = {
     },
 
     async verifyPIN() {
+        if (this.state.isVerifying) return;
         const pin = this.digits.join('');
+        if (pin.length < 4) return;
+
+        this.state.isVerifying = true;
         const overlayContent = document.querySelector('#appLockOverlay > div');
         const statusMsg = document.getElementById('lockStatusMessage');
+        const validateBtn = document.getElementById('validatePinBtn');
+
+        if (validateBtn) {
+            validateBtn.disabled = true;
+            validateBtn.textContent = 'Vérification...';
+        }
 
         try {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content ||
+                document.querySelector('input[name="csrf_token"]')?.value;
+
             const resp = await fetch(this.config.verifyUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRFToken': document.querySelector('meta[name="csrf-token"]')?.content
+                    'X-CSRFToken': csrfToken
                 },
                 body: JSON.stringify({ pin })
             });
@@ -138,23 +154,38 @@ const AppLock = {
                 this.hideOverlay();
                 this.state.isLocked = false;
                 this.state.lastActivity = Date.now();
+                this.clearDigits();
             } else {
                 // Animation d'erreur
-                overlayContent.classList.add('pin-shake');
-                statusMsg.textContent = data.message || 'Code PIN incorrect';
-                statusMsg.classList.add('text-red-500');
+                overlayContent?.classList.add('pin-shake');
+                if (statusMsg) {
+                    statusMsg.textContent = data.message || 'Code PIN incorrect';
+                    statusMsg.classList.add('text-red-500');
+                }
 
                 setTimeout(() => {
-                    overlayContent.classList.remove('pin-shake');
+                    overlayContent?.classList.remove('pin-shake');
                     this.clearDigits();
                     setTimeout(() => {
-                        statusMsg.textContent = 'Entrez votre code PIN pour continuer';
-                        statusMsg.classList.remove('text-red-500');
+                        if (statusMsg) {
+                            statusMsg.textContent = 'Entrez votre code PIN pour continuer';
+                            statusMsg.classList.remove('text-red-500');
+                        }
                     }, 1000);
                 }, 400);
             }
         } catch (err) {
             console.error('Verification Error:', err);
+            if (statusMsg) {
+                statusMsg.textContent = 'Erreur lors de la vérification';
+                statusMsg.classList.add('text-red-500');
+            }
+        } finally {
+            this.state.isVerifying = false;
+            if (validateBtn) {
+                validateBtn.disabled = false;
+                validateBtn.textContent = 'Valider le PIN';
+            }
         }
     },
 

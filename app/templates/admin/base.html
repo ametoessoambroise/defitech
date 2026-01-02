@@ -5,11 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}{% endblock %}</title>
 
-    <!-- Styles globaux -->
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/compiled.css') }}"
-    />
+    
 
     <!-- Font Awesome -->
     <link
@@ -234,8 +230,6 @@
     {% if current_user.is_authenticated and current_user.is_app_lock_enabled %}
     {% include 'components/lock_screen.html' %} {% endif %}
 
-    <!-- Barre de progression -->
-    {% include 'components/progress_bar.html' %}
 
     <!-- HEADER avec effet glassmorphism moderne -->
     <header

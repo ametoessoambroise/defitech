@@ -64,6 +64,7 @@ current_user.prenom }} | DEFITECH{% endblock %} {% block content %}
     Envoyer un devoir, exercice, examen ou communiqué
   </h1>
   <form method="POST" class="bg-white rounded shadow p-6 space-y-4">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <div>
       <label class="block text-sm font-medium text-gray-700">Type</label>
       <select name="type" required class="border rounded px-2 py-1 w-full">

@@ -69,11 +69,11 @@ current_user.prenom }} | DEFITECH{% endblock %} {% block content %}
     const head = document.getElementById("timetable-head-enseignant");
     const body = document.getElementById("timetable-body-enseignant");
     const refreshBtn = document.getElementById("refresh-emploi");
+    let isLoading = false;
 
     async function loadEmploiTempsEnseignant() {
-      if (!head || !body) return;
-      head.innerHTML = "";
-      body.innerHTML = "";
+      if (!head || !body || isLoading) return;
+      isLoading = true;
 
       try {
         const response = await fetch(
@@ -81,10 +81,16 @@ current_user.prenom }} | DEFITECH{% endblock %} {% block content %}
         );
         if (!response.ok) {
           console.error("Erreur API enseignant:", response.statusText);
+          isLoading = false;
           return;
         }
 
         const data = await response.json();
+
+        // Vider le tableau JUSTE AVANT de le remplir
+        head.innerHTML = "";
+        body.innerHTML = "";
+
         const jours = data.jours || [];
         const horaires = data.horaires || [];
         const creneaux = data.creneaux || [];
@@ -109,31 +115,76 @@ current_user.prenom }} | DEFITECH{% endblock %} {% block content %}
 
         head.appendChild(headerRow);
 
-        // Lignes
-        horaires.forEach((horaireLabel) => {
+        const horaireConfig = data.horaire_config || [];
+
+        horaireConfig.forEach((config) => {
           const row = document.createElement("tr");
+          row.className =
+            config.type === "pause"
+              ? "bg-gray-50"
+              : "hover:bg-blue-50/30 transition-colors";
 
           const tdHoraire = document.createElement("td");
           tdHoraire.className =
-            "px-4 py-3 text-sm font-medium text-gray-900 border border-gray-200";
-          tdHoraire.textContent = horaireLabel;
+            "px-4 py-4 text-sm font-bold text-gray-900 border border-gray-200 text-center bg-gray-50/50";
+          tdHoraire.innerHTML = `
+            <div class="flex flex-col items-center gap-1">
+              <i class="fas fa-clock text-blue-500 text-[10px]"></i>
+              <span>${config.label}</span>
+            </div>
+          `;
           row.appendChild(tdHoraire);
 
           jours.forEach((jour) => {
             const td = document.createElement("td");
-            td.className = "px-4 py-3 border border-gray-200";
+            td.className = "px-4 py-3 border border-gray-200 min-w-[150px]";
 
-            const match = creneaux.find(
-              (c) => c.jour === jour && c.horaire === horaireLabel
-            );
-            if (match) {
-              const div = document.createElement("div");
-              div.className = "bg-blue-100 p-3 rounded-lg";
-              div.innerHTML = `
-                <p class="font-medium text-blue-900">${match.matiere || ""}</p>
-                <p class="text-sm text-blue-700">${match.salle || ""}</p>
-              `;
-              td.appendChild(div);
+            if (config.type === "pause") {
+              td.className += " bg-gray-50/30";
+              td.innerHTML = `
+                    <div class="flex items-center justify-center gap-2 text-gray-400">
+                        <i class="fas ${
+                          config.nom === "Déjeuner"
+                            ? "fa-utensils"
+                            : "fa-coffee"
+                        } text-[10px]"></i>
+                        <span class="text-[9px] font-black uppercase tracking-widest">${
+                          config.nom
+                        }</span>
+                    </div>
+                `;
+            } else {
+              const match = creneaux.find(
+                (c) => c.jour === jour && c.horaire === config.label
+              );
+              if (match) {
+                const div = document.createElement("div");
+                div.className =
+                  "bg-gradient-to-br from-blue-50 to-blue-100 border-l-4 border-blue-500 p-3 rounded-r-lg shadow-sm";
+                div.innerHTML = `
+                    <p class="font-bold text-blue-900 text-sm mb-1">${
+                      match.matiere || ""
+                    }</p>
+                    <div class="flex flex-wrap gap-1 mb-2">
+                        <span class="px-1.5 py-0.5 bg-blue-200/50 text-blue-800 text-[9px] font-bold rounded uppercase tracking-tighter">
+                            ${match.filiere}
+                        </span>
+                        <span class="px-1.5 py-0.5 bg-indigo-200/50 text-indigo-800 text-[9px] font-bold rounded uppercase tracking-tighter">
+                            ${match.annee}
+                        </span>
+                    </div>
+                    <div class="flex items-center gap-2 text-blue-700">
+                        <i class="fas fa-door-open text-[10px]"></i>
+                        <span class="text-xs font-medium">${
+                          match.salle || "Non définie"
+                        }</span>
+                    </div>
+                  `;
+                td.appendChild(div);
+              } else {
+                td.innerHTML =
+                  '<div class="h-12 flex items-center justify-center opacity-10"><i class="fas fa-minus text-gray-300"></i></div>';
+              }
             }
 
             row.appendChild(td);
@@ -143,6 +194,8 @@ current_user.prenom }} | DEFITECH{% endblock %} {% block content %}
         });
       } catch (error) {
         console.error("Erreur chargement emploi du temps enseignant:", error);
+      } finally {
+        isLoading = false;
       }
     }
 

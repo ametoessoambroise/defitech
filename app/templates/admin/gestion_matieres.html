@@ -516,7 +516,7 @@
         // Fonction pour afficher les notifications
         function showNotification(message, type = 'success') {
             const notification = document.createElement('div');
-            notification.className = `fixed top-4 right-4 z-50 px-6 py-4 rounded-lg shadow-lg transform transition-all duration-300 ${type === 'success' ? 'bg-green-500' : 'bg-red-500'
+            notification.className = `fixed bottom-4 left-4 z-50 px-6 py-4 rounded-lg shadow-lg transform transition-all duration-300 ${type === 'success' ? 'bg-green-500' : 'bg-red-500'
                 } text-white font-medium`;
             notification.innerHTML = `
                 <div class="flex items-center">
